@@ -1,8 +1,6 @@
 # /etc/puppetlabs/puppet/environments/elasticsearch/modules/autofs/manifests/config.pp
 
-class autofs::config inherits autofs::params {
-  $automount_ldap_server = $autofs::params::automount_ldap_server
-  $automount_home_server = $autofs::params::automount_home_server
+class autofs::config {
 
   File {
     ensure => 'present',
