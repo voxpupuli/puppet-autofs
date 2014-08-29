@@ -1,0 +1,8 @@
+###############################################################
+#                                                             #
+# THIS FILE IS MANAGED BY PUPPET ENTERPRISE. ANY CHANGES MADE #
+# TO THIS FILE WILL BE REVERTED BACK ON THE NEXT PUPPET RUN.  #
+#                                                             #
+###############################################################
+
+* -user,rw,soft,intr,rsize=32768,wsize=32768,tcp,nfsvers=3,noacl <%= @automount_home_server %>:/export/data/corp/homes/&
