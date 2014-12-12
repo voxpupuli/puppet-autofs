@@ -6,12 +6,13 @@ define autofs::mount (
   $group    = 'root',
   $mode     = '0755',
   $ensure   = 'directory',
-  $require  = unset
+  $require  = File['/automount']
 ) {
   file { "${mountdir}/${title}":
-    ensure => $ensure,
-    owner  => $owner,
-    group  => $group,
-    mode   => $mode
+    ensure  => $ensure,
+    owner   => $owner,
+    group   => $group,
+    mode    => $mode,
+    require => $require
   }
 }

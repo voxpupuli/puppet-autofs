@@ -13,6 +13,6 @@ define autofs::autofiles (
     owner   => $owner,
     group   => $group,
     mode    => $mode,
-    content => hiera($title)
+    content => hiera("${confdir}/${title}")
   }
 }
