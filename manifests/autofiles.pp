@@ -1,13 +1,12 @@
 # Defined Type Docmentation
 
-define autofs::mounts (
-  $confdir  = '/etc/',
-  $owner      = 'root',
-  $group      = 'root',
-  $mode       = '0644',
-  $ensure     = 'present',
-  $content    = undef,
-  $mountpoint = undef
+define autofs::autofiles (
+  $confdir = '/etc/',
+  $owner   = 'root',
+  $group   = 'root',
+  $mode    = '0644',
+  $ensure  = 'present',
+  $content = undef
 ) {
   file { "${confdir}/${title}":
     ensure  => $ensure,
