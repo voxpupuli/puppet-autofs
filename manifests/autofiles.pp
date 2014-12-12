@@ -13,6 +13,7 @@ define autofs::autofiles (
     owner   => $owner,
     group   => $group,
     mode    => $mode,
-    content => hiera("${confdir}/${title}")
+    content => hiera("${confdir}/${title}"),
+    notify  => Service[ 'autofs' ]
   }
 }
