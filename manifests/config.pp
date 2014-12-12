@@ -67,7 +67,8 @@ class autofs::config {
     }
   }
 
-  autofs::autofiles { $autofs_conf_files: }
   autofs::mount { $autofs_mnt_dir: }
+  autofs::autofiles { $autofs_conf_files: }
+
 
 }
