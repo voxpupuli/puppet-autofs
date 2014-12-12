@@ -10,4 +10,5 @@
 
 class autofs {
   include autofs::config
+  include autofs::service
 }
