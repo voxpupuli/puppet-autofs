@@ -11,7 +11,7 @@
 class autofs {
   anchor { 'autofs::begin': }
   class { 'autofs::install': } ->
-  class { 'include autofs::config': } ~>
-  class { 'include autofs::service': }
+  class { 'autofs::config': } ~>
+  class { 'autofs::service': }
   anchor { 'autofs::end': }
 }
