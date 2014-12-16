@@ -33,14 +33,12 @@ class autofs::config {
   $autofs_conf_files     = hiera('autofsConfFiles')
   $autofs_mnt_dir        = hiera('autofsMntDir')
 
-  File {
-    owner => 'root',
-    group => 'root',
-    mode  => '0755'
-  }
-
-  file { '/automount':
-    ensure => directory
+  file { '/etc/auto.master':
+    ensure  => present,
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0644',
+    content => hiera('autoMaster')
   }
 
   case $autofs_homedir {
