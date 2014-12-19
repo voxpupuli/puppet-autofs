@@ -29,44 +29,12 @@
 #
 
 class autofs::config {
-  $autofs_homedir        = hiera('autofsHomeDir')
-  $autofs_conf_files     = hiera('autofsConfFiles')
-  $autofs_mnt_dir        = hiera('autofsMntDir')
+  $map_options = hiera('mapOptions')
 
   file { '/etc/auto.master':
     ensure  => present,
-    owner   => 'root',
-    group   => 'root',
-    mode    => '0644',
-    content => hiera('autoMaster')
   }
 
-  case $autofs_homedir {
-    yes: {
-      file { '/automount/home':
-      ensure  => directory,
-      require => File[ '/automount' ]
-      }
-
-      file { '/home':
-      ensure  => link,
-      target  => '/automount/home',
-      force   => true,
-      require => File[ '/automount/home' ]
-      }
-    }
-    no: {
-      file { '/automount/home':
-        ensure => absent
-      }
-    }
-    default: {
-      fail("String ${autofs_homedir} is not supported!")
-    }
-  }
-
-  autofs::mount { $autofs_mnt_dir: }
-  autofs::autofiles { $autofs_conf_files: }
-
+  create_resource( autofs::mount, $map_options)
 
 }

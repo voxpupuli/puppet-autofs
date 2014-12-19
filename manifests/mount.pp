@@ -1,18 +1,22 @@
 # Defined Type Docmentation
 
 define autofs::mount (
-  $mountdir = '/automount',
-  $owner    = 'root',
-  $group    = 'root',
-  $mode     = '0755',
-  $ensure   = 'directory',
-  $require  = File['/automount']
+  $mount,
+  $mapfile,
+  $mapcontents,
 ) {
-  file { "${mountdir}/${title}":
-    ensure  => $ensure,
-    owner   => $owner,
-    group   => $group,
-    mode    => $mode,
-    require => $require
+  file { $mount:
+    ensure => directory,
   }
+
+  file { "/etc/${mapfile}":
+    ensure  => present,
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0644',
+    content => template('etc/auto.map.erb'),
+    require => File[ $mount ],
+    notify  => Service[ 'autofs' ],
+  }
+
 }
