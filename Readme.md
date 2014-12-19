@@ -19,6 +19,7 @@ configuration files.
 
 Requirements
 ------------
-* OS: Linux, specifically Enterprise Linux Distributions. Windows and Mac OS X NOT supported
+* OS: Debian Linux or Enterprise Linux (and their variants):
+  * autofs is not built for Windows or Mac so they are not supported.
+  * This module does NOT support Solaris Autofs.
 * Hieradata YAML Backend
-* Hieradata File Backend
