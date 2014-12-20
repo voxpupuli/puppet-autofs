@@ -31,10 +31,6 @@
 class autofs::config {
   $map_options = hiera('mapOptions')
 
-  file { '/etc/auto.master':
-    ensure  => present,
-  }
-
   create_resource( autofs::mount, $map_options)
 
 }
