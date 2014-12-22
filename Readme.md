@@ -20,6 +20,6 @@ configuration files.
 Requirements
 ------------
 * OS: Debian Linux or Enterprise Linux (and their variants):
-  * autofs is not built for Windows or Mac so they are not supported.
-  * This module does NOT support Solaris Autofs.
+    * autofs is not built for Windows or Mac so they are not supported.
+    * This module does NOT support Solaris Autofs.
 * Hieradata YAML Backend
