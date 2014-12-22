@@ -5,8 +5,8 @@
   "summary": "Module for installing and managing autofs",
   "license": "Apache-2.0",
   "source": "https://github.com/EagleDelta2/autofs-puppet.git",
-  "project_page": "https://github.com/garethr/garethr-docker",
-  "issues_url": "https://github.com/garethr/garethr-docker/issues",
+  "project_page": "https://github.com/EagleDelta2/autofs-puppet",
+  "issues_url": "https://github.com/EagleDelta2/autofs-puppet/issues",
   "operatingsystem_support": [
     {
       "operatingsystem": "RedHat",
@@ -51,7 +51,7 @@
               "name": "puppetlabs/stdlib",
               "version_requirement": ">= 4.1.0"
               },{
-                "name": "puppetlabs/apt",
+                "name": "puppetlabs/concat",
                 "version_requirement": ">= 1.1.0"
                 },
               ]
