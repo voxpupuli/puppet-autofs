@@ -1,6 +1,6 @@
 {
   "name": "EagleDelta2-autofs",
-  "version": "2.0.0",
+  "version": "1.0.0",
   "author": "David Hollinger",
   "summary": "Module for installing and managing autofs",
   "license": "Apache-2.0",
@@ -49,10 +49,10 @@
           "dependencies": [
             {
               "name": "puppetlabs/stdlib",
-              "version_requirement": ">= 4.1.0"
+              "version_requirement": ">= 3.0.0"
               },{
                 "name": "puppetlabs/concat",
-                "version_requirement": ">= 1.1.0"
+                "version_requirement": ">= 1.1.1"
                 },
               ]
             }
