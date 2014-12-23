@@ -23,3 +23,9 @@ Requirements
     * autofs is not built for Windows or Mac so they are not supported.
     * This module does NOT support Solaris Autofs.
 * Hieradata YAML Backend
+
+**TODO:**
+=========
+* Finish README Documentation
+* Fix inline comments to match changes
+* Testing
