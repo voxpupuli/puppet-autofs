@@ -31,7 +31,7 @@ define autofs::mount (
     owner   => 'root',
     group   => 'root',
     mode    => '0644',
-    content => template('etc/auto.map.erb'),
+    content => template('autofs/auto.map.erb'),
     require => File[ $mount ],
     notify  => Service[ 'autofs' ],
   }

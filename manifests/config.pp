@@ -7,7 +7,8 @@
 # Requires Hiera YAML backend.
 #
 class autofs::config {
+  $map_options = hiera('mapOptions')
 
-  create_resources( 'autofs::mount', hiera('mapOptions'))
+  create_resources( 'autofs::mount', $map_options)
 
 }
