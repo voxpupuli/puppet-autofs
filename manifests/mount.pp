@@ -18,7 +18,7 @@ define autofs::mount (
   concat::fragment { 'autofs::fragment preamble /etc/auto.master':
     ensure  => present,
     target  => '/etc/auto.master',
-    content => "${mount} /etc/${mapfile} ${options}",
+    content => "${mount} ${mapfile} ${options}",
     order   => $order,
   }
 
@@ -26,7 +26,7 @@ define autofs::mount (
     ensure => directory,
   }
 
-  file { "/etc/${mapfile}":
+  file { $mapfile:
     ensure  => present,
     owner   => 'root',
     group   => 'root',
