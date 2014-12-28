@@ -13,6 +13,9 @@ class autofs::install {
     RedHat: {
       package { 'autofs': }
     }
+    Ubuntu: {
+      package { 'autofs': }
+    }
     default: {
       fail("${::operatingsystem} not supported.")
     }
