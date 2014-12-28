@@ -7,13 +7,10 @@ class autofs::install {
     ensure => installed
   }
   case $::osfamily {
-    Debian: {
-      package { 'autofs-ldap': }
-    }
-    RedHat: {
+    'Debian', 'Ubuntu': {
       package { 'autofs': }
     }
-    Ubuntu: {
+    'RedHat', 'CentOS': {
       package { 'autofs': }
     }
     default: {
