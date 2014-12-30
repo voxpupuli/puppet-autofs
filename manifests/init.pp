@@ -7,7 +7,14 @@
 #
 # Requires the use of environments and hieradata.
 #
-
+# === Authors
+#
+# David Hollinger III <EagleDelta2@gmail.com>
+#
+# === Copyright
+#
+# Copyright 2014 David Hollinger III
+#
 class autofs {
   anchor { 'autofs::begin': }
   class { 'autofs::install': } ->
