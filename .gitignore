@@ -1,4 +1,8 @@
 .DS_Store
 ./*/.DS_Store
 ./pkg/*
-.idea
+.idea/
+.idea/*
+.exvim.autofs/
+.exvim.autofs/*
+autofs.exvim
