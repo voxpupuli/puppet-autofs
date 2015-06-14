@@ -1,11 +1,8 @@
 require 'spec_helper'
 describe 'autofs', :type => :class do
 
-  context 'with defaults for all parameters' do
-    it { should contain_class('autofs') }
-    it { should contain_class('autofs::install'.that_comes_before('Class[autofs::config]'))}
-    it { should contain_class('autofs::config'.that_comes_before('Class[autofs::sevice]'))}
-    it { should compile.with_all_deps }
-  end
+  it { should contain_class('autofs::package') }
+  it { should contain_class('autofs::config') }
+  it { should contain_class('autofs::service') }
 
 end

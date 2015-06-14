@@ -23,7 +23,8 @@ define autofs::mount (
   }
 
   file { $mount:
-    ensure => directory,
+    ensure  => directory,
+    require => Package[ 'autofs' ],
   }
 
   file { $mapfile:

@@ -2,7 +2,7 @@
 #
 # This class ensures that autofs is installed.
 #
-class autofs::install {
+class autofs::package {
   Package {
     ensure => installed
   }

@@ -16,9 +16,7 @@
 # Copyright 2014 David Hollinger III
 #
 class autofs {
-  anchor { 'autofs::begin': }
-  class { 'autofs::install': } ->
-  class { 'autofs::config': } ~>
-  class { 'autofs::service': }
-  anchor { 'autofs::end': }
+  include autofs::package
+  include autofs::config
+  include autofs::service
 }
