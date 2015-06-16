@@ -14,7 +14,7 @@ class autofs::package {
       package { 'autofs': }
     }
     default: {
-      fail("${::operatingsystem} not supported.")
+      #fail("${::operatingsystem} not supported.")
     }
   }
 }
