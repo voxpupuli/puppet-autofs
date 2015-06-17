@@ -11,6 +11,33 @@ Dir[support_path].each {|f| require f}
 RSpec.configure do |c|
   c.config = '/doesnotexist'
   c.manifest_dir = File.join(fixture_path, 'manifests')
-  c.mock_with :mocha
+  c.mock_with :rspec do |mock|
+    mock.syntax = [:expect, :should]
+  end
   c.hiera_config = File.join(fixture_path, 'hiera/hiera.yaml')
+  c.include PuppetlabsSpec::Files
+
+  if ENV['PARSER'] == 'future'
+    c.parser = 'future'
+  end
+
+  c.before :each do
+    # Ensure that we don't accidentally cache facts and environment
+    # between test cases.
+    Facter::Util::Loader.any_instance.stubs(:load_all)
+    Facter.clear
+    Facter.clear_messages
+
+    # Store any environment variables away to be restored later
+    @old_env = {}
+    ENV.each_key {|k| @old_env[k] = ENV[k]}
+
+    if Gem::Version.new(`puppet --version`) >= Gem::Version.new('3.5')
+      Puppet.settings[:strict_variables]=true
+    end
+  end
+
+  c.after :each do
+    PuppetlabsSpec::Files.cleanup
+  end
 end
