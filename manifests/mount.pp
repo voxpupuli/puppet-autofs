@@ -8,7 +8,7 @@ define autofs::mount (
   $order,
 ) {
 
-  concat::fragment { "autofs::fragment preamble ${title}":
+  concat::fragment { "autofs::fragment preamble ${mount}":
     ensure         => present,
     target         => '/etc/auto.master',
     content        => "${mount} ${mapfile} ${options}\n",
