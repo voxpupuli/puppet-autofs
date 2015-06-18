@@ -45,6 +45,7 @@ generate the mapfiles and mount points from the entries in your YAML file.
 ###Example:
 
 ```yaml
+---
 mapOptions:
   home:
     mount: '/home'
