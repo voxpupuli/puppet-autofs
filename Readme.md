@@ -1,6 +1,9 @@
 Autofs Puppet Module
 ====================
 
+[![Build Status](https://travis-ci.org/EagleDelta2/autofs-puppet.svg?branch=master)](https://travis-ci.org/EagleDelta2/autofs-puppet)
+[![Puppet Forge](https://img.shields.io/puppetforge/v/EagleDelta2/autofs.svg)](https://forge.puppetlabs.com/EagleDelta2/autofs)
+
 ####Table of Contents
 1. [Description](#description)
 2. [Setup](#setup)
