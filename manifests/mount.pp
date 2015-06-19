@@ -8,22 +8,16 @@ define autofs::mount (
   $order,
 ) {
 
-  concat { '/etc/auto.master':
-    owner  => 'root',
-    group  => 'root',
-    mode   => '0644',
-    notify => Service[ 'autofs' ],
-  }
-
-  concat::fragment { 'autofs::fragment preamble /etc/auto.master':
+  concat::fragment { "autofs::fragment preamble ${mount}":
     ensure  => present,
     target  => '/etc/auto.master',
-    content => "${mount} ${mapfile} ${options}",
+    content => "${mount} ${mapfile} ${options}\n",
     order   => $order,
   }
 
   file { $mount:
-    ensure => directory,
+    ensure  => directory,
+    require => Package[ 'autofs' ],
   }
 
   file { $mapfile:

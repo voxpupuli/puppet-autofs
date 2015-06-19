@@ -2,7 +2,8 @@
 ./*/.DS_Store
 ./pkg/*
 .idea/
-.idea/*
 .exvim.autofs/
-.exvim.autofs/*
 autofs.exvim
+Gemfile.lock
+spec/fixtures/manifests/
+spec/fixtures/modules/

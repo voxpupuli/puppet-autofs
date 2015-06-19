@@ -45,17 +45,21 @@ generate the mapfiles and mount points from the entries in your YAML file.
 ###Example:
 
 ```yaml
+---
 mapOptions:
   home:
     mount: '/home'
     mapfile: '/etc/auto.home'
-    mapcontents: '* -user,rw,soft,intr,rsize=32768,wsize=32768,tcp,nfsvers=3,noacl server.example.com:/path/to/home/shares'
+    mapcontents: 
+      - '* -user,rw,soft,intr,rsize=32768,wsize=32768,tcp,nfsvers=3,noacl server.example.com:/path/to/home/shares'
     options: '--timeout=120'
     order: 01
   tmp:
     mount: '/tmp'
     mapfile: '/etc/auto.tmp'
-    mapcontent: 'tempfiles -rw,noacl server.example.com:/path/to/tmp/mount'
+    mapcontent: 
+      - 'tempfiles -rw,noacl server.example.com:/path/to/tmp/mount'
+      - 'temparchive -rw,noacl server.example.com:/path/to/tmp/archive'
     options: '--timeout=60'
     order: 02
 ```

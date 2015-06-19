@@ -1,0 +1,11 @@
+---
+mapOptions:
+  home:
+    mount: '/home'
+    mapfile: '/etc/auto.home'
+    mapcontents:
+      - 'test'
+      - 'foo'
+      - 'bar'
+    options: '--timeout=120'
+    order: 01
