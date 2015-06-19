@@ -12,7 +12,7 @@ describe 'autofs::mount', :type => :define do
     {
         :mount => '/home',
         :mapfile => '/etc/auto.home',
-        :mapcontents => 'test',
+        :mapcontents => %W( test foo bar ),
         :options => '--timeout=120',
         :order => '01'
     }

@@ -8,6 +8,11 @@ describe 'autofs', :type => :class do
         :concat_basedir => '/etc'
       }
     end
+    let(:params) do
+      {
+        :mapcontents => %w( test foo bar )
+      }
+    end
     it { should contain_class('autofs::package') }
     it { should contain_class('autofs::config') }
     it { should contain_class('autofs::service') }
