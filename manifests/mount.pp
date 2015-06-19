@@ -9,10 +9,10 @@ define autofs::mount (
 ) {
 
   concat::fragment { "autofs::fragment preamble ${mount}":
-    ensure         => present,
-    target         => '/etc/auto.master',
-    content        => "${mount} ${mapfile} ${options}\n",
-    order          => $order,
+    ensure  => present,
+    target  => '/etc/auto.master',
+    content => "${mount} ${mapfile} ${options}\n",
+    order   => $order,
   }
 
   file { $mount:
