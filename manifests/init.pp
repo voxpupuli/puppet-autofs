@@ -15,6 +15,7 @@
 #
 # Copyright 2014 David Hollinger III
 #
+#
 class autofs {
   include autofs::package
   include autofs::config
