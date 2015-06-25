@@ -89,4 +89,4 @@ be placed. Order CANNOT be duplicated.
 Contact
 -------
 
-David Hollinger: [EagleDelta2@gmail.com](mailto:EagleDelta2@gmail.com)
+David Hollinger: [david.hollinger@moduletux.com](mailto:david.hollinger@moduletux.com)
