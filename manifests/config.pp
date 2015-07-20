@@ -7,15 +7,11 @@
 # Requires Hiera YAML backend.
 #
 class autofs::config {
-  $map_options = hiera('mapOptions')
-
   concat { '/etc/auto.master':
     owner  => 'root',
     group  => 'root',
     mode   => '0644',
     notify => Service[ 'autofs' ],
   }
-
-  create_resources( 'autofs::mount', $map_options)
 
 }

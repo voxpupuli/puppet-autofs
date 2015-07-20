@@ -1,8 +1,11 @@
 require 'spec_helper'
 describe 'autofs::config', :type => :class do
-  hiera = Hiera.new(:config => 'spec/fixtures/hiera/hiera.yaml')
-  mapoptions = hiera.lookup('mapOptions', nil, nil)
-  let(:params) {{ :map_options => mapoptions}}
-
-
+  let(:facts) do
+    {
+      :concat_basedir => '/etc'
+    }
+  end
+  it do
+    should contain_concat('/etc/auto.master')
+  end
 end
