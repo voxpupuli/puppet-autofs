@@ -20,7 +20,7 @@ class autofs {
   class { 'autofs::package': }
   class { 'autofs::config': }
   class { 'autofs::service': }
-  contain autofs::package
-  contain autofs::config
-  contain autofs::service
+  contain 'autofs::package'
+  contain 'autofs::config'
+  contain 'autofs::service'
 }
