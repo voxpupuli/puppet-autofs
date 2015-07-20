@@ -16,6 +16,4 @@ class autofs::config {
     notify => Service[ 'autofs' ],
   }
 
-  create_resources( 'autofs::mount', $map_options)
-
 }
