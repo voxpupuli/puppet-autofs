@@ -4,7 +4,7 @@ Autofs Puppet Module
 [![Build Status](https://travis-ci.org/EagleDelta2/autofs-puppet.svg?branch=master)](https://travis-ci.org/EagleDelta2/autofs-puppet)
 [![Puppet Forge](https://img.shields.io/puppetforge/v/EagleDelta2/autofs.svg)](https://forge.puppetlabs.com/EagleDelta2/autofs)
 
-####Table of Contents
+#### Table of Contents
 1. [Description](#description)
 2. [Setup](#setup)
   * [The module manages the following](#the-module-manages-the-following)
@@ -22,54 +22,76 @@ configuration files.
 
 Setup
 -----
-###The Module manages the following:
+### The Module manages the following:
 * Autofs package
 * Autofs service
 * Autofs Configuration File (/etc/auto.master)
 * Autofs Map Files (i.e. /etc/auto.home)
 
-###Requirements
+### Requirements
 
 * The [stdlib](https://forge.puppetlabs.com/puppetlabs/stdlib) Puppet Library
 * The [concat](https://github.com/puppetlabs/puppetlabs-concat) Puppet Module
 
-###Incompatibilities
+### Incompatibilities
 
 * Does NOT work with Solaris Autofs
 * Does NOT work with Windows or Mac OS X
 
-Usage
------
+### Usage
 
-This module is designed so that you do NOT need to edit the puppet code to use
-the module. The module uses the Hiera YAML backend to read from a YAML Hash and
-generate the mapfiles and mount points from the entries in your YAML file.
+The module includes a single class:
 
-###Example:
+```puppet
+include autofs
+```
 
+By default this installs and starts the autofs service with the default master
+file. No parameters exist yet, but are in active development to allow for more
+granular control.
+
+### Map Files
+
+To setup the Autofs Map Files, there is a defined type that can be used:
+```puppet
+autofs::mount { 'home':
+  mount       => '/home',
+  mapfile     => '/etc/auto.home',
+  mapcontents => ['* -user,rw,soft,intr,rsize=32768,wsize=32768,tcp,nfsvers=3,noacl server.example.com:/path/to/home/shares'],
+  options     => '--timeout=120',
+  order       => 01
+}
+```
+This will generate content in both the auto.master file and a new auto.home map
+file:
+
+##### auto.master
+```
+/home /etc/auto.home --timeout=120
+```
+
+##### auto.home
+```
+* -user,rw,soft,intr,rsize=32768,wsize=32768,tcp,nfsvers=3,noacl server.example.com:/path/to/home/shares
+```
+
+Currently, the defined type requires all parameters to build the autofs config,
+however, support for more granular control is in active development.
+
+In hiera, there's a `autofs::mounts` class you can configure, for example:
 ```yaml
 ---
-mapOptions:
+autofs::mounts:
   home:
     mount: '/home'
     mapfile: '/etc/auto.home'
-    mapcontents: 
+    mapcontents:
       - '* -user,rw,soft,intr,rsize=32768,wsize=32768,tcp,nfsvers=3,noacl server.example.com:/path/to/home/shares'
     options: '--timeout=120'
     order: 01
-  tmp:
-    mount: '/tmp'
-    mapfile: '/etc/auto.tmp'
-    mapcontent: 
-      - 'tempfiles -rw,noacl server.example.com:/path/to/tmp/mount'
-      - 'temparchive -rw,noacl server.example.com:/path/to/tmp/archive'
-    options: '--timeout=60'
-    order: 02
 ```
 
-####Breakdown:
-* **mapOptions** - This is the Parent YAML Mapping for the Module Hiera Data.
-The $map_options variable is looking into this mapping for all other data.
+#### Parameters
 * **mount_name** - This is a logical, descriptive name for what what autofs will be
 mounting. This is represented by the "home:" and "tmp:" entries above.
 * **mount** - This Mapping describes where autofs will be mounting to. This map
