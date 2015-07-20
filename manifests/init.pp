@@ -17,7 +17,10 @@
 #
 #
 class autofs {
-  include autofs::package
-  include autofs::config
-  include autofs::service
+  class { 'autofs::package': }
+  class { 'autofs::config': }
+  class { 'autofs::service': }
+  contain autofs::package
+  contain autofs::config
+  contain autofs::service
 }
