@@ -1,4 +1,19 @@
-# Defined Type Docmentation
+# == Define: autofs::mount
+#
+# Define to generate autofs mount point
+# configuration files.
+#
+# === Parameters
+# [*mount*]
+#  Location where you will mount the remote
+#  NFS Share.
+#
+# [*mapfile*]
+#  Name of the "auto." file that will be generated
+#
+# [*mapcontents*]
+#  The mount point options and parameters,
+#  Example: '* -user,rw,soft server.example.com:/path/to/home/shares'
 
 define autofs::mount (
   $mount,
