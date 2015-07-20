@@ -1,5 +1,5 @@
-# Service Documentation.
-
+# = Class: autofs::service
+#
 class autofs::service (
   $ensure = running,
   $enable = true,
