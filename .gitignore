@@ -7,3 +7,5 @@ autofs.exvim
 Gemfile.lock
 spec/fixtures/manifests/
 spec/fixtures/modules/
+.project
+.project/
