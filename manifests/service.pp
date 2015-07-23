@@ -7,9 +7,9 @@ class autofs::service (
   $service_status = true
 ){
   service { 'autofs':
-  ensure     => $ensure,
-  enable     => $enable,
-  hasstatus  => $service_status,
-  hasrestart => $service_restart,
+    ensure     => $ensure,
+    enable     => $enable,
+    hasstatus  => $service_status,
+    hasrestart => $service_restart,
   }
 }
