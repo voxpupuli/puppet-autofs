@@ -16,11 +16,17 @@
 # Copyright 2014 David Hollinger III
 #
 #
-class autofs {
+class autofs(
+  $mounts = undef
+) {
   class { 'autofs::package': }
   class { 'autofs::config': }
   class { 'autofs::service': }
   contain 'autofs::package'
   contain 'autofs::config'
   contain 'autofs::service'
+  
+  if ( $mount != undef ) {
+    class { 'autofs::mounts': mount => $mounts }
+  }
 }
