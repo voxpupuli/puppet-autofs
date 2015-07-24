@@ -26,7 +26,7 @@ class autofs(
   contain 'autofs::config'
   contain 'autofs::service'
   
-  if ( $mount != undef ) {
+  if ( $mounts != undef ) {
     class { 'autofs::mounts': mount => $mounts }
   }
 }
