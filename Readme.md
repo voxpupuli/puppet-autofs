@@ -75,8 +75,8 @@ file:
 * -user,rw,soft,intr,rsize=32768,wsize=32768,tcp,nfsvers=3,noacl server.example.com:/path/to/home/shares
 ```
 
-Currently, the defined type requires all parameters to build the autofs config,
-however, support for more granular control is in active development.
+The defined type requires all parameters, except direct and execute, to build the autofs config.
+The direct and execute parameters allow for the creation of indirect mounts, see the Parameters section for more information on the defaults for direct and execute.
 
 In hiera, there's a `autofs::mounts` class you can configure, for example:
 ```yaml
@@ -107,6 +107,15 @@ mapfile generation.
 when mounting the automounts.
 * **order** - This Mapping describes where in the auto.master file the entry will
 be placed. Order CANNOT be duplicated.
+* **direct** - Boolean to allow for indirect map. Defaults to true to be backwards compatible.
+* **execute** - Boolean to set the map to be executable. Defaults to false to be backward compatible.
+
+Contributing
+-------------
+
+* File issues using Github Issues page.
+* Feel free to fork/pull the code and submit features, enhancements, bugfixes, etc
+via Pull Requests.
 
 Contact
 -------
