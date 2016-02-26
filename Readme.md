@@ -91,6 +91,37 @@ autofs::mounts:
     order: 01
 ```
 
+##### Direct Map `/-` arugment
+
+The autofs module also supports the use of the built in autofs `/-` argument used with Direct Maps.
+
+###### Examples:
+
+Define:
+``` puppet
+autofs::mount { 'foo':
+  mount       => '/-',
+  mapfile     => '/etc/auto.foo',
+  mapcontents => ['/foo -o options /bar'],
+  options     => '--timeout=120',
+  order       => 01
+}
+```
+
+Hiera:
+``` yaml
+---
+autofs::mounts:
+  foo:
+    mount: '/-'
+    mapfile: '/etc/auto.foo'
+    mapcontents:
+      - '/foo -o options /bar'
+    options: '--timeout=120'
+    order: 01
+```
+
+
 #### Parameters
 * **mount_name** - This is a logical, descriptive name for what what autofs will be
 mounting. This is represented by the "home:" and "tmp:" entries above.
