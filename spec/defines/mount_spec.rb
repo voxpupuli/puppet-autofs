@@ -24,9 +24,9 @@ describe 'autofs::mount', :type => :define do
       should contain_concat__fragment('autofs::fragment preamble /home').with('target' => '/etc/auto.master')
     end
 
-    it do
-      should contain_file('/home').with('ensure' => 'directory')
-    end
+#    it do
+#      should contain_file('/home').with('ensure' => 'directory')
+#    end
 
     it do
       should contain_file('/etc/auto.home').with(
