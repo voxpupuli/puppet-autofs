@@ -1,5 +1,9 @@
 ---
 sudo: false
+branches:
+  only:
+    - master
+    - dev
 language: ruby
 bundler_args: --without system_tests
 script: "bundle exec rake validate lint spec"
