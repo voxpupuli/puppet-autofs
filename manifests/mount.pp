@@ -47,13 +47,13 @@ define autofs::mount (
     order   => $order,
   }
 
-  if $direct {
-    file { $mount:
-      ensure  => directory,
-      require => Package[ 'autofs' ],
-    }
-    $mapreq = File[ $mount ]
-  }
+  # if $direct {
+  #   file { $mount:
+  #     ensure  => directory,
+  #     require => Package[ 'autofs' ],
+  #   }
+  #   $mapreq = File[ $mount ]
+  # }
 
   if $execute {
     $mapperms = '0755'
@@ -70,7 +70,7 @@ define autofs::mount (
     group   => 'root',
     mode    => $mapperms,
     content => template($maptempl),
-    require => $mapreq,
+#    require => $mapreq,
     notify  => Service[ 'autofs' ],
   }
 
