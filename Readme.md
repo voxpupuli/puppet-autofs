@@ -144,9 +144,18 @@ be placed. Order CANNOT be duplicated.
 Contributing
 -------------
 
-* File issues using Github Issues page.
-* Feel free to fork/pull the code and submit features, enhancements, bugfixes, etc
-via Pull Requests.
+Please feel free to help make the autofs module better. I'm not perfect nor the best
+out there, so please feel welcome to contribute in the following ways:
+
+* File Bug Reports
+* Request Features
+* Create Pull Requests for fixes, enhancements or features.
+* Contact me for support.
+
+**IMPORTANT NOTE ON PULL REQUESTS:**
+
+Pull Requests **require** Spec tests and passing builds or they will **NOT** be
+accepted.
 
 Contact
 -------
