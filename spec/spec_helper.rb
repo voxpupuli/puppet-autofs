@@ -17,10 +17,6 @@ RSpec.configure do |c|
   c.hiera_config = File.join(fixture_path, 'hiera/hiera.yaml')
   c.include PuppetlabsSpec::Files
 
-  if ENV['PARSER'] == 'future'
-    c.parser = 'future'
-  end
-
   c.before :each do
     # Ensure that we don't accidentally cache facts and environment
     # between test cases.
