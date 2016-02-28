@@ -21,6 +21,12 @@
 # [*order*]
 #  Order in which entries will appear in the autofs master file.
 #
+# [*direct*]
+#  Boolean to allow for indirect map. Defaults to true to be backwards compatible.
+#
+# [*execute*]
+#  Boolean to set the map to be executable. Defaults to false to be backward compatible.
+#
 # These Parameters can be set statically,  within an ENC, or by using Hiera.
 # See README Docs for Examples.
 #
@@ -30,6 +36,8 @@ define autofs::mount (
   $mapcontents,
   $options,
   $order,
+  $direct=true,
+  $execute=false
 ) {
 
   concat::fragment { "autofs::fragment preamble ${mount}":
@@ -39,18 +47,22 @@ define autofs::mount (
     order   => $order,
   }
 
-  file { $mount:
-    ensure  => directory,
-    require => Package[ 'autofs' ],
+  if $execute {
+    $mapperms = '0755'
+    $maptempl = 'autofs/auto.map.exec.erb'
+  }
+  else {
+    $mapperms = '0644'
+    $maptempl = 'autofs/auto.map.erb'
   }
 
   file { $mapfile:
     ensure  => present,
     owner   => 'root',
     group   => 'root',
-    mode    => '0644',
-    content => template('autofs/auto.map.erb'),
-    require => File[ $mount ],
+    mode    => $mapperms,
+    content => template($maptempl),
+    require => Package[ 'autofs' ],
     notify  => Service[ 'autofs' ],
   }
 

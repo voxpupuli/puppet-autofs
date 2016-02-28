@@ -1,8 +1,12 @@
 ---
 sudo: false
+branches:
+  only:
+    - master
+    - dev
 language: ruby
 bundler_args: --without system_tests
-script: "bundle exec rake validate && bundle exec rake lint && bundle exec rake spec"
+script: "bundle exec rake validate lint spec"
 matrix:
   fast_finish: true
   include:

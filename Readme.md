@@ -75,8 +75,8 @@ file:
 * -user,rw,soft,intr,rsize=32768,wsize=32768,tcp,nfsvers=3,noacl server.example.com:/path/to/home/shares
 ```
 
-Currently, the defined type requires all parameters to build the autofs config,
-however, support for more granular control is in active development.
+The defined type requires all parameters, except direct and execute, to build the autofs config.
+The direct and execute parameters allow for the creation of indirect mounts, see the Parameters section for more information on the defaults for direct and execute.
 
 In hiera, there's a `autofs::mounts` class you can configure, for example:
 ```yaml
@@ -90,6 +90,37 @@ autofs::mounts:
     options: '--timeout=120'
     order: 01
 ```
+
+##### Direct Map `/-` arugment
+
+The autofs module also supports the use of the built in autofs `/-` argument used with Direct Maps.
+
+###### Examples:
+
+Define:
+``` puppet
+autofs::mount { 'foo':
+  mount       => '/-',
+  mapfile     => '/etc/auto.foo',
+  mapcontents => ['/foo -o options /bar'],
+  options     => '--timeout=120',
+  order       => 01
+}
+```
+
+Hiera:
+``` yaml
+---
+autofs::mounts:
+  foo:
+    mount: '/-'
+    mapfile: '/etc/auto.foo'
+    mapcontents:
+      - '/foo -o options /bar'
+    options: '--timeout=120'
+    order: 01
+```
+
 
 #### Parameters
 * **mount_name** - This is a logical, descriptive name for what what autofs will be
@@ -107,6 +138,24 @@ mapfile generation.
 when mounting the automounts.
 * **order** - This Mapping describes where in the auto.master file the entry will
 be placed. Order CANNOT be duplicated.
+* **direct** - Boolean to allow for indirect map. Defaults to true to be backwards compatible.
+* **execute** - Boolean to set the map to be executable. Defaults to false to be backward compatible.
+
+Contributing
+-------------
+
+Please feel free to help make the autofs module better. I'm not perfect nor the best
+out there, so please feel welcome to contribute in the following ways:
+
+* File Bug Reports
+* Request Features
+* Create Pull Requests for fixes, enhancements or features.
+* Contact me for support.
+
+**IMPORTANT NOTE ON PULL REQUESTS:**
+
+Pull Requests **require** Spec tests and passing builds or they will **NOT** be
+accepted.
 
 Contact
 -------
