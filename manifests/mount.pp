@@ -36,15 +36,33 @@ define autofs::mount (
   $mapcontents,
   $options,
   $order,
+  $mapdir='/etc/auto.master.d/',
+  $usedir=false,
   $direct=true,
   $execute=false
 ) {
 
-  concat::fragment { "autofs::fragment preamble ${mount} ${mapfile}":
-    ensure  => present,
-    target  => '/etc/auto.master',
-    content => "${mount} ${mapfile} ${options}\n",
-    order   => $order,
+  if $usedir == false {
+    concat::fragment { "autofs::fragment preamble ${mount} ${mapfile}":
+      ensure  => present,
+      target  => '/etc/auto.master',
+      content => "${mount} ${mapfile} ${options}\n",
+      order   => $order,
+    }
+  } else {
+    file { $mapdir:
+      ensure => directory,
+      owner  => 'root',
+      group  => 'root',
+      mode   => '0755',
+    }
+    content::fragment { 'autofs::fragment preamble auto':
+      ensure  => present,
+      target  => '/etc/auto.master',
+      content => "+dir:${mapdir}",
+      order   => $order,
+      require => File[ $mapdir ]
+    }
   }
 
   if $execute {
