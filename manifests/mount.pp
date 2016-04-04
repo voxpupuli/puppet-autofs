@@ -40,7 +40,7 @@ define autofs::mount (
   $execute=false
 ) {
 
-  concat::fragment { "autofs::fragment preamble ${mount}":
+  concat::fragment { "autofs::fragment preamble ${mount} ${mapfile}":
     ensure  => present,
     target  => '/etc/auto.master',
     content => "${mount} ${mapfile} ${options}\n",
