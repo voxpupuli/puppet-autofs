@@ -21,7 +21,7 @@ describe 'autofs::mount', :type => :define do
   context 'with default parameters' do
 
     it do
-      should contain_concat__fragment('autofs::fragment preamble /home').with('target' => '/etc/auto.master')
+      should contain_concat__fragment('autofs::fragment preamble /home /etc/auto.home').with('target' => '/etc/auto.master')
     end
 
 #    it do
