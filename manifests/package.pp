@@ -13,6 +13,10 @@ class autofs::package {
     'RedHat', 'CentOS': {
       package { 'autofs': }
     }
+    'Solaris': {
+      # Solaris includes autofs
+      # Block to prevent failures
+    }
     default: {
       fail("${::operatingsystem} not supported.")
     }
