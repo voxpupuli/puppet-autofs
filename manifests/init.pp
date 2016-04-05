@@ -17,13 +17,13 @@
 #
 #
 class autofs(
-  $mounts = undef
+  $mounts      = undef,
+  $use_map_dir = false,
+  $map_dir     = '/etc/auto.master.d'
 ) {
   class { 'autofs::package': }
-  class { 'autofs::config': }
   class { 'autofs::service': }
   contain 'autofs::package'
-  contain 'autofs::config'
   contain 'autofs::service'
 
   if ( $mounts != undef ) {
