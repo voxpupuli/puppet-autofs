@@ -10,30 +10,28 @@ describe 'autofs::mount', :type => :define do
 
   let(:params) do
     {
-        :mount => '/home',
-        :mapfile => '/etc/auto.home',
+        :mount       => '/home',
+        :mapfile     => '/etc/auto.home',
         :mapcontents => %W( test foo bar ),
-        :options => '--timeout=120',
-        :order => '01'
+        :options     => '--timeout=120',
+        :order       => '01',
+        :master      => '/etc/auto.master'
     }
   end
 
   context 'with default parameters' do
 
     it do
+      should contain_concat('/etc/auto.master')
       should contain_concat__fragment('autofs::fragment preamble /home /etc/auto.home').with('target' => '/etc/auto.master')
     end
-
-#    it do
-#      should contain_file('/home').with('ensure' => 'directory')
-#    end
 
     it do
       should contain_file('/etc/auto.home').with(
         'ensure' => 'present',
-        'owner'   => 'root',
-        'group'   => 'root',
-        'mode'    => '0644'
+        'owner'  => 'root',
+        'group'  => 'root',
+        'mode'   => '0644'
       )
     end
   end
@@ -55,8 +53,43 @@ describe 'autofs::mount', :type => :define do
     end
   end
 
-  context 'with executable map' do
+  context 'with EL7 directory' do
     let(:params) do
+      {
+        :mount       => '/home',
+        :mapfile     => '/etc/auto.master.d/home.autofs',
+        :mapcontents => %W( test foo bar ),
+        :options     => '--timeout=120',
+        :order       => '01',
+        :map_dir     => '/etc/auto.master.d',
+        :use_dir     => true
+      }
+    end
+
+    it do
+      should contain_concat__fragment('autofs::fragment preamble map directory')
+    end
+
+    it do
+      should contain_file('/etc/auto.master.d').with(
+        'ensure' => 'directory',
+        'owner'  => 'root',
+        'group'  => 'root',
+        'mode'   => '0755'
+      )
+
+      should contain_file('/etc/auto.master.d/home.autofs').with(
+        'ensure' => 'present',
+        'owner'  => 'root',
+        'group'  => 'root',
+        'mode'   => '0644'
+      )
+    end
+  end
+
+
+  context 'with executable map' do
+    let (:params) do
       {
         :mount       => '/home',
         :mapfile     => '/etc/auto.home',
