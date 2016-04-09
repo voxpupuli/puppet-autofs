@@ -121,6 +121,38 @@ autofs::mounts:
     order: 01
 ```
 
+##### Autofs `+dir:` options
+
+The autofs module now supports the use of the `+dir:` option in the auto.master.
+This option is 100% functional, but does require some work to simplify it.
+
+###### Usage
+
+Define:
+```puppet
+autofs::mount { 'home':
+  mount       => '/home',
+  mapfile     => '/etc/auto.home',
+  mapcontents => ['* -user,rw,soft,intr,rsize=32768,wsize=32768,tcp,nfsvers=3,noacl server.example.com:/path/to/home/shares'],
+  options     => '--timeout=120',
+  order       => 01,
+  use_dir     => true
+}
+```
+
+Hiera:
+```yaml
+---
+autofs::mounts:
+  home:
+    mount: '/home'
+    mapfile: '/etc/auto.home'
+    mapcontents:
+      - '* -user,rw,soft,intr,rsize=32768,wsize=32768,tcp,nfsvers=3,noacl server.example.com:/path/to/home/shares'
+    options: '--timeout=120'
+    order: 01
+    use_dir: true
+```
 
 #### Parameters
 * **mount_name** - This is a logical, descriptive name for what what autofs will be
@@ -138,6 +170,13 @@ mapfile generation.
 when mounting the automounts.
 * **order** - This Mapping describes where in the auto.master file the entry will
 be placed. Order CANNOT be duplicated.
+* **master** - This Parameter sets the path to the auto.master file. Defaults to
+`/etc/auto.master`.
+* **map_dir** - This Parameter sets the path to the Autofs configuration directory
+for map files. Applies only to autofs 5.0.5 or later. Defaults to
+`/etc/auto.master.d`.
+* **use_dir** - This Parameter tells the module if it is going to use $map_dir.
+Defaults to `false`.
 * **direct** - Boolean to allow for indirect map. Defaults to true to be backwards compatible.
 * **execute** - Boolean to set the map to be executable. Defaults to false to be backward compatible.
 
