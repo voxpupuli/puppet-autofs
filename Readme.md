@@ -151,6 +151,7 @@ autofs::mounts:
       - '* -user,rw,soft,intr,rsize=32768,wsize=32768,tcp,nfsvers=3,noacl server.example.com:/path/to/home/shares'
     options: '--timeout=120'
     order: 01
+    use_dir: true
 ```
 
 #### Parameters
