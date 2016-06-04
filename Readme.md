@@ -45,8 +45,6 @@ Setup
     * Windows (Autofs not available)
     * Mac OS X (Autofs Not Available)
 
-### Unsupported Operatin
-
 ### Usage
 
 The module includes a single class:
