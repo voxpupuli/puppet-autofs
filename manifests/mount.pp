@@ -32,15 +32,15 @@
 #
 define autofs::mount (
   $mount,
-  $mapfile = undef,
-  $mapcontents = undef,
   $options,
   $order,
   $master = '/etc/auto.master',
   $map_dir = '/etc/auto.master.d',
   $use_dir = false,
   $direct = true,
-  $execute = false
+  $execute = false,
+  $mapfile = undef,
+  $mapcontents = undef
 ) {
 
   if $mapfile {
