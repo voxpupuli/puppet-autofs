@@ -32,8 +32,8 @@
 #
 define autofs::mount (
   $mount,
-  $mapfile,
-  $mapcontents,
+  $mapfile = undef,
+  $mapcontents = undef,
   $options,
   $order,
   $master = '/etc/auto.master',
@@ -42,6 +42,12 @@ define autofs::mount (
   $direct = true,
   $execute = false
 ) {
+
+  if $mapfile {
+    $contents = "${mount} ${mapfile} ${options}\n"
+  } else {
+    $contents = "${mount} ${options}\n"
+  }
 
   if !defined(Concat[$master]) {
     concat { $master:
@@ -56,7 +62,7 @@ define autofs::mount (
     concat::fragment { "autofs::fragment preamble ${mount} ${mapfile}":
       ensure  => present,
       target  => $master,
-      content => "${mount} ${mapfile} ${options}\n",
+      content => $contents,
       order   => $order,
     }
   } else {
