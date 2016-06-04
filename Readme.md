@@ -33,10 +33,19 @@ Setup
 * The [stdlib](https://forge.puppetlabs.com/puppetlabs/stdlib) Puppet Library
 * The [concat](https://github.com/puppetlabs/puppetlabs-concat) Puppet Module
 
-### Incompatibilities
+### Operating Systems
 
-* Does NOT work with Solaris Autofs
-* Does NOT work with Windows or Mac OS X
+* Supported
+    * Ubuntu 14.04/16.04
+    * CentOS/RHEL/Oracle Linux 6.x/7.x
+* Self Support - should work, support not provided by developer
+    * Solaris 10, 11
+    * Debian 7, 8
+* Unsupported
+    * Windows (Autofs not available)
+    * Mac OS X (Autofs Not Available)
+
+### Unsupported Operatin
 
 ### Usage
 
