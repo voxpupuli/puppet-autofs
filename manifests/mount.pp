@@ -51,10 +51,11 @@ define autofs::mount (
 
   if !defined(Concat[$master]) {
     concat { $master:
-      owner  => 'root',
-      group  => 'root',
-      mode   => '0644',
-      notify => Service[ 'autofs' ],
+      owner          => 'root',
+      group          => 'root',
+      mode           => '0644',
+      ensure_newline => true,
+      notify         => Service[ 'autofs' ],
     }
   }
 
