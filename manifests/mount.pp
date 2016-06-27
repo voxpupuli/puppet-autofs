@@ -91,14 +91,16 @@ define autofs::mount (
     $maptempl = 'autofs/auto.map.erb'
   }
 
-  file { $mapfile:
-    ensure  => present,
-    owner   => 'root',
-    group   => 'root',
-    mode    => $mapperms,
-    content => template($maptempl),
-    require => Package[ 'autofs' ],
-    notify  => Service[ 'autofs' ],
+  if $mapfile {
+    file { $mapfile:
+      ensure  => present,
+      owner   => 'root',
+      group   => 'root',
+      mode    => $mapperms,
+      content => template($maptempl),
+      require => Package[ 'autofs' ],
+      notify  => Service[ 'autofs' ],
+    }
   }
 
 }
