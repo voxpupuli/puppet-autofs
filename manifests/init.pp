@@ -19,8 +19,10 @@
 class autofs(
   $mounts      = undef,
   $use_map_dir = false,
-  $map_dir     = '/etc/auto.master.d'
-) {
+  $map_dir     = '/etc/auto.master.d',
+  $service_ensure = $::autofs::params::service_ensure,
+  $service_enable = $::autofs::params::service_enable
+) inherits autofs::params {
   class { 'autofs::package': }
   class { 'autofs::service': }
   contain 'autofs::package'
