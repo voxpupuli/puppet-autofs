@@ -1,10 +1,15 @@
 # = Class: autofs::service
 #
-class autofs::service {
+class autofs::service (
+  $ensure = running,
+  $enable = true,
+  $service_restart = true,
+  $service_status = true
+){
   service { 'autofs':
-    ensure     => $autofs::service_ensure,
-    enable     => $autofs::service_enable,
-    hasstatus  => true,
-    hasrestart => true,
+    ensure     => $ensure,
+    enable     => $enable,
+    hasstatus  => $service_status,
+    hasrestart => $service_restart,
   }
 }
