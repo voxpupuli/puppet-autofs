@@ -57,6 +57,15 @@ By default this installs and starts the autofs service with the default master
 file. No parameters exist yet, but are in active development to allow for more
 granular control.
 
+To manage the service, use the following code in your profile:
+
+```puppet
+class { 'autofs': 
+  service_enable => false,
+  service_ensure => 'stopped'
+}
+```
+
 ### Map Files
 
 To setup the Autofs Map Files, there is a defined type that can be used:
