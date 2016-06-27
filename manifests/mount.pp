@@ -67,12 +67,12 @@ define autofs::mount (
       order   => $order,
     }
   } else {
-    file { $map_dir:
-      ensure => directory,
-      owner  => 'root',
-      group  => 'root',
-      mode   => '0755',
-    }
+    ensure_resource('file', $map_dir, {
+      'ensure' => 'directory',
+      'owner'  => 'root',
+      'group'  => 'root',
+      'mode'   => '0755',
+    })
 
     concat::fragment { 'autofs::fragment preamble map directory':
       ensure  => present,
