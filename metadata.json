@@ -1,6 +1,6 @@
 {
   "name": "dhollinger-autofs",
-  "version": "1.3.1",
+  "version": "1.3.2",
   "author": "David Hollinger III",
   "summary": "Module for installing and managing autofs",
   "license": "Apache-2.0",

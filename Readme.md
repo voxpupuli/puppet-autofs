@@ -169,7 +169,7 @@ entry is referenced by concat as part of the generation of the /etc/auto.master
 file.
 * **mapfile** - This Mapping describes the name and path of the autofs map file.
 This mapping is used in the auto.master generation, as well as generating the map
-file from the auto.map.erb template.
+file from the auto.map.erb template. This parameter is no longer required.
 * **mapcontent** - This Mapping describes the folders that will be mounted, the
 mount options, and the path to the remote or local share to be mounted. Used in
 mapfile generation.
