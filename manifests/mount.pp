@@ -32,8 +32,8 @@
 #
 define autofs::mount (
   $mount,
-  $options,
   $order,
+  $options = '',
   $master = '/etc/auto.master',
   $map_dir = '/etc/auto.master.d',
   $use_dir = false,
@@ -47,6 +47,15 @@ define autofs::mount (
     $contents = "${mount} ${mapfile} ${options}\n"
   } else {
     $contents = "${mount} ${options}\n"
+  }
+
+  if $execute {
+    $mapperms = '0755'
+    $maptempl = 'autofs/auto.map.exec.erb'
+  }
+  else {
+    $mapperms = '0644'
+    $maptempl = 'autofs/auto.map.erb'
   }
 
   if !defined(Concat[$master]) {
@@ -81,15 +90,16 @@ define autofs::mount (
       order   => $order,
       require => File[ $map_dir ],
     }
-  }
 
-  if $execute {
-    $mapperms = '0755'
-    $maptempl = 'autofs/auto.map.exec.erb'
-  }
-  else {
-    $mapperms = '0644'
-    $maptempl = 'autofs/auto.map.erb'
+    file { "${map_dir}/${name}.autofs":
+      ensure  => present,
+      owner   => 'root',
+      group   => 'root',
+      mode    => $mapperms,
+      content => template($maptempl),
+      require => File[ $map_dir ],
+      notify  => Service[ 'autofs' ],
+    }
   }
 
   if $mapfile {
