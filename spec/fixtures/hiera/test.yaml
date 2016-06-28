@@ -9,3 +9,14 @@ autofs::mounts:
       - 'bar'
     options: '--timeout=120'
     order: 01
+    use_dir: true
+  misc:
+    mount: '/misc'
+    mapfile: '/etc/auto.misc'
+    mapcontents:
+      - 'test'
+      - 'foo'
+      - 'bar'
+    options: '--timeout=120'
+    order: 02
+    use_dir: true
