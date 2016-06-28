@@ -1,6 +1,6 @@
 {
   "name": "dhollinger-autofs",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "author": "David Hollinger III",
   "summary": "Module for installing and managing autofs",
   "license": "Apache-2.0",
@@ -51,23 +51,24 @@
       ]
     }
   ],
-    "requirements": [
-      {
-        "name": "pe",
-        "version_requirement": ">= 3.7.0 < 2016.2.0"
-      },
-      {
-        "name": "puppet",
-        "version_requirement": ">= 3.0.0 < 5.0.0"
-      }
-    ],
+  "requirements": [
+    {
+      "name": "pe",
+      "version_requirement": ">= 3.7.0 < 2016.2.0"
+    },
+    {
+      "name": "puppet",
+      "version_requirement": ">= 3.0.0 < 5.0.0"
+    }
+  ],
   "dependencies": [
     {
       "name": "puppetlabs/stdlib",
       "version_requirement": ">= 3.2.0"
-    },{
+    },
+    {
       "name": "puppetlabs/concat",
       "version_requirement": ">= 2.0.0"
-      }
-    ]
+    }
+  ]
 }
