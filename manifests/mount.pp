@@ -85,7 +85,6 @@ define autofs::mount (
 
     if !defined(Concat::Fragment['autofs::fragment preamble map directory']) {
       concat::fragment { 'autofs::fragment preamble map directory':
-        ensure  => present,
         target  => $master,
         content => "+dir:${map_dir}",
         order   => $order,
