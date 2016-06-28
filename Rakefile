@@ -11,5 +11,5 @@ task :deploy do
     sh "ruby -c #{ruby_file}" unless ruby_file =~ /spec\/fixtures/
   end
   Rake::Task[:release_checks].invoke
-  Rake::Task[':module:release'].invoke
+  Rake::Task['module:release'].invoke
 end
