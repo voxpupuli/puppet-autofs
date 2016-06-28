@@ -98,7 +98,7 @@ define autofs::mount (
       owner   => 'root',
       group   => 'root',
       mode    => $mapperms,
-      content => template($maptempl),
+      content => $contents,
       require => File[ $map_dir ],
       notify  => Service[ 'autofs' ],
     }
