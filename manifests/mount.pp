@@ -70,7 +70,6 @@ define autofs::mount (
 
   if $use_dir == false {
     concat::fragment { "autofs::fragment preamble ${mount} ${mapfile}":
-      ensure  => present,
       target  => $master,
       content => $contents,
       order   => $order,
