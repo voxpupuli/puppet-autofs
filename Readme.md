@@ -195,6 +195,7 @@ for map files. Applies only to autofs 5.0.5 or later. Defaults to
 Defaults to `false`.
 * **direct** - Boolean to allow for indirect map. Defaults to true to be backwards compatible.
 * **execute** - Boolean to set the map to be executable. Defaults to false to be backward compatible.
+* **replace** - Boolean to set the map file to not be replaced. Defaults to true as Puppet File resource does.
 
 Contributing
 -------------
