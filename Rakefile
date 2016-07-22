@@ -1,5 +1,7 @@
-if defined?(Puppet::Blacksmith)
+begin
   require 'puppet_blacksmith/rake_tasks'
+rescue LoadError
+  # Nothing to see here
 end
 require 'puppetlabs_spec_helper/rake_tasks'
 require 'puppet-lint/tasks/puppet-lint'
