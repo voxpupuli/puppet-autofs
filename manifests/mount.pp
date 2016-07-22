@@ -27,6 +27,9 @@
 # [*execute*]
 #  Boolean to set the map to be executable. Defaults to false to be backward compatible.
 #
+# [*replace*]
+#  Boolean to set the map file to not be replaced. Defaults to true as Puppet File resource does.
+#
 # These Parameters can be set statically,  within an ENC, or by using Hiera.
 # See README Docs for Examples.
 #
@@ -40,7 +43,8 @@ define autofs::mount (
   $direct = true,
   $execute = false,
   $mapfile = undef,
-  $mapcontents = undef
+  $mapcontents = undef,
+  $replace = true
 ) {
 
   if $mapfile {
@@ -108,6 +112,7 @@ define autofs::mount (
       owner   => 'root',
       group   => 'root',
       mode    => $mapperms,
+      replace => $replace,
       content => template($maptempl),
       require => Package[ 'autofs' ],
       notify  => Service[ 'autofs' ],
