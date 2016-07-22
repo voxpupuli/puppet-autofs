@@ -11,6 +11,7 @@ matrix:
   fast_finish: true
   include:
   - rvm: 1.9.3
+    bundler_args: --without system_tests
     env: PUPPET_GEM_VERSION="~> 3.0"
   - rvm: 2.1.5
     env: PUPPET_GEM_VERSION="~> 3.0"
