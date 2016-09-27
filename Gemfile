@@ -1,12 +1,39 @@
-source 'https://rubygems.org'
+source "https://rubygems.org"
 
-puppetversion = ENV.key?('PUPPET_VERSION') ? "= #{ENV['PUPPET_VERSION']}" : ['>= 3.3']
-gem 'puppet', puppetversion
-gem 'puppetlabs_spec_helper', '>= 0.1.0'
-gem 'puppet-lint', '>= 0.3.2'
-gem 'facter', '>= 1.7.0'
+group :test do
+  gem "rake", "~> 10.0"
+  if puppet_gem_version = ENV['PUPPET_GEM_VERSION']
+    gem "puppet", ENV['PUPPET_GEM_VERSION']
+  elsif puppet_git_url = ENV['PUPPET_GIT_URL']
+    gem "puppet", :git => "#{puppet_git_url}"
+  else
+    gem "puppet", ENV['PUPPET_GEM_VERSION']
+  end
+  gem "puppet-lint"
+  gem "puppet-lint-unquoted_string-check"
+  gem "rspec-puppet"
+  gem "puppet-syntax"
+  gem "puppetlabs_spec_helper"
+  gem "metadata-json-lint"
+  gem "rspec"
+  gem "rspec-retry"
+  gem 'simplecov', '>= 0.11.0'
+  gem 'simplecov-console'
+end
 
 group :system_tests do
-  gem 'metadata-json-lint'
-  gem 'puppet-blacksmith'
+  gem "beaker-puppet_install_helper", :require => false
+  gem "beaker-rspec"
+  gem "beaker", "~> 2.0"
+end
+
+group :development do
+  gem "travis"
+  gem "travis-lint"
+  gem "puppet-blacksmith"
+  gem "guard-rake"
+  gem "pry"
+  gem "yard"
+  gem 'parallel_tests' # requires at least Ruby 1.9.3
+  gem 'rubocop', :require => false # requires at least Ruby 1.9.2
 end
