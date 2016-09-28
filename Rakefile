@@ -53,7 +53,7 @@ begin
       :syntax,
       :lint,
       :parallel_spec,
-      :metadata_lint,
+      :metadata,
   ]
   rescue LoadError # rubocop:disable Lint/HandleExceptions
 end
@@ -67,7 +67,7 @@ task :test => [
     :syntax,
     :lint,
     :spec,
-    :metadata_lint,
+    :metadata,
 ]
 
 desc 'Validate manifests, templates, and ruby files'
