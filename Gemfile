@@ -1,7 +1,7 @@
 source "https://rubygems.org"
 
 group :test do
-  gem "rake", "~> 10.0"
+  gem "rake"
   if puppet_gem_version = ENV['PUPPET_GEM_VERSION']
     gem "puppet", ENV['PUPPET_GEM_VERSION']
   elsif puppet_git_url = ENV['PUPPET_GIT_URL']
@@ -14,7 +14,7 @@ group :test do
   gem "rspec-puppet"
   gem "puppet-syntax"
   gem "puppetlabs_spec_helper"
- # gem "metadata-json-lint"
+  gem "metadata-json-lint"
   gem "rspec"
   gem "rspec-retry"
   gem 'simplecov', '>= 0.11.0'
@@ -24,7 +24,7 @@ end
 group :system_tests do
   gem "beaker-puppet_install_helper", :require => false
   gem "beaker-rspec"
-  gem "beaker", "~> 2.0"
+  gem "beaker"
 end
 
 group :development do
