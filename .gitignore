@@ -10,3 +10,6 @@ spec/fixtures/modules/
 .project
 .bundle/
 .ruby-version
+.vagrant/
+log/
+junit/
