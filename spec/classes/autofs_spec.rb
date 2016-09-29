@@ -16,6 +16,8 @@ describe 'autofs', :type => :class do
             :concat_basedir => '/etc'
         }
       end
+      it { is_expected.to compile}
+      it { should contain_class('autofs')}
       it { should contain_class('autofs::package') }
       it { should contain_class('autofs::service') }
     end

@@ -53,11 +53,29 @@ describe 'autofs::mount', :type => :define do
     end
   end
 
+  context 'with direct map' do
+    let(:params) do
+      {
+        :mount       => '/-',
+        :mapfile     => '/etc/auto.home',
+        :mapcontents => [ '/home /test', '/home /foo', '/home /bar'],
+        :options     => '--timeout=120',
+        :order       => '01',
+        :direct      => true
+      }
+    end
+
+    it do
+      should contain_concat__fragment('autofs::fragment preamble /- /etc/auto.home')
+    end
+  end
+
   context 'with EL7 directory' do
     let(:params) do
       {
+        :name        => 'home',
         :mount       => '/home',
-        :mapfile     => '/etc/auto.master.d/home.autofs',
+        :mapfile     => '/etc/auto.home',
         :mapcontents => %W( test foo bar ),
         :options     => '--timeout=120',
         :order       => '01',
@@ -79,6 +97,13 @@ describe 'autofs::mount', :type => :define do
       )
 
       should contain_file('/etc/auto.master.d/home.autofs').with(
+        'ensure' => 'present',
+        'owner'  => 'root',
+        'group'  => 'root',
+        'mode'   => '0644'
+      )
+
+      should contain_file('/etc/auto.home').with(
         'ensure' => 'present',
         'owner'  => 'root',
         'group'  => 'root',
