@@ -17,8 +17,7 @@ group :test do
   gem "metadata-json-lint"
   gem "rspec"
   gem "rspec-retry"
-  gem 'simplecov', '>= 0.11.0'
-  gem 'simplecov-console'
+  gem "codecov", :require => false
 end
 
 group :system_tests do

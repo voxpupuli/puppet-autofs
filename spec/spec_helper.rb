@@ -3,6 +3,12 @@ require 'puppetlabs_spec_helper/module_spec_helper'
 require 'mocha'
 require 'hiera'
 require 'erb'
+require 'simplecov'
+SimpleCov.start
+
+require 'codecov'
+SimpleCov.formatter = SimpleCov::Formatter::Codecov
+
 fixture_path = File.expand_path(File.join(__FILE__, '..', 'fixtures'))
 # include common helpers
 support_path = File.expand_path(File.join(File.dirname(__FILE__), '..',
