@@ -1,0 +1,11 @@
+---
+autofs::mounts:
+  foo:
+    mount: '/-'
+    mapfile: '/etc/auto.home'
+    mapcontents:
+      - '/home /test'
+      - '/home /foo'
+      - '/home /bar'
+    options: '--timeout=120'
+    order: 01

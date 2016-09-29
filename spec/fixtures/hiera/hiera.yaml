@@ -2,6 +2,8 @@
 :backends:
   - yaml
 :hierarchy:
-  - test
+  - homedir
+  - direct
+  - confdir
 :yaml:
   :datadir: 'spec/fixtures/hiera'
