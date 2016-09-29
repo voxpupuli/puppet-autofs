@@ -17,7 +17,6 @@ group :test do
   gem "metadata-json-lint"
   gem "rspec"
   gem "rspec-retry"
-  gem "codecov", :require => false
 end
 
 group :system_tests do
