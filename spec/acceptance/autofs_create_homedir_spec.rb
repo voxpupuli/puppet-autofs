@@ -5,7 +5,7 @@ describe 'autofs::mount::homedir' do
     file { '/mnt/test_home': ensure => directory }
     class { 'autofs': }
     autofs::mount { 'home':
-      mount => '/home',
+      mount       => '/home',
       mapfile     => '/etc/auto.home',
       mapcontents => ['/mnt/test_home'],
       options     => '--timeout=120',
