@@ -43,7 +43,7 @@ PuppetSyntax.exclude_paths = exclude_paths
 begin
   require 'parallel_tests/cli'
   desc 'Run spec tests in parallel'
-  task :parralel_spec do
+  task :parallel_spec do
     Rake::Task[:spec_prep].invoke
     ParallelTests::CLI.new.run('-o "--format=progress" -t rspec spec/classes spec/defines'.split)
     Rake::Task[:spec_clean].invoke
