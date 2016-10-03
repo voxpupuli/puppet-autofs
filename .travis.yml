@@ -18,3 +18,6 @@ matrix:
       env: PUPPET_GEM_VERSION="~> 3.0" STRICT_VARIABLES=yes
   allow_failures:
     - env: PUPPET_GIT_URL="https://github.com/puppetlabs/puppet.git"
+addons:
+  code_climate:
+    repo_token: 94542476123ca9af3d101e59b31fb968c19949147c85501beb66b94673c4cb20
