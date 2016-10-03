@@ -40,26 +40,28 @@ exclude_paths = [
 PuppetLint.configuration.ignore_paths = exclude_paths
 PuppetSyntax.exclude_paths = exclude_paths
 
-begin
-  require 'parallel_tests/cli'
-  desc 'Run spec tests in parallel'
-  task :parallel_spec do
-    Rake::Task[:spec_prep].invoke
-    ParallelTests::CLI.new.run('-o "--format=progress" -t rspec spec/classes spec/defines'.split)
-    Rake::Task[:spec_clean].invoke
-  end
-  desc 'Run syntax, lint, spec, and metadata tests in parallel'
-  task :parallel_test => [
-      :syntax,
-      :lint,
-      :parallel_spec,
-      :metadata,
-  ]
-  rescue LoadError # rubocop:disable Lint/HandleExceptions
-end
+# begin
+#   require 'parallel_tests/cli'
+#   desc 'Run spec tests in parallel'
+#   task :parallel_spec do
+#     Rake::Task[:spec_prep].invoke
+#     ParallelTests::CLI.new.run('--type test -o "--format=progress" -t rspec spec/classes spec/defines'.split)
+#     Rake::Task[:spec_clean].invoke
+#   end
+#   desc 'Run syntax, lint, spec, and metadata tests in parallel'
+#   task :parallel_test => [
+#       :syntax,
+#       :lint,
+#       :parallel_spec,
+#       :metadata,
+#   ]
+#   rescue LoadError # rubocop:disable Lint/HandleExceptions
+# end
 
-if Rake::Task.task_defined?('metadata_lint')
-  task :metadata => :metadata_lint
+
+desc 'Run Acceptance test'
+task :acceptance do
+  sh 'rspec spec/acceptance'
 end
 
 desc 'Run syntax, lint, spec and metadata tests'
@@ -67,7 +69,8 @@ task :test => [
     :syntax,
     :lint,
     :spec,
-    :metadata,
+    :acceptance,
+    :metadata_lint,
 ]
 
 desc 'Validate manifests, templates, and ruby files'
