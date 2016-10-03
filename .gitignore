@@ -13,3 +13,4 @@ spec/fixtures/modules/
 .vagrant/
 log/
 junit/
+coverage/

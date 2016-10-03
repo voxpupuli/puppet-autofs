@@ -17,6 +17,8 @@ group :test do
   gem "metadata-json-lint"
   gem "rspec"
   gem "rspec-retry"
+  gem "simplecov", :require => false
+  gem "codeclimate-test-reporter", :require => false
 end
 
 group :system_tests do
