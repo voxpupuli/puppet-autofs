@@ -23,8 +23,9 @@ end
 
 group :system_tests do
   gem "beaker-puppet_install_helper", :require => false
+  gem "specinfra", "~> 2"
   gem "beaker-rspec"
-  gem "beaker"
+  gem "beaker", "~> 2"
 end
 
 group :development do
