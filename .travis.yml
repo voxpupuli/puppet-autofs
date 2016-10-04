@@ -4,8 +4,9 @@ bundler_args: --without development system_tests
 before_install: rm Gemfile.lock || true
 sudo: false
 rvm:
-  - 2.1.0
+  - 2.1.5
   - 2.2
+  - 2.3.1
 script: bundle exec rake test
 env:
   - PUPPET_GEM_VERSION="~> 3.0" STRICT_VARIABLES=yes
@@ -13,11 +14,21 @@ env:
   - PUPPET_GIT_URL="https://github.com/puppetlabs/puppet.git"
 matrix:
   fast_finish: true
+  include:
+    - rvm: 2.3.1
+      env: PUPPET_INSTALL_TYPE=agent BEAKER_debug=true BEAKER_set=docker/ubuntu14.04
+      script: bundle exec rake beaker
+      services: docker
+      sudo: required
+    - rvm: 2.3.1
+      env: PUPPET_INSTALL_TYPE=agent BEAKER_debug=true BEAKER_set=docker/centos-7
+      script: bundle exec rake beaker
+      services: docker
+      sudo: required
   exclude:
     - rvm: 2.2
       env: PUPPET_GEM_VERSION="~> 3.0" STRICT_VARIABLES=yes
   allow_failures:
     - env: PUPPET_GIT_URL="https://github.com/puppetlabs/puppet.git"
-addons:
-  code_climate:
-    repo_token: 94542476123ca9af3d101e59b31fb968c19949147c85501beb66b94673c4cb20
+notifications:
+  email: false
