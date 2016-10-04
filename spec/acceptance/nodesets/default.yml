@@ -1,11 +1,17 @@
 HOSTS:
-  centos-70ma-x64:
+  centos-7-x64:
     roles:
-      - defaults
+      - agent
+      - default
     platform: el-7-x86_64
-    box: puppetlabs/centos-7.0-64-nocm
-    box_url: https://vagrantcloud.com/puppetlabs/boxes/centos-7.0-64-nocm
-    hypervisor : vagrant
+    hypervisor: vagrant
+    box: puppetlabs/centos-7.2-64-nocm
+  ubuntu-1404-x64:
+    roles:
+      - agent
+      - default
+    platform: ubuntu-14.04-amd64
+    hypervisor: vagrant
+    box: puppetlabs/ubuntu-14.04-64-nocm
 CONFIG:
-  log_level: verbose
   type: foss
