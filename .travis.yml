@@ -17,15 +17,17 @@ matrix:
   include:
     - rvm: 2.3.1
       env: PUPPET_INSTALL_TYPE=agent BEAKER_debug=true BEAKER_set=docker/ubuntu14.04
-      script: bundle exec rake beaker
+      script: bundle exec rake acceptance
       services: docker
       sudo: required
     - rvm: 2.3.1
       env: PUPPET_INSTALL_TYPE=agent BEAKER_debug=true BEAKER_set=docker/centos-7
-      script: bundle exec rake beaker
+      script: bundle exec rake acceptance
       services: docker
       sudo: required
   exclude:
+    - rvm: 2.3.1
+      env: PUPPET_GEM_VERSION="~> 3.0" STRICT_VARIABLES=yes
     - rvm: 2.2
       env: PUPPET_GEM_VERSION="~> 3.0" STRICT_VARIABLES=yes
   allow_failures:
