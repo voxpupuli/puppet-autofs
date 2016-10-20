@@ -11,7 +11,7 @@ describe 'autofs::package', :type => :class do
     context "install autofs #{os}" do
       let(:facts){ {:osfamily => "#{os}"} }
 
-      it { should contain_package('autofs').with_ensure('installed') }
+      it { is_expected.to contain_package('autofs').with_ensure('installed') }
 
     end
   end

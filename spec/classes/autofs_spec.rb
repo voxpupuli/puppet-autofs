@@ -5,7 +5,6 @@ describe 'autofs', :type => :class do
     Ubuntu
     RedHat
     CentOS
-    Solaris
   )
 
   opsys.each do |os|
@@ -17,9 +16,13 @@ describe 'autofs', :type => :class do
         }
       end
       it { is_expected.to compile}
-      it { should contain_class('autofs')}
-      it { should contain_class('autofs::package') }
-      it { should contain_class('autofs::service') }
+      it { is_expected.to contain_class('autofs')}
+      it { is_expected.to contain_class('autofs::package') }
+      it { is_expected.to contain_class('autofs::service') }
+
+      # Check Package and service
+      it { is_expected.to contain_package('autofs').with_ensure('installed') }
+      it { is_expected.to contain_service('autofs').that_requires('Package[autofs]')}
     end
   end
 
