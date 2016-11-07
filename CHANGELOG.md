@@ -1,3 +1,14 @@
+## Release 1.4.4
+### summary
+This Release provides a minor improvement to how the module interacts with Hiera and is less strict with the upper bounds of the puppetlabs-stdlib module version requirement.
+
+#### Enhancements
+- (Pull Request #19) Now we can hash over Hieradata
+- (Issue #21) Puppetlabs-stdlib version range is too restrictive
+- Add CONTRIBUTING.md file for Contribution directions
+- Add CONTRIBUTORS file to list those that have put in time to help make the module better
+- Update and cleanup README file in small ways
+
 ## Release 1.4.3
 ### Summary
 This Release fixes a bug where the autofs service would attempt to start before the package was installed.
@@ -24,7 +35,7 @@ This release adds a new feature that allows a map file to be deployed but not re
 
 ## Release 1.4.0
 ### Summary
-This release fixes bugs related to .autofs config files in /etc/auto.master.d, removes depracated concat::fragment 
+This release fixes bugs related to .autofs config files in /etc/auto.master.d, removes depracated concat::fragment
 attributes, and other general improvments.
 
 #### Bugfixes
