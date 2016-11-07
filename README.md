@@ -5,13 +5,16 @@ Autofs Puppet Module
 [![Puppet Forge](https://img.shields.io/puppetforge/v/dhollinger/autofs.svg)](https://forge.puppetlabs.com/dhollinger/autofs)
 
 #### Table of Contents
-1. [Description](#description)
-2. [Setup](#setup)
+1. [Description - - What the module does and why it is useful](#description)
+2. [Setup - The basics of getting started with Autofs](#setup)
   * [The module manages the following](#the-module-manages-the-following)
   * [Requirements](#requirements)
   * [Incompatibilities](#incompatibilities)
-3. [Usage](#usage)
-4. [Contact](#contact)
+3. [Usage - Configuration options and additional functionality](#usage)
+4. [Reference - An under-the-hood peek at what the module is doing and how](#reference)
+4. [Limitations - OS compatibility, etc](#limitations)
+5. [Development - Guide for contributing to the module](#development)
+6. [Support - When you need help with this module](#support)
 
 Description
 -----------
@@ -32,19 +35,6 @@ Setup
 
 * The [stdlib](https://forge.puppetlabs.com/puppetlabs/stdlib) Puppet Library
 * The [concat](https://github.com/puppetlabs/puppetlabs-concat) Puppet Module
-
-### Operating Systems
-
-* Supported
-    * Ubuntu 14.04/16.04
-    * CentOS/RHEL/Oracle Linux 6.x/7.x
-* Self Support - should work, support not provided by developer
-    * Solaris 10, 11
-    * Debian 7, 8
-    * Fedora 23, 24
-* Unsupported
-    * Windows (Autofs not available)
-    * Mac OS X (Autofs Not Available)
 
 ### Usage
 
@@ -171,6 +161,9 @@ autofs::mounts:
     use_dir: true
 ```
 
+Reference
+----------
+
 #### Parameters
 * **mount_name** - This is a logical, descriptive name for what what autofs will be
 mounting. This is represented by the "home:" and "tmp:" entries above.
@@ -198,23 +191,28 @@ Defaults to `false`.
 * **execute** - Boolean to set the map to be executable. Defaults to false to be backward compatible.
 * **replace** - Boolean to set the map file to not be replaced. Defaults to true as Puppet File resource does.
 
-Contributing
+Limitations
+------------
+
+#### Operating Systems
+
+* Supported
+    * Ubuntu 14.04/16.04
+    * CentOS/RHEL/Oracle Linux 6.x/7.x
+* Self Support - should work, support not provided by developer
+    * Solaris 10, 11
+    * Debian 7, 8
+    * Fedora 23, 24
+* Unsupported
+    * Windows (Autofs not available)
+    * Mac OS X (Autofs Not Available)
+
+Development
 -------------
 
-Please feel free to help make the autofs module better. I'm not perfect nor the best
-out there, so please feel welcome to contribute in the following ways:
+Please see the [CONTRIBUTING.md](CONTRIBUTING.md) file for instructions regarding development environments and testing.
 
-* File Bug Reports
-* Request Features
-* Create Pull Requests for fixes, enhancements or features.
-* Contact me for support.
-
-**IMPORTANT NOTE ON PULL REQUESTS:**
-
-Pull Requests **require** Spec tests and passing builds or they will **NOT** be
-accepted.
-
-Contact
+Support
 -------
 
 David Hollinger: [david.hollinger@moduletux.com](mailto:david.hollinger@moduletux.com)
