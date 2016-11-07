@@ -41,6 +41,7 @@ Setup
 * Self Support - should work, support not provided by developer
     * Solaris 10, 11
     * Debian 7, 8
+    * Fedora 23, 24
 * Unsupported
     * Windows (Autofs not available)
     * Mac OS X (Autofs Not Available)
@@ -60,7 +61,7 @@ granular control.
 To manage the service, use the following code in your profile:
 
 ```puppet
-class { 'autofs': 
+class { 'autofs':
   service_enable => false,
   service_ensure => 'stopped'
 }
