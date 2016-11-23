@@ -9,6 +9,7 @@ group :test do
   else
     gem "puppet", ENV['PUPPET_GEM_VERSION']
   end
+  gem 'puppet-strings'
   gem "puppet-lint"
   gem "puppet-lint-unquoted_string-check"
   gem "rspec-puppet"
