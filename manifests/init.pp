@@ -16,10 +16,10 @@
 # Copyright 2014 David Hollinger III
 #
 #
-class autofs(
-  $mounts      = undef,
-  $use_map_dir = false,
-  $map_dir     = '/etc/auto.master.d'
+class autofs (
+  Hash $mounts         = undef,
+  Boolean $use_map_dir = false,
+  String $map_dir      = '/etc/auto.master.d'
 ) {
   class { 'autofs::package': }
   class { 'autofs::service': }
