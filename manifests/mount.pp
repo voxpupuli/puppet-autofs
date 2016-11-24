@@ -34,20 +34,20 @@
 # See README Docs for Examples.
 #
 define autofs::mount (
-  $mount,
-  $order,
-  $options = '',
-  $master = '/etc/auto.master',
-  $map_dir = '/etc/auto.master.d',
-  $use_dir = false,
-  $direct = true,
-  $execute = false,
-  $mapfile = undef,
-  $mapcontents = undef,
-  $replace = true
+  String $mount,
+  Integer $order,
+  String $options    = '',
+  String $master     = '/etc/auto.master',
+  String $map_dir    = '/etc/auto.master.d',
+  Boolean $use_dir   = false,
+  Boolean $direct    = true,
+  Boolean $execute   = false,
+  String $mapfile    = '',
+  Array $mapcontents = [],
+  Boolean $replace   = true
 ) {
 
-  if $mapfile {
+  if $mapfile != '' {
     $contents = "${mount} ${mapfile} ${options}\n"
   } else {
     $contents = "${mount} ${options}\n"
@@ -106,7 +106,7 @@ define autofs::mount (
     }
   }
 
-  if $mapfile {
+  if $mapfile != '' {
     file { $mapfile:
       ensure  => present,
       owner   => 'root',
