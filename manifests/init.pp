@@ -17,7 +17,7 @@
 #
 #
 class autofs (
-  Hash $mounts         = undef,
+  Hash $mounts         = {},
   Boolean $use_map_dir = false,
   String $map_dir      = '/etc/auto.master.d'
 ) {
@@ -26,7 +26,7 @@ class autofs (
   contain 'autofs::package'
   contain 'autofs::service'
 
-  if ( $mounts != undef ) {
+  if ( $mounts != {} ) {
     class { 'autofs::mounts': }
   }
 }
