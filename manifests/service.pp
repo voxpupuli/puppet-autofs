@@ -1,10 +1,10 @@
 # = Class: autofs::service
 #
 class autofs::service (
-  $ensure = running,
-  $enable = true,
-  $service_restart = true,
-  $service_status = true
+  String $ensure           = running,
+  Boolean $enable          = true,
+  Boolean $service_restart = true,
+  Boolean $service_status  = true
 ){
   service { 'autofs':
     ensure     => $ensure,
