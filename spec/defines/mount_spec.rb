@@ -14,7 +14,7 @@ describe 'autofs::mount', :type => :define do
         :mapfile     => '/etc/auto.home',
         :mapcontents => %W( test foo bar ),
         :options     => '--timeout=120',
-        :order       => '01',
+        :order       => 01,
         :master      => '/etc/auto.master'
     }
   end
@@ -43,7 +43,7 @@ describe 'autofs::mount', :type => :define do
         :mapfile     => '/etc/auto.home',
         :mapcontents => %W( test foo bar ),
         :options     => '--timeout=120',
-        :order       => '01',
+        :order       => 01,
         :direct      => false
       }
     end
@@ -60,7 +60,7 @@ describe 'autofs::mount', :type => :define do
         :mapfile     => '/etc/auto.home',
         :mapcontents => [ '/home /test', '/home /foo', '/home /bar'],
         :options     => '--timeout=120',
-        :order       => '01',
+        :order       => 01,
         :direct      => true
       }
     end
@@ -78,7 +78,7 @@ describe 'autofs::mount', :type => :define do
         :mapfile     => '/etc/auto.home',
         :mapcontents => %W( test foo bar ),
         :options     => '--timeout=120',
-        :order       => '01',
+        :order       => 01,
         :map_dir     => '/etc/auto.master.d',
         :use_dir     => true
       }
@@ -120,7 +120,7 @@ describe 'autofs::mount', :type => :define do
         :mapfile     => '/etc/auto.home',
         :mapcontents => %W( test foo bar ),
         :options     => '--timeout=120',
-        :order       => '01',
+        :order       => 01,
         :execute     => true
       }
     end
