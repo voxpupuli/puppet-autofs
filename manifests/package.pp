@@ -1,6 +1,6 @@
-# = Class: autofs::install
+# = Class: autofs::package
 #
-# This class ensures that autofs is installed.
+# The autofs::package class installs the autofs package.
 #
 class autofs::package {
   Package {
