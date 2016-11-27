@@ -10,6 +10,7 @@ group :test do
     gem "puppet", ENV['PUPPET_GEM_VERSION']
   end
   gem 'puppet-strings'
+  gem 'yard'
   gem "puppet-lint"
   gem "puppet-lint-unquoted_string-check"
   gem "rspec-puppet"
@@ -35,7 +36,6 @@ group :development do
   gem "puppet-blacksmith"
   gem "guard-rake"
   gem "pry"
-  gem "yard"
   gem 'parallel_tests' # requires at least Ruby 1.9.3
   gem 'rubocop', :require => false # requires at least Ruby 1.9.2
 end
