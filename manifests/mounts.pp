@@ -3,6 +3,8 @@
 # Class used specifically to pass hiera autolookups as a hiera_hash
 # to the autofs::mount defined type.
 #
+# @see autofs
+#
 # @example using autofs::mounts class with hiera
 #    ---
 #    autofs::mounts:
