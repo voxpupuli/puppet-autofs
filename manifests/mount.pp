@@ -1,37 +1,30 @@
-# == Define: autofs::mount
+# Define: autofs::mount
 #
-# Define to generate autofs mount point
+# Defined type to generate autofs mount point
 # configuration files.
 #
-# === Parameters
-# [*mount*]
-#  Location where you will mount the remote
-#  NFS Share.
+# @see autofs
 #
-# [*mapfile*]
-#  Name of the "auto." file that will be generated
+# @example Using the autofs::mount defined type to setup automount for user home directories.
+#   autofs::mount { 'home':
+#     mount       => '/home',
+#     mapfile     => '/etc/auto.home',
+#     mapcontents => ['* -user,rw,soft,intr,rsize=32768,wsize=32768,tcp,nfsvers=3,noacl server.example.com:/path/to/home/shares'],
+#     options     => '--timeout=120',
+#     order       => 01
+#   }
 #
-# [*mapcontents*]
-#  The mount point options and parameters,
-#  Example: '* -user,rw,soft server.example.com:/path/to/home/shares'
-#
-# [*options*]
-#  Options for the autofs mount point within in the auto.master
-#
-# [*order*]
-#  Order in which entries will appear in the autofs master file.
-#
-# [*direct*]
-#  Boolean to allow for indirect map. Defaults to true to be backwards compatible.
-#
-# [*execute*]
-#  Boolean to set the map to be executable. Defaults to false to be backward compatible.
-#
-# [*replace*]
-#  Boolean to set the map file to not be replaced. Defaults to true as Puppet File resource does.
-#
-# These Parameters can be set statically,  within an ENC, or by using Hiera.
-# See README Docs for Examples.
+# @param mount Location where you will mount the remote NFS Share.
+# @param mapfile Name of the "auto." configuration file that will be generated.
+# @param mapcontents The mount point options and parameters.
+#   Example: '* -user,rw,soft server.example.com:/path/to/home/shares'
+# @param options Options for the autofs mount point within in the auto.master.
+# @param order Order in which entries will appear in the autofs master file.
+# @param direct Boolean to allow for indirect map. Defaults to true to be
+#   backwards compatible.
+# @param execute If true, it will make the $mapfile an executable script,
+#   otherwise the file is a standard "auto." configuration file.
+# @param replace Set to false if you only want to place the file if it is missing.
 #
 define autofs::mount (
   String $mount,
