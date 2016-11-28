@@ -3,7 +3,12 @@
 # Defined type to generate autofs mount point
 # configuration files.
 #
-# @see autofs
+# @see https://dhollinger.github.io/autofs-puppet home
+# @see https://dhollinger.github.io/autofs-puppet/puppet_classes/autofs.html autofs
+# @see https://www.github.com/dhollinger/autofs-puppet Project Page
+# @see https://forge.puppet.com/dhollinger/autofs Forge Page
+#
+# @author David Hollinger III <david.hollinger@moduletux.com>
 #
 # @example Using the autofs::mount defined type to setup automount for user home directories.
 #   autofs::mount { 'home':
@@ -18,6 +23,11 @@
 # @param mapfile Name of the "auto." configuration file that will be generated.
 # @param mapcontents The mount point options and parameters.
 #   Example: '* -user,rw,soft server.example.com:/path/to/home/shares'
+# @param master Full path, including filename, to the autofs master file.
+# @param map_dir Full path, including directory name, to the autofs master
+#   configuration directory. Only required if use_dir is set to true.
+# @param use_dir If true, autofs will look for master configuration in the map_dir
+#   path using filenames ending in the ".autofs" extension.
 # @param options Options for the autofs mount point within in the auto.master.
 # @param order Order in which entries will appear in the autofs master file.
 # @param direct Boolean to allow for indirect map. Defaults to true to be

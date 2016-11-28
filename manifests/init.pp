@@ -1,19 +1,15 @@
-# = Class: autofs
+# Class: autofs
 #
 # Manages autofs mount points
 #
 # This class includes defined types for looping through arrays of configuration
 # file names.
 #
-# Requires the use of environments and hieradata.
+# @see https://dhollinger.github.io/autofs-puppet home
+# @see https://www.github.com/dhollinger/autofs-puppet Project Page
+# @see https://forge.puppet.com/dhollinger/autofs Forge Page
 #
-# === Authors
-#
-# David Hollinger III <david.hollinger@moduletux.com>
-#
-# === Copyright
-#
-# Copyright 2014 David Hollinger III
+# @author David Hollinger III <david.hollinger@moduletux.com>
 #
 # @example Declaring the autofs class
 #    include autofs
