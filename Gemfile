@@ -11,6 +11,8 @@ group :test do
   end
   gem 'puppet-strings'
   gem 'yard'
+  gem 'redcarpet'
+  gem 'github-markup'
   gem "puppet-lint"
   gem "puppet-lint-unquoted_string-check"
   gem "rspec-puppet"
