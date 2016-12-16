@@ -13,6 +13,9 @@ class autofs::package {
     'RedHat', 'CentOS': {
       package { 'autofs': }
     }
+    'Suse': {
+      package { 'autofs': }
+    }
     'Solaris': {
       # Solaris includes autofs
       # Block to prevent failures
