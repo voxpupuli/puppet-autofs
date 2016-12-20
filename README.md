@@ -199,10 +199,12 @@ Limitations
 * Supported
     * Ubuntu 14.04/16.04
     * CentOS/RHEL/Oracle Linux 6.x/7.x
+    * SLES 10 SP4/11 SP1/12
 * Self Support - should work, support not provided by developer
     * Solaris 10, 11
     * Debian 7, 8
     * Fedora 23, 24
+    * OpenSUSE
 * Unsupported
     * Windows (Autofs not available)
     * Mac OS X (Autofs Not Available)
