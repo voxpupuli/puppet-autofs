@@ -16,3 +16,5 @@ junit/
 coverage/
 .rake_tasks~
 tags
+doc/
+.yardoc/
