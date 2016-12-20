@@ -1,13 +1,17 @@
 {
   "name": "dhollinger-autofs",
-  "version": "1.4.5",
+  "version": "1.4.6",
   "author": "David Hollinger III",
   "summary": "Module for installing and managing autofs",
   "license": "Apache-2.0",
   "source": "https://github.com/dhollinger/autofs-puppet.git",
   "project_page": "https://github.com/dhollinger/autofs-puppet",
   "issues_url": "https://github.com/dhollinger/autofs-puppet/issues",
-  "tags": ["autofs", "automount", "mount"],
+  "tags": [
+    "autofs",
+    "automount",
+    "mount"
+  ],
   "operatingsystem_support": [
     {
       "operatingsystem": "RedHat",
@@ -30,7 +34,7 @@
         "16.04"
       ]
     },
- 	{
+    {
       "operatingsystem": "SLES",
       "operatingsystemrelease": [
         "10 SP4",
