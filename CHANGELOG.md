@@ -1,5 +1,14 @@
+## Release 1.4.5
+### Summary
+This release adds SLES support to the module and adds a deprecation warning that
+Puppet 3.x support ends on Dec 31, 2016
+
+#### Enhancements
+- (Pull Request #25) Add SUSE package name. Thanks mattqm!
+- Add Puppet 3.x End of Support deprecation warning to the README.
+
 ## Release 1.4.4
-### summary
+### Summary
 This Release provides a minor improvement to how the module interacts with Hiera and is less strict with the upper bounds of the puppetlabs-stdlib module version requirement.
 
 #### Enhancements
