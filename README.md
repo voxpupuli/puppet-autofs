@@ -4,6 +4,13 @@ Autofs Puppet Module
 [![Build Status](https://travis-ci.org/dhollinger/autofs-puppet.svg?branch=master)](https://travis-ci.org/dhollinger/autofs-puppet)
 [![Puppet Forge](https://img.shields.io/puppetforge/v/dhollinger/autofs.svg)](https://forge.puppetlabs.com/dhollinger/autofs)
 
+#### DEPRECATION WARNING
+Release 1.4.5 will be the final feature release supporting Puppet 3.x.
+Puppet 3.x is End of Life on Dec 31st, 2016 and as such version 1.4.x will remain
+supported for maintenance until Jun 30th, 2017 at which point support will end.
+
+Releases 2.0.0 and above will be compatible only with Puppet 4.x and later.
+
 #### Table of Contents
 1. [Description - - What the module does and why it is useful](#description)
 2. [Setup - The basics of getting started with Autofs](#setup)
