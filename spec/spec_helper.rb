@@ -1,17 +1,3 @@
-# First line of spec/spec_helper.rb
-require 'codeclimate-test-reporter'
-
-SimpleCov.formatters = [
-  SimpleCov::Formatter::HTMLFormatter,
-  CodeClimate::TestReporter::Formatter
-]
-
-SimpleCov.start do
-  add_filter '/spec/'
-  # Exclude bundled Gems in `/.vendor/`
-  add_filter '/.vendor/'
-end
-
 require 'rspec-puppet'
 require 'puppetlabs_spec_helper/module_spec_helper'
 require 'mocha'
