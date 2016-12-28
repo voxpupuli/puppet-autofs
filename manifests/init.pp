@@ -35,12 +35,8 @@
 # @param map_dir string parameter used to set the directory for use_map_dir
 #
 class autofs (
-  Hash $mounts         = {},
-  Boolean $use_map_dir = false,
-  String $map_dir      = '/etc/auto.master.d'
+  Hash $mounts         = {}
 ) {
-  class { 'autofs::package': }
-  class { 'autofs::service': }
   contain 'autofs::package'
   contain 'autofs::service'
 
