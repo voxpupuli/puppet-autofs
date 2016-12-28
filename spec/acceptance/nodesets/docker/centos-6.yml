@@ -3,7 +3,7 @@ HOSTS:
     platform: el-6-x8664
     hypervisor: docker
     image: centos:6
-    docker_cmd: '["/usr/sbin/init"]'
+    docker_cmd: '["/sbin/init"]'
     docker_image_commands:
       - 'yum install -y crontabs tar wget openssl sysvinit-tools iproute which initscripts'
 CONFIG:
