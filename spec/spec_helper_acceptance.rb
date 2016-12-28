@@ -14,6 +14,7 @@ RSpec.configure do |c|
 
   # Readable test descriptions
   c.formatter = :documentation
+  c.color = :true
 
   # show retry status in spec process
   c.verbose_retry = true
