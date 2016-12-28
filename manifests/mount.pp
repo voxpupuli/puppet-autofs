@@ -83,10 +83,11 @@ define autofs::mount (
     }
   } else {
     ensure_resource('file', $map_dir, {
-      'ensure' => 'directory',
-      'owner'  => 'root',
-      'group'  => 'root',
-      'mode'   => '0755',
+      'ensure'  => 'directory',
+      'owner'   => 'root',
+      'group'   => 'root',
+      'mode'    => '0755',
+      'require' => Package['autofs'],
     })
 
     if !defined(Concat::Fragment['autofs::fragment preamble map directory']) {
