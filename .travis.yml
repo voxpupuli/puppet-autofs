@@ -32,7 +32,7 @@ matrix:
       script: bundle exec rake acceptance
       services: docker
       sudo: required
-      env: PUPPET_INSTALL_TYPE=agent BEAKER_debug=true BEAKER_set=docker/debian-8
+    - env: PUPPET_INSTALL_TYPE=agent BEAKER_debug=true BEAKER_set=docker/debian-8
       bundler_args: --without development
       script: bundle exec rake acceptance
       services: docker
