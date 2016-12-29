@@ -5,6 +5,7 @@ describe 'autofs::package', :type => :class do
     Ubuntu
     RedHat
     CentOS
+    Suse
   )
 
   opsys.each do |os|
