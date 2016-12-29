@@ -204,14 +204,24 @@ Limitations
 #### Operating Systems
 
 * Supported
-    * Ubuntu 14.04/16.04
-    * CentOS/RHEL/Oracle Linux 6.x/7.x
-    * SLES 10 SP4/11 SP1/12
+    * Ubuntu
+      * 14.04
+      * 16.04
+    * CentOS/RHEL/Scientific/Oracle Linux
+      * 6.x
+      * 7.x
+    * SLES
+      * 11 Service Pack 4
+      * 12 Service Pack 1
+    * OpenSUSE 13.1
+    * Debian
+      * 7 "Wheezy"
+      * 8 "Jessie"
 * Self Support - should work, support not provided by developer
     * Solaris 10, 11
-    * Debian 7, 8
-    * Fedora 23, 24
-    * OpenSUSE
+    * Fedora 24, 25
+    * SLES 10
+    * CentOS/RHEL/Scientific/Oracle Linux 5.x
 * Unsupported
     * Windows (Autofs not available)
     * Mac OS X (Autofs Not Available)
