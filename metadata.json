@@ -5,7 +5,7 @@
   "summary": "Module for installing and managing autofs",
   "license": "Apache-2.0",
   "source": "https://github.com/dhollinger/autofs-puppet.git",
-  "project_page": "https://github.com/dhollinger/autofs-puppet",
+  "project_page": "https://dhollinger.github.io/autofs-puppet/",
   "issues_url": "https://github.com/dhollinger/autofs-puppet/issues",
   "tags": [
     "autofs",
