@@ -18,21 +18,35 @@ describe 'autofs::mount direct tests' do
       apply_manifest(pp, :catch_changes => true)
     end
 
-    it 'should create files' do
-      shell('test -e /etc/auto.direct', :acceptable_exit_codes => [0])
-      shell('test -e /etc/auto.master', :acceptable_exit_codes => [0])
-    end
-
-    it 'should have master content' do
-      shell('cat /etc/auto.master') do |r|
-        expect(r.stdout).to match(/\/- \/etc\/auto.direct --timeout=120/)
+    describe file('/etc/auto.master') do
+      it 'should exist and have content' do
+        is_expected.to exist
+        is_expected.to be_owned_by 'root'
+        is_expected.to be_grouped_into 'root'
+        shell('cat /etc/auto.master') do |s|
+          expect(s.stdout).to match(/\/- \/etc\/auto.direct --timeout=120/)
+        end
       end
     end
 
-    it 'should have direct content' do
-      shell('cat /etc/auto.direct') do |s|
-        expect(s.stdout).to match(/(\/home\/test_home -o rw \/mnt\/test_home|\/tmp\/test_tmp -o rw \/mnt\/test_tmp)/)
+    describe file('/etc/auto.direct') do
+      it 'should exist and have content' do
+        is_expected.to exist
+        is_expected.to be_owned_by 'root'
+        is_expected.to be_grouped_into 'root'
+        shell('cat /etc/auto.direct') do |s|
+          expect(s.stdout).to match(/(\/home\/test_home -o rw \/mnt\/test_home|\/tmp\/test_tmp -o rw \/mnt\/test_tmp)/)
+        end
       end
+    end
+
+    describe package('autofs') do
+      it { is_expected.to be_installed }
+    end
+
+    describe service('autofs') do
+      it { is_expected.to be_enabled }
+      it { is_expected.to be_running }
     end
 
   end
