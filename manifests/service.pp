@@ -5,10 +5,10 @@
 # if necessary. Such as allowing the service to run, but not at
 # startup.
 #
-# @see https://dhollinger.github.io/autofs-puppet home
+# @see https://dhollinger.github.io/autofs-puppet Home
 # @see autofs
-# @see https://www.github.com/dhollinger/autofs-puppet Project Page
-# @see https://forge.puppet.com/dhollinger/autofs Forge Page
+# @see https://www.github.com/dhollinger/autofs-puppet Github
+# @see https://forge.puppet.com/dhollinger/autofs Puppet Forge
 #
 # @author David Hollinger III <david.hollinger@moduletux.com>
 #

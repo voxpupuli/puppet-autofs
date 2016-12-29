@@ -173,7 +173,7 @@ Reference
 
 #### Parameters
 * **mount_name** - This is a logical, descriptive name for what what autofs will be
-mounting. This is represented by the "home:" and "tmp:" entries above.
+mounting. This is represented by the `home:` and `tmp:` entries above.
 * **mount** - This Mapping describes where autofs will be mounting to. This map
 entry is referenced by concat as part of the generation of the /etc/auto.master
 file.
