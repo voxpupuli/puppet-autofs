@@ -4,13 +4,6 @@ Autofs Puppet Module
 [![Build Status](https://travis-ci.org/dhollinger/autofs-puppet.svg?branch=master)](https://travis-ci.org/dhollinger/autofs-puppet)
 [![Puppet Forge](https://img.shields.io/puppetforge/v/dhollinger/autofs.svg)](https://forge.puppetlabs.com/dhollinger/autofs)
 
-#### DEPRECATION WARNING
-Release 1.4.5 will be the final feature release supporting Puppet 3.x.
-Puppet 3.x is End of Life on Dec 31st, 2016 and as such version 1.4.x will remain
-supported for maintenance until Jun 30th, 2017 at which point support will end.
-
-Releases 2.0.0 and above will be compatible only with Puppet 4.x and later.
-
 #### Table of Contents
 1. [Description - - What the module does and why it is useful](#description)
 2. [Setup - The basics of getting started with Autofs](#setup)
@@ -200,6 +193,21 @@ Defaults to `false`.
 
 Limitations
 ------------
+
+#### Puppet platforms
+Release 2.0.0 (and above) only support Puppet 4.x and Puppet Enterprise 2015.2.0 or newer
+
+#### Puppet 3.x Compatibility
+Puppet 3.x was End of Life starting January 1st, 2017, if Puppet 3.x functionality is still needed, please install using one of the following methods:
+* Manually: `puppet module install dhollinger-autofs --version 1.4.5`
+* Puppetfile: `mod 'dhollinger-autofs', '1.4.5'`
+* Git: `git clone git@github.com:dhollinger/autofs-puppet.git -b 1.4.5 <module_path>/autofs`
+
+Support for Puppet 3.x Functionality:
+* No new features will be added to the 1.4.x/Puppet 3.x branches.
+* No new deployments will be issued Puppet Forge.
+* Will still accept Issues and Pull Requests until June 30, 2017.
+  * Tag issues with `legacy` tag.
 
 #### Operating Systems
 
