@@ -28,6 +28,20 @@
       ]
     },
     {
+      "operatingsystem": "OracleLinux",
+      "operatingsystemrelease": [
+        "6",
+        "7"
+      ]
+    },
+    {
+      "operatingsystem": "Scientific",
+      "operatingsystemrelease": [
+        "6",
+        "7"
+      ]
+    },
+    {
       "operatingsystem": "Ubuntu",
       "operatingsystemrelease": [
         "14.04",
@@ -37,9 +51,15 @@
     {
       "operatingsystem": "SLES",
       "operatingsystemrelease": [
-        "10 SP4",
-        "11 SP1",
+        "10",
+        "11",
         "12"
+      ]
+    },
+    {
+      "operatingsystem": "OpenSuSE",
+      "operatingsystemrelease": [
+        "13.1"
       ]
     },
     {
@@ -52,8 +72,8 @@
     {
       "operatingsystem": "Fedora",
       "operatingsystemrelease": [
-        "20",
-        "21"
+        "24",
+        "25"
       ]
     },
     {
