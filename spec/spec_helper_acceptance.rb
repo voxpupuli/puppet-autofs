@@ -12,10 +12,6 @@ RSpec.configure do |c|
   # Project root
   module_root = File.expand_path(File.join(File.dirname(__FILE__), '..'))
 
-  # Readable test descriptions
-  c.formatter = :documentation
-  c.color = :true
-
   # show retry status in spec process
   c.verbose_retry = true
   # show exception that triggers a retry if verbose_retry is set to true
