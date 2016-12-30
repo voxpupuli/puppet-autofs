@@ -1,3 +1,31 @@
+## Release 2.0.0
+### Summary
+This release removes unused parameters and adds Puppet 4.x Data Types to the module's
+parameters. This release also adds Puppet Strings Documentation, adds support for
+additional Operating Systems, and adds more acceptance tests for Validation.
+
+#### Changes
+- Remove Puppet 3.x Support as it is End of Life.
+- (Issue #22) Add data types to the parameters.
+  - Primary reason for major version change as this renders the module incompatible
+    with Puppet 3.x
+- (Issue #23) Add Puppet Strings Documentation.
+- Remove unused parameters.
+- Add additional acceptance tests.
+- Add Travis Beaker nodesets for Debian 7 and Ubuntu 16.04
+- Add support for the following Operating Systems:
+  - Supported
+    - Scientific Linux 6.x and 7.x
+    - Oracle Enterprise Linux 6.x and 7.x
+    - OpenSuSE 13.1
+    - SuSE Linux Enterprise Server 11 SP4 and 12 SP1
+  - Self Support
+    - Fedora 24 and 25
+    - CentOS/RHEL/Oracle Linux/Scientific Linux 5.x
+    - SuSE Linux Enterprise Server 10
+  - Removed Support
+    - Fedora 20 and 21
+
 ## Release 1.4.5
 ### Summary
 This release adds SLES support to the module and adds a deprecation warning that
