@@ -1,8 +1,11 @@
 Autofs Puppet Module
 ====================
 
-[![Build Status](https://travis-ci.org/dhollinger/autofs-puppet.svg?branch=master)](https://travis-ci.org/dhollinger/autofs-puppet)
-[![Puppet Forge](https://img.shields.io/puppetforge/v/dhollinger/autofs.svg)](https://forge.puppetlabs.com/dhollinger/autofs)
+[![Travis branch](https://img.shields.io/travis/dhollinger/autofs-puppet/master.svg?style=flat-square)](https://travis-ci.org/dhollinger/autofs-puppet)
+[![Puppet Forge](https://img.shields.io/puppetforge/v/dhollinger/autofs.svg?style=flat-square)](https://forge.puppetlabs.com/dhollinger/autofs)
+[![Puppet Forge](https://img.shields.io/puppetforge/dt/dhollinger/autofs.svg?style=flat-square)](https://forge.puppet.com/dhollinger/autofs)
+[![Puppet Forge](https://img.shields.io/puppetforge/e/dhollinger/autofs.svg?style=flat-square)](https://forge.puppet.com/dhollinger/autofs)
+[![Puppet Forge](https://img.shields.io/puppetforge/f/dhollinger/autofs.svg?style=flat-square)](https://forge.puppet.com/dhollinger/autofs)
 
 #### Table of Contents
 1. [Description - - What the module does and why it is useful](#description)
