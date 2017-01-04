@@ -4,6 +4,10 @@ require 'mocha'
 require 'hiera'
 require 'erb'
 
+# Add Coveralls code
+require 'coveralls'
+Coveralls.wear!
+
 fixture_path = File.expand_path(File.join(__FILE__, '..', 'fixtures'))
 # include common helpers
 support_path = File.expand_path(File.join(File.dirname(__FILE__), '..',

@@ -22,7 +22,7 @@ group :test do
   gem "rspec"
   gem "rspec-retry"
   gem "simplecov", :require => false
-  gem "codeclimate-test-reporter", :require => false
+  gem 'coveralls', :require => false
 end
 
 group :system_tests do
