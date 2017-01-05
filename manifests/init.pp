@@ -37,10 +37,10 @@
 class autofs (
   Hash $mounts         = {}
 ) {
-  contain 'autofs::package'
-  contain 'autofs::service'
+  contain '::autofs::package'
+  contain '::autofs::service'
 
   if ( $mounts != {} ) {
-    class { 'autofs::mounts': }
+    class { '::autofs::mounts': }
   }
 }

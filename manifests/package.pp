@@ -19,7 +19,7 @@
 #
 class autofs::package {
   Package {
-    ensure => installed
+    ensure => installed,
   }
   case $::osfamily {
     'Debian', 'Ubuntu': {
