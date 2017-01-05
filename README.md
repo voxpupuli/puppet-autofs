@@ -201,16 +201,12 @@ Limitations
 Release 2.0.0 (and above) only support Puppet 4.x and Puppet Enterprise 2015.2.0 or newer
 
 #### Puppet 3.x Compatibility
-Puppet 3.x was End of Life starting January 1st, 2017, if Puppet 3.x functionality is still needed, please install using one of the following methods:
-* Manually: `puppet module install dhollinger-autofs --version 1.4.5`
-* Puppetfile: `mod 'dhollinger-autofs', '1.4.5'`
-* Git: `git clone git@github.com:dhollinger/autofs-puppet.git -b 1.4.5 <module_path>/autofs`
+Puppet 3.x was End of Life starting January 1st, 2017, if Puppet 3.x functionality is still needed, please install using one of the following method:
+* `git clone git@github.com:voxpupuli/puppet-autofs.git -b puppet3 <module_path>/autofs`
 
 Support for Puppet 3.x Functionality:
-* No new features will be added to the 1.4.x/Puppet 3.x branches.
-* No new deployments will be issued Puppet Forge.
-* Will still accept Issues and Pull Requests until June 30, 2017.
-  * Tag issues with `legacy` tag.
+* No new features will be added to the puppet3 branch.
+* No new deployments will be issued to the Puppet Forge.
 
 #### Operating Systems
 
