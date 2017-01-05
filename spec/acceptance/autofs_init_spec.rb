@@ -28,23 +28,23 @@ describe 'autofs' do
       end
 
       describe file('/etc/auto.master') do
-        it 'should exist and have content' do
+        it 'exists and have content' do
           is_expected.to exist
           is_expected.to be_owned_by 'root'
           is_expected.to be_grouped_into 'root'
           shell('cat /etc/auto.master') do |s|
-            expect(s.stdout).to match(/\/home \/etc\/auto.home --timeout=120/)
+            expect(s.stdout).to match(%r{/home /etc/auto.home --timeout=120})
           end
         end
       end
 
       describe file('/etc/auto.home') do
-        it 'should exist and have content' do
+        it 'exists and have content' do
           is_expected.to exist
           is_expected.to be_owned_by 'root'
           is_expected.to be_grouped_into 'root'
           shell('cat /etc/auto.home') do |r|
-            expect(r.stdout).to match(/test_home -o rw \/mnt\/test_home/)
+            expect(r.stdout).to match(%r{test_home -o rw /mnt/test_home})
           end
         end
       end
@@ -77,47 +77,45 @@ describe 'autofs' do
       end
 
       describe file('/etc/auto.master') do
-        it 'should exist and have content' do
+        it 'exists and have content' do
           is_expected.to exist
           is_expected.to be_owned_by 'root'
           is_expected.to be_grouped_into 'root'
           shell('cat /etc/auto.master') do |s|
-            expect(s.stdout).to match(/\+dir\:\/etc\/auto.master.d/)
-        end
-      end
-
-      describe file('/etc/auto.master.d') do
-        it 'should be a directory owned by root' do
-          is_expected.to be_directory
-          is_expected.to be_owned_by 'root'
-          is_expected.to be_grouped_into 'root'
-        end
-      end
-
-      describe file('/etc/auto.master.d/confdir.autofs') do
-        it 'should exist and have content' do
-          is_expected.to exist
-          is_expected.to be_owned_by 'root'
-          is_expected.to be_grouped_into 'root'
-          shell('cat /etc/auto.master.d/confdir.autofs') do |s|
-            expect(s.stdout).to match(/\/mnt\/confdir \/etc\/auto.confdir --timeout=120/)
+            expect(s.stdout).to match(%r{\+dir:/etc/auto.master.d})
           end
         end
-      end
 
-      describe file('/etc/auto.confdir') do
-        it 'should exist and have content' do
-          is_expected.to exist
-          is_expected.to be_owned_by 'root'
-          is_expected.to be_grouped_into 'root'
-          shell('cat /etc/auto.confdir') do |s|
-            expect(s.stdout).to match(/test_dir -o rw \/mnt\/test_conf/)
+        describe file('/etc/auto.master.d') do
+          it 'is a directory owned by root' do
+            is_expected.to be_directory
+            is_expected.to be_owned_by 'root'
+            is_expected.to be_grouped_into 'root'
           end
         end
-      end
 
+        describe file('/etc/auto.master.d/confdir.autofs') do
+          it 'exists and have content' do
+            is_expected.to exist
+            is_expected.to be_owned_by 'root'
+            is_expected.to be_grouped_into 'root'
+            shell('cat /etc/auto.master.d/confdir.autofs') do |s|
+              expect(s.stdout).to match(%r{/mnt/confdir /etc/auto.confdir --timeout=120})
+            end
+          end
+        end
+
+        describe file('/etc/auto.confdir') do
+          it 'exists and have content' do
+            is_expected.to exist
+            is_expected.to be_owned_by 'root'
+            is_expected.to be_grouped_into 'root'
+            shell('cat /etc/auto.confdir') do |s|
+              expect(s.stdout).to match(%r{test_dir -o rw /mnt/test_conf})
+            end
+          end
+        end
       end
     end
-
   end
 end
