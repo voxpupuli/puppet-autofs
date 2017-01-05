@@ -31,6 +31,7 @@ group :test do
   gem 'coveralls',                                                  :require => false
   gem 'simplecov-console',                                          :require => false
   gem 'hiera',                                                      :require => false
+  gem 'puppet-strings',                                             :require => false
 end
 
 group :development do
