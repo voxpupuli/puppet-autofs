@@ -1,7 +1,6 @@
 require 'beaker-rspec/spec_helper'
 require 'beaker-rspec/helpers/serverspec'
 require 'beaker/puppet_install_helper'
-require 'rspec/retry'
 
 RSpec.configure do |c|
   # Project root
