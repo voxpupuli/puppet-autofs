@@ -1,4 +1,6 @@
 require 'spec_helper'
+require 'hiera'
+
 describe 'autofs::mounts', :type => :class do
   let(:hiera_config) { 'spec/fixtures/hiera/hiera.yaml' }
   hiera = Hiera.new(:config => 'spec/fixtures/hiera/hiera.yaml')
