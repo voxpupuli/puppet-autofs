@@ -30,6 +30,7 @@ group :test do
   gem 'mocha', '>= 1.2.1',                                          :require => false
   gem 'coveralls',                                                  :require => false
   gem 'simplecov-console',                                          :require => false
+  gem 'hiera',                                                      :require => false
 end
 
 group :development do
