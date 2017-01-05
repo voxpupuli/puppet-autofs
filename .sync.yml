@@ -26,4 +26,3 @@ Gemfile:
   optional:
     ':test':
       - gem: 'hiera'
-      - gem: 'puppet-strings'
