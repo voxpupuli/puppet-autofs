@@ -3,10 +3,10 @@
 # Defined type to generate autofs mount point
 # configuration files.
 #
-# @see https://dhollinger.github.io/autofs-puppet Home
-# @see https://dhollinger.github.io/autofs-puppet/puppet_classes/autofs.html puppet_classes::autofs
-# @see https://www.github.com/dhollinger/autofs-puppet Github
-# @see https://forge.puppet.com/dhollinger/autofs Puppet Forge
+# @see https://voxpupuli.org/puppet-autofs Home
+# # @see https://voxpupuli.org/puppet-autofs/puppet_classes/autofs.html puppet_classes::autofs
+# @see https://www.github.com/voxpupuli/autofs-puppet Github
+# @see https://forge.puppet.com/puppet/autofs Puppet Forge
 #
 # @author David Hollinger III <david.hollinger@moduletux.com>
 #

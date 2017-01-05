@@ -5,7 +5,7 @@
 # This class includes defined types for looping through arrays of configuration
 # file names.
 #
-# @see https://dhollinger.github.io/autofs-puppet Home
+# @see https://voxpupuli.org/puppet-autofs Home
 # @see https://www.github.com/voxpupuli/autofs-puppet Github
 # @see https://forge.puppet.com/puppet/autofs Puppet Forge
 #

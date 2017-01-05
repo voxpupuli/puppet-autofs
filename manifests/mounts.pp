@@ -3,10 +3,10 @@
 # Class used specifically to pass hiera autolookups as a hiera_hash
 # to the autofs::mount defined type.
 #
-# @see https://dhollinger.github.io/autofs-puppet Home
+# @see https://voxpupuli.org/puppet-autofs Home
 # @see autofs
-# @see https://www.github.com/dhollinger/autofs-puppet Github
-# @see https://forge.puppet.com/dhollinger/autofs Puppet Forge
+# @see https://www.github.com/voxpupuli/autofs-puppet Github
+# @see https://forge.puppet.com/puppet/autofs Puppet Forge
 #
 # @author David Hollinger III <david.hollinger@moduletux.com>
 #
