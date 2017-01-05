@@ -1,5 +1,5 @@
 require 'spec_helper'
-describe 'autofs::package', :type => :class do
+describe 'autofs::package', type: :class do
   opsys = %w(
     Debian
     Ubuntu
@@ -10,11 +10,9 @@ describe 'autofs::package', :type => :class do
 
   opsys.each do |os|
     context "install autofs #{os}" do
-      let(:facts){ {:osfamily => "#{os}"} }
+      let(:facts) { { osfamily: os.to_s } }
 
       it { is_expected.to contain_package('autofs').with_ensure('installed') }
-
     end
   end
-
 end

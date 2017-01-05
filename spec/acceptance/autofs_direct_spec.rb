@@ -14,28 +14,28 @@ describe 'autofs::mount direct tests' do
         }
       EOS
 
-      apply_manifest(pp, :catch_failures => true)
-      apply_manifest(pp, :catch_changes => true)
+      apply_manifest(pp, catch_failures: true)
+      apply_manifest(pp, catch_changes: true)
     end
 
     describe file('/etc/auto.master') do
-      it 'should exist and have content' do
+      it 'exists and have content' do
         is_expected.to exist
         is_expected.to be_owned_by 'root'
         is_expected.to be_grouped_into 'root'
         shell('cat /etc/auto.master') do |s|
-          expect(s.stdout).to match(/\/- \/etc\/auto.direct --timeout=120/)
+          expect(s.stdout).to match(%r{/- /etc/auto.direct --timeout=120})
         end
       end
     end
 
     describe file('/etc/auto.direct') do
-      it 'should exist and have content' do
+      it 'exists and have content' do
         is_expected.to exist
         is_expected.to be_owned_by 'root'
         is_expected.to be_grouped_into 'root'
         shell('cat /etc/auto.direct') do |s|
-          expect(s.stdout).to match(/(\/home\/test_home -o rw \/mnt\/test_home|\/tmp\/test_tmp -o rw \/mnt\/test_tmp)/)
+          expect(s.stdout).to match(%r{(/home/test_home -o rw /mnt/test_home|/tmp/test_tmp -o rw /mnt/test_tmp)})
         end
       end
     end
@@ -48,6 +48,5 @@ describe 'autofs::mount direct tests' do
       it { is_expected.to be_enabled }
       it { is_expected.to be_running }
     end
-
   end
 end
