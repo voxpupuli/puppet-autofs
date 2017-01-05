@@ -1,11 +1,11 @@
 Autofs Puppet Module
 ====================
 
-[![Travis branch](https://img.shields.io/travis/dhollinger/autofs-puppet/master.svg?style=flat-square)](https://travis-ci.org/dhollinger/autofs-puppet)
-[![Puppet Forge](https://img.shields.io/puppetforge/v/dhollinger/autofs.svg?style=flat-square)](https://forge.puppetlabs.com/dhollinger/autofs)
-[![Puppet Forge](https://img.shields.io/puppetforge/dt/dhollinger/autofs.svg?style=flat-square)](https://forge.puppet.com/dhollinger/autofs)
-[![Puppet Forge](https://img.shields.io/puppetforge/e/dhollinger/autofs.svg?style=flat-square)](https://forge.puppet.com/dhollinger/autofs)
-[![Puppet Forge](https://img.shields.io/puppetforge/f/dhollinger/autofs.svg?style=flat-square)](https://forge.puppet.com/dhollinger/autofs)
+[![Travis branch](https://img.shields.io/travis/voxpupuli/puppet-autofs/master.svg?style=flat-square)](https://travis-ci.org/voxpupuli/puppet-autofs)
+[![Puppet Forge](https://img.shields.io/puppetforge/v/puppet/autofs.svg?style=flat-square)](https://forge.puppetlabs.com/puppet/autofs)
+[![Puppet Forge](https://img.shields.io/puppetforge/dt/puppet/autofs.svg?style=flat-square)](https://forge.puppet.com/puppet/autofs)
+[![Puppet Forge](https://img.shields.io/puppetforge/e/puppet/autofs.svg?style=flat-square)](https://forge.puppet.com/puppet/autofs)
+[![Puppet Forge](https://img.shields.io/puppetforge/f/puppet/autofs.svg?style=flat-square)](https://forge.puppet.com/puppet/autofs)
 
 #### Table of Contents
 1. [Description - - What the module does and why it is useful](#description)
