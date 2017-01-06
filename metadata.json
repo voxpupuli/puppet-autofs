@@ -1,7 +1,7 @@
 {
-  "name": "dhollinger-autofs",
+  "name": "puppet-autofs",
   "version": "2.0.1",
-  "author": "David Hollinger III",
+  "author": "Vox Pupuli",
   "summary": "Module for installing and managing autofs",
   "license": "Apache-2.0",
   "source": "https://github.com/voxpupuli/puppet-autofs.git",
