@@ -1,11 +1,11 @@
 Autofs Puppet Module
 ====================
 
-[![Travis branch](https://img.shields.io/travis/dhollinger/autofs-puppet/master.svg?style=flat-square)](https://travis-ci.org/dhollinger/autofs-puppet)
-[![Puppet Forge](https://img.shields.io/puppetforge/v/dhollinger/autofs.svg?style=flat-square)](https://forge.puppetlabs.com/dhollinger/autofs)
-[![Puppet Forge](https://img.shields.io/puppetforge/dt/dhollinger/autofs.svg?style=flat-square)](https://forge.puppet.com/dhollinger/autofs)
-[![Puppet Forge](https://img.shields.io/puppetforge/e/dhollinger/autofs.svg?style=flat-square)](https://forge.puppet.com/dhollinger/autofs)
-[![Puppet Forge](https://img.shields.io/puppetforge/f/dhollinger/autofs.svg?style=flat-square)](https://forge.puppet.com/dhollinger/autofs)
+[![Travis branch](https://img.shields.io/travis/voxpupuli/puppet-autofs/master.svg?style=flat-square)](https://travis-ci.org/voxpupuli/puppet-autofs)
+[![Puppet Forge](https://img.shields.io/puppetforge/v/puppet/autofs.svg?style=flat-square)](https://forge.puppetlabs.com/puppet/autofs)
+[![Puppet Forge](https://img.shields.io/puppetforge/dt/puppet/autofs.svg?style=flat-square)](https://forge.puppet.com/puppet/autofs)
+[![Puppet Forge](https://img.shields.io/puppetforge/e/puppet/autofs.svg?style=flat-square)](https://forge.puppet.com/puppet/autofs)
+[![Puppet Forge](https://img.shields.io/puppetforge/f/puppet/autofs.svg?style=flat-square)](https://forge.puppet.com/puppet/autofs)
 
 #### Table of Contents
 1. [Description - - What the module does and why it is useful](#description)
@@ -201,16 +201,12 @@ Limitations
 Release 2.0.0 (and above) only support Puppet 4.x and Puppet Enterprise 2015.2.0 or newer
 
 #### Puppet 3.x Compatibility
-Puppet 3.x was End of Life starting January 1st, 2017, if Puppet 3.x functionality is still needed, please install using one of the following methods:
-* Manually: `puppet module install dhollinger-autofs --version 1.4.5`
-* Puppetfile: `mod 'dhollinger-autofs', '1.4.5'`
-* Git: `git clone git@github.com:dhollinger/autofs-puppet.git -b 1.4.5 <module_path>/autofs`
+Puppet 3.x was End of Life starting January 1st, 2017, if Puppet 3.x functionality is still needed, please install using one of the following method:
+* `git clone git@github.com:voxpupuli/puppet-autofs.git -b puppet3 <module_path>/autofs`
 
 Support for Puppet 3.x Functionality:
-* No new features will be added to the 1.4.x/Puppet 3.x branches.
-* No new deployments will be issued Puppet Forge.
-* Will still accept Issues and Pull Requests until June 30, 2017.
-  * Tag issues with `legacy` tag.
+* No new features will be added to the puppet3 branch.
+* No new deployments will be issued to the Puppet Forge.
 
 #### Operating Systems
 

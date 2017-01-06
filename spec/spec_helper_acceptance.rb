@@ -1,16 +1,10 @@
 require 'beaker-rspec/spec_helper'
 require 'beaker-rspec/helpers/serverspec'
 require 'beaker/puppet_install_helper'
-require 'rspec/retry'
 
 RSpec.configure do |c|
   # Project root
   module_root = File.expand_path(File.join(File.dirname(__FILE__), '..'))
-
-  # show retry status in spec process
-  c.verbose_retry = true
-  # show exception that triggers a retry if verbose_retry is set to true
-  c.display_try_failure_messages = true
 
   # Configure all nodes in nodeset
   c.before :suite do

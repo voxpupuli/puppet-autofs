@@ -1,3 +1,15 @@
+## Release 2.0.1
+### Summary
+This release migrates the module from dhollinger to VoxPupuli under the Puppet
+namespace.
+
+#### Changes
+- Migrate to VoxPupuli
+- Update README badges
+- Update Puppet Strings urls
+- Cleanup code to pass Rubocop and Puppet-Lint checks
+- Improve the `autofs::mounts` tests
+
 ## Release 2.0.0
 ### Summary
 This release removes unused parameters and adds Puppet 4.x Data Types to the module's
