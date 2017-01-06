@@ -4,9 +4,9 @@
   "author": "David Hollinger III",
   "summary": "Module for installing and managing autofs",
   "license": "Apache-2.0",
-  "source": "https://github.com/dhollinger/autofs-puppet.git",
-  "project_page": "https://dhollinger.github.io/autofs-puppet/",
-  "issues_url": "https://github.com/dhollinger/autofs-puppet/issues",
+  "source": "https://github.com/voxpupuli/puppet-autofs.git",
+  "project_page": "https://voxpupuli.org/puppet-autofs",
+  "issues_url": "https://voxpupuli.org/puppet-autofs/issues",
   "tags": [
     "autofs",
     "automount",
