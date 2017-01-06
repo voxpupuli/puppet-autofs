@@ -4,7 +4,7 @@
 # configuration files.
 #
 # @see https://voxpupuli.org/puppet-autofs Home
-# # @see https://voxpupuli.org/puppet-autofs/puppet_classes/autofs.html puppet_classes::autofs
+# @see https://voxpupuli.org/puppet-autofs/puppet_classes/autofs.html puppet_classes::autofs
 # @see https://www.github.com/voxpupuli/autofs-puppet Github
 # @see https://forge.puppet.com/puppet/autofs Puppet Forge
 #
