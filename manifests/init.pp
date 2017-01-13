@@ -9,10 +9,23 @@
 # @see https://www.github.com/voxpupuli/autofs-puppet Github
 # @see https://forge.puppet.com/puppet/autofs Puppet Forge
 #
+# @author VoxPupuli <voxpupuli@groups.io>
 # @author David Hollinger III <david.hollinger@moduletux.com>
 #
 # @example Declaring the autofs class
 #    include autofs
+#
+# @example using hiera with automatic lookup
+#    ---
+#    autofs::mounts:
+#      home:
+#        mount: '/home'
+#        mapfile: '/etc/auto.home'
+#        mapcontents:
+#          - '* -user,rw,soft,intr,rsize=32768,wsize=32768,tcp,nfsvers=3,noacl server.example.com:/path/to/home/shares'
+#        options: '--timeout=120'
+#        order: 01
+#
 #
 # @param mounts the options to build the autofs config from
 # @option mounts [String] :mount Location autofs will mount the share
@@ -35,12 +48,12 @@
 # @param map_dir string parameter used to set the directory for use_map_dir
 #
 class autofs (
-  Hash $mounts         = {}
+  Hash $mounts = {}
 ) {
   contain '::autofs::package'
   contain '::autofs::service'
 
   if ( $mounts != {} ) {
-    class { '::autofs::mounts': }
+    create_resources('autofs::mount', hiera_hash($mounts))
   }
 }
