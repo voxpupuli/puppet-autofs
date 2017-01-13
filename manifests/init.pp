@@ -44,16 +44,15 @@
 # @option mounts [Array] :mapcontents Mount point options and parameters. Each
 #   array element represents a line in the configuration file.
 # @option mounts [Boolean] :replace Enforce the configuration state or not.
-# @param use_map_dir boolean parameter determining the use of auto.master.d
-# @param map_dir string parameter used to set the directory for use_map_dir
 #
 class autofs (
-  Hash $mounts = {}
+  Optional[Hash] $mounts = undef
 ) {
   contain '::autofs::package'
   contain '::autofs::service'
 
-  if ( $mounts != {} ) {
-    create_resources('autofs::mount', hiera_hash($mounts))
+  if $mounts != undef {
+    $data = hiera_hash('autofs::mounts', $mounts)
+    create_resources('autofs::mount', $data)
   }
 }

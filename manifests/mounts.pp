@@ -9,6 +9,6 @@
 # @see https://forge.puppet.com/puppet/autofs Puppet Forge
 #
 # @author David Hollinger III <david.hollinger@moduletux.com>
-class autofs::mounts( Hash $mount ) {
+class autofs::mounts {
   deprecation('autofs::mounts', 'Calling autofs::mounts is deprecated and will be removed in a future release.')
 }
