@@ -238,7 +238,8 @@ Development
 
 Please see the [CONTRIBUTING.md](CONTRIBUTING.md) file for instructions regarding development environments and testing.
 
-Support
+Authors
 -------
 
-David Hollinger: [david.hollinger@moduletux.com](mailto:david.hollinger@moduletux.com)
+* Vox Pupuli: [voxpupuli@groups.io](mailto:voxpupuli@groups.io)
+* David Hollinger: [david.hollinger@moduletux.com](mailto:david.hollinger@moduletux.com)
