@@ -16,8 +16,8 @@ describe 'autofs', type: :class do
     context 'main init tests' do
       let(:facts) do
         {
-            osfamily: os.to_s,
-            concat_basedir: '/etc'
+          osfamily: os.to_s,
+          concat_basedir: '/etc'
         }
       end
       it { is_expected.to compile }
@@ -36,12 +36,12 @@ describe 'autofs', type: :class do
     let(:params) { { mounts: mounts } }
     it 'is expected to have auto.home hiera values' do
       expect(mounts).to include(
-                            'mount' => '/home',
-                            'mapfile' => '/etc/auto.home',
-                            'mapcontents' => %w(test foo bar),
-                            'options' => '--timeout=120',
-                            'order' => 1
-                        )
+        'mount' => '/home',
+        'mapfile' => '/etc/auto.home',
+        'mapcontents' => %w(test foo bar),
+        'options' => '--timeout=120',
+        'order' => 1
+      )
     end
   end
 
@@ -50,12 +50,12 @@ describe 'autofs', type: :class do
     let(:params) { { mounts: mounts } }
     it 'is expected to have direct mount hiera values' do
       expect(mounts).to include(
-                            'mount' => '/-',
-                            'mapfile' => '/etc/auto.home',
-                            'mapcontents' => %w(/home\ /test /home\ /foo /home\ /bar),
-                            'options' => '--timeout=120',
-                            'order' => 1
-                        )
+        'mount' => '/-',
+        'mapfile' => '/etc/auto.home',
+        'mapcontents' => %w(/home\ /test /home\ /foo /home\ /bar),
+        'options' => '--timeout=120',
+        'order' => 1
+      )
     end
   end
 
@@ -64,13 +64,13 @@ describe 'autofs', type: :class do
     let(:params) { { mounts: mounts } }
     it 'is expected to have auto.master.d hiera values' do
       expect(mounts).to include(
-                            'mount' => '/home',
-                            'mapfile' => '/etc/auto.home',
-                            'mapcontents' => %w(*\ -user,rw,soft,intr,rsize=32768,wsize=32768,tcp,nfsvers=3,noacl\ server.example.com:/path/to/home/shares),
-                            'options' => '--timeout=120',
-                            'order' => 1,
-                            'use_dir' => true
-                        )
+        'mount' => '/home',
+        'mapfile' => '/etc/auto.home',
+        'mapcontents' => %w(*\ -user,rw,soft,intr,rsize=32768,wsize=32768,tcp,nfsvers=3,noacl\ server.example.com:/path/to/home/shares),
+        'options' => '--timeout=120',
+        'order' => 1,
+        'use_dir' => true
+      )
     end
   end
 
@@ -81,6 +81,4 @@ describe 'autofs', type: :class do
       is_expected.to compile.and_raise_error(%r{parameter 'mounts' expects a Hash value})
     end
   end
-
-
 end
