@@ -5,10 +5,12 @@
 #
 # @see https://voxpupuli.org/puppet-autofs Home
 # @see autofs
-# @see https://www.github.com/voxpupuli/autofs-puppet Github
+# @see https://www.github.com/voxpupuli/puppet-autofs Github
 # @see https://forge.puppet.com/puppet/autofs Puppet Forge
 #
+# @author VoxPupuli <voxpupuli@groups.io>
 # @author David Hollinger III <david.hollinger@moduletux.com>
+#
 class autofs::mounts {
   deprecation('autofs::mounts', 'Calling autofs::mounts is deprecated and will be removed in a future release.')
 }
