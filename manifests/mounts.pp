@@ -9,20 +9,6 @@
 # @see https://forge.puppet.com/puppet/autofs Puppet Forge
 #
 # @author David Hollinger III <david.hollinger@moduletux.com>
-#
-# @example using autofs::mounts class with hiera
-#    ---
-#    autofs::mounts:
-#      home:
-#        mount: '/home'
-#        mapfile: '/etc/auto.home'
-#        mapcontents:
-#          - '* -user,rw,soft,intr,rsize=32768,wsize=32768,tcp,nfsvers=3,noacl server.example.com:/path/to/home/shares'
-#        options: '--timeout=120'
-#        order: 01
-#
-class autofs::mounts() {
-  $mount = hiera_hash('autofs::mounts', [])
-
-  create_resources('autofs::mount', $mount)
+class autofs::mounts {
+  deprecation('autofs::mounts', 'Calling autofs::mounts is deprecated and will be removed in a future release.')
 }
