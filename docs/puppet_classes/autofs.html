@@ -6,7 +6,7 @@
 <title>
   Puppet Class: autofs
   
-    &mdash; Documentation by YARD 0.9.7
+    &mdash; Documentation by YARD 0.9.8
   
 </title>
 
@@ -93,6 +93,20 @@ file names.</p>
       
       <pre class="example code"><code><span class='id identifier rubyid_include'>include</span> <span class='id identifier rubyid_autofs'>autofs</span></code></pre>
     
+      
+        <p class="example_title"><div class='inline'><p>using hiera with automatic lookup</p>
+</div></p>
+      
+      <pre class="example code"><code>---
+autofs::mounts:
+  home:
+    mount: &#39;/home&#39;
+    mapfile: &#39;/etc/auto.home&#39;
+    mapcontents:
+      - &#39;* -user,rw,soft,intr,rsize=32768,wsize=32768,tcp,nfsvers=3,noacl server.example.com:/path/to/home/shares&#39;
+    options: &#39;--timeout=120&#39;
+    order: 01</code></pre>
+    
   </div>
 <p class="tag_title">Parameters:</p>
 <ul class="param">
@@ -102,44 +116,14 @@ file names.</p>
         <span class='name'>mounts</span>
       
       
-        <span class='type'>(<tt>Hash</tt>)</span>
+        <span class='type'>(<tt>Optional[Hash]</tt>)</span>
       
       
-        <em class="default">(defaults to: <tt>{}</tt>)</em>
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
       
       
         &mdash;
         <div class='inline'><p>the options to build the autofs config from</p>
-</div>
-      
-    </li>
-  
-    <li>
-      
-        <span class='name'>use_map_dir</span>
-      
-      
-        <span class='type'></span>
-      
-      
-      
-        &mdash;
-        <div class='inline'><p>boolean parameter determining the use of auto.master.d</p>
-</div>
-      
-    </li>
-  
-    <li>
-      
-        <span class='name'>map_dir</span>
-      
-      
-        <span class='type'></span>
-      
-      
-      
-        &mdash;
-        <div class='inline'><p>string parameter used to set the directory for use_map_dir</p>
 </div>
       
     </li>
@@ -312,6 +296,17 @@ array element represents a line in the configuration file.</p>
       
       
         
+        <div class='inline'><p>Vox Pupuli <a href="mailto:voxpupuli@groups.io">voxpupuli@groups.io</a></p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+      
+      
+      
+        
         <div class='inline'><p>David Hollinger III <a href="mailto:david.hollinger@moduletux.com">david.hollinger@moduletux.com</a></p>
 </div>
       
@@ -326,28 +321,30 @@ array element represents a line in the configuration file.</p>
         <pre class="lines">
 
 
-37
-38
-39
-40
-41
-42
-43
-44
-45
-46</pre>
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58</pre>
       </td>
       <td>
-        <pre class="code"><span class="info file"># File 'manifests/init.pp', line 37</span>
+        <pre class="code"><span class="info file"># File 'manifests/init.pp', line 48</span>
 
 class autofs (
-  Hash $mounts         = {}
+  Optional[Hash] $mounts = undef
 ) {
   contain &#39;::autofs::package&#39;
   contain &#39;::autofs::service&#39;
 
-  if ( $mounts != {} ) {
-    class { &#39;::autofs::mounts&#39;: }
+  if $mounts {
+    $data = hiera_hash(&#39;autofs::mounts&#39;, $mounts)
+    create_resources(&#39;autofs::mount&#39;, $data)
   }
 }</pre>
       </td>
@@ -357,9 +354,9 @@ class autofs (
 </div>
 
       <div id="footer">
-  Generated on Fri Jan 13 12:19:46 2017 by
+  Generated on Sat Jan 14 13:46:48 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.7 (ruby-2.3.3).
+  0.9.8 (ruby-2.2.6).
 </div>
 
     </div>
