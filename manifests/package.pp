@@ -7,7 +7,7 @@
 # @see https://www.github.com/voxpupuli/puppet-autofs Github
 # @see https://forge.puppet.com/puppet/autofs Puppet Forge
 #
-# @author VoxPupuli <voxpupuli@groups.io>
+# @author Vox Pupuli <voxpupuli@groups.io>
 # @author David Hollinger III <david.hollinger@moduletux.com>
 #
 # This class will determine if the OS running is a supported Linux distribution

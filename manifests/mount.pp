@@ -8,7 +8,7 @@
 # @see https://www.github.com/voxpupuli/puppet-autofs Github
 # @see https://forge.puppet.com/puppet/autofs Puppet Forge
 #
-# @author VoxPupuli <voxpupuli@groups.io>
+# @author Vox Pupuli <voxpupuli@groups.io>
 # @author David Hollinger III <david.hollinger@moduletux.com>
 #
 # @example Using the autofs::mount defined type to setup automount for user home directories.
