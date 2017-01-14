@@ -1,6 +1,26 @@
 require 'spec_helper_acceptance'
 
 describe 'autofs' do
+  def cleanup_helper
+    pp = <<-EOS
+      package { 'autofs': ensure => 'absent', }
+      file { '/etc/auto.home': ensure => 'absent', }
+      file { '/etc/auto.master': ensure => 'absent', }
+      file { '/etc/auto.confdir': ensure => 'absent', }
+      file { '/etc/auto.master.d':
+        ensure => 'absent',
+        recurse => true,
+        purge => true,
+        force => true,
+      }
+    EOS
+    apply_manifest(pp, catch_failures: true)
+  end
+
+  before(:context) do
+    cleanup_helper
+  end
+
   it 'works with no errors' do
     pp = <<-EOS
       class { 'autofs': }
@@ -11,22 +31,7 @@ describe 'autofs' do
   end
 
   describe 'autofs::mount' do
-    context 'basic tests' do
-      it 'applies' do
-        pp = <<-EOS
-          class { 'autofs': }
-          autofs::mount { 'home':
-            mount       => '/home',
-            mapfile     => '/etc/auto.home',
-            mapcontents => ['test_home -o rw /mnt/test_home'],
-            options     => '--timeout=120',
-            order       => 01
-          }
-        EOS
-
-        apply_manifest(pp, catch_failures: true)
-      end
-
+    shared_examples 'basic tests' do
       describe file('/etc/auto.master') do
         it 'exists and have content' do
           is_expected.to exist
@@ -59,7 +64,60 @@ describe 'autofs' do
       end
     end
 
+    context 'basic tests - mount defined with defined type' do
+      before(:context) do
+        cleanup_helper
+      end
+
+      it 'applies' do
+        pp = <<-EOS
+          class { 'autofs': }
+          autofs::mount { 'home':
+            mount       => '/home',
+            mapfile     => '/etc/auto.home',
+            mapcontents => ['test_home -o rw /mnt/test_home'],
+            options     => '--timeout=120',
+            order       => 01
+          }
+        EOS
+
+        apply_manifest(pp, catch_failures: true)
+      end
+
+      include_examples 'basic tests'
+    end
+
+    context 'basic tests - mount defined by autofs class parameter' do
+      before(:context) do
+        cleanup_helper
+      end
+
+      it 'applies' do
+        pp = <<-EOS
+          class { 'autofs':
+            mounts =>  {
+              'home' => {
+                mount       => '/home',
+                mapfile     => '/etc/auto.home',
+                mapcontents => ['test_home -o rw /mnt/test_home'],
+                options     => '--timeout=120',
+                order       => 01
+              },
+            },
+          }
+        EOS
+
+        apply_manifest(pp, catch_failures: true)
+      end
+
+      include_examples 'basic tests'
+    end
+
     context 'master directory test' do
+      before(:context) do
+        cleanup_helper
+      end
+
       it 'applies' do
         pp = <<-EOS
           class { 'autofs': }
