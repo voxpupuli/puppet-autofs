@@ -51,7 +51,7 @@ class autofs (
   contain '::autofs::package'
   contain '::autofs::service'
 
-  if $mounts != undef {
+  if $mounts {
     $data = hiera_hash('autofs::mounts', $mounts)
     create_resources('autofs::mount', $data)
   }
