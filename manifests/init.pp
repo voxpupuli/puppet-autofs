@@ -6,7 +6,7 @@
 # file names.
 #
 # @see https://voxpupuli.org/puppet-autofs Home
-# @see https://www.github.com/voxpupuli/autofs-puppet Github
+# @see https://www.github.com/voxpupuli/puppet-autofs Github
 # @see https://forge.puppet.com/puppet/autofs Puppet Forge
 #
 # @author Vox Pupuli <voxpupuli@groups.io>
