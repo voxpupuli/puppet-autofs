@@ -47,18 +47,11 @@ The module includes a single class:
 include autofs
 ```
 
-By default this installs and starts the autofs service with the default master
-file. No parameters exist yet, but are in active development to allow for more
-granular control.
+By default this installs and starts the autofs service with the module's default master
+file. 
 
-To manage the service, use the following code in your profile:
+Additional granularity will be coming in release 3.0.0
 
-```puppet
-class { 'autofs':
-  service_enable => false,
-  service_ensure => 'stopped'
-}
-```
 
 ### Map Files
 
