@@ -4,8 +4,25 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not impact the functionality of the module.
 
-## [2.1.0](https://github.com/voxpupuli/puppet-autofs/tree/2.1.0) (2017-01-14)
-[Full Changelog](https://github.com/voxpupuli/puppet-autofs/compare/v2.0.1...2.1.0)
+## [2.1.1](https://github.com/voxpupuli/puppet-autofs/tree/2.1.1) (2017-03-08)
+[Full Changelog](https://github.com/voxpupuli/puppet-autofs/compare/v2.1.0...2.1.1)
+
+**Fixed bugs:**
+
+- Instructions for managing autofs service appear to be incorrect [\#19](https://github.com/voxpupuli/puppet-autofs/issues/19)
+
+**Closed issues:**
+
+- Migrate autofs module to Vox Pupuli [\#1](https://github.com/voxpupuli/puppet-autofs/issues/1)
+
+**Merged pull requests:**
+
+- Remove invalid documentation [\#20](https://github.com/voxpupuli/puppet-autofs/pull/20) ([dhollinger](https://github.com/dhollinger))
+- update project information [\#17](https://github.com/voxpupuli/puppet-autofs/pull/17) ([benkevan](https://github.com/benkevan))
+- General cleanup and corrections [\#15](https://github.com/voxpupuli/puppet-autofs/pull/15) ([dhollinger](https://github.com/dhollinger))
+
+## [v2.1.0](https://github.com/voxpupuli/puppet-autofs/tree/v2.1.0) (2017-01-14)
+[Full Changelog](https://github.com/voxpupuli/puppet-autofs/compare/v2.0.1...v2.1.0)
 
 **Implemented enhancements:**
 
@@ -17,8 +34,9 @@ These should not impact the functionality of the module.
 
 **Merged pull requests:**
 
-- Update puppet-strings docs [\#10](https://github.com/voxpupuli/puppet-autofs/pull/10) ([dhollinger](https://github.com/dhollinger))
-- Migrate beaker tasks to ruby240/trusty env [\#8](https://github.com/voxpupuli/puppet-autofs/pull/8) ([bastelfreak](https://github.com/bastelfreak))
+- Prepare for 2.1.0 release [\#12](https://github.com/voxpupuli/puppet-autofs/pull/12) ([dhollinger](https://github.com/dhollinger))
+- Updates puppet-strings docs [\#10](https://github.com/voxpupuli/puppet-autofs/pull/10) ([dhollinger](https://github.com/dhollinger))
+-  migrate beaker tasks to ruby240/trusty env [\#8](https://github.com/voxpupuli/puppet-autofs/pull/8) ([bastelfreak](https://github.com/bastelfreak))
 - Update documentation [\#7](https://github.com/voxpupuli/puppet-autofs/pull/7) ([dhollinger](https://github.com/dhollinger))
 - Prepare for 2.0.1 release [\#4](https://github.com/voxpupuli/puppet-autofs/pull/4) ([dhollinger](https://github.com/dhollinger))
 

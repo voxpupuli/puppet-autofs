@@ -190,6 +190,10 @@ Defaults to `false`.
 Limitations
 ------------
 
+#### Deprecations
+Directly calling the `autofs::package` and `autofs::service` classes is deprecated in this
+release. They will be private classes in the next release.
+
 #### Puppet platforms
 Release 2.0.0 (and above) only support Puppet 4.x and Puppet Enterprise 2015.2.0 or newer
 
