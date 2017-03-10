@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not impact the functionality of the module.
 
-## [2.1.1](https://github.com/voxpupuli/puppet-autofs/tree/2.1.1) (2017-03-08)
+## [v2.1.1](https://github.com/voxpupuli/puppet-autofs/tree/2.1.1) (2017-03-08)
 [Full Changelog](https://github.com/voxpupuli/puppet-autofs/compare/v2.1.0...2.1.1)
 
 **Fixed bugs:**
