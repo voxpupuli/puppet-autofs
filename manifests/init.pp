@@ -12,8 +12,23 @@
 # @author Vox Pupuli <voxpupuli@groups.io>
 # @author David Hollinger III <david.hollinger@moduletux.com>
 #
+# To use this module, simply declare it in your manifest.
 # @example Declaring the autofs class
 #    include autofs
+#
+# The module now supports the ability to not only enable autofs,
+# but to also disable or uninstall it completely.
+# @example Removing the package
+#    class { 'autofs':
+#      package_ensure => 'absent',
+#    }
+#
+# @example Disable the autofs service
+#    class { 'autofs':
+#      service_ensure => 'stopped',
+#      service_enable => false,
+#    }
+#
 #
 # @example using hiera with automatic lookup
 #    ---
