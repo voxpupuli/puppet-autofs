@@ -28,6 +28,8 @@ describe 'autofs', type: :class do
       # Check Package and service
       it { is_expected.to contain_package('autofs').with_ensure('installed') }
       it { is_expected.to contain_service('autofs').that_requires('Package[autofs]') }
+      it { is_expected.to contain_service('autofs').with_ensure('running') }
+      it { is_expected.to contain_service('autofs').with_enable(true) }
     end
   end
 
