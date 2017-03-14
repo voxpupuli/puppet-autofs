@@ -4,21 +4,18 @@ require 'hiera'
 describe 'autofs', type: :class do
   let(:hiera_config) { 'spec/fixtures/hiera/hiera.yaml' }
   hiera = Hiera.new(config: 'spec/fixtures/hiera/hiera.yaml')
-  opsys = %w(
-    Debian
-    Ubuntu
-    RedHat
-    CentOS
-    Suse
-  )
 
-  opsys.each do |os|
+  on_supported_os.each do |os, facts|
+    context "on #{os}" do
+      let :facts do
+        facts
+      end
+    end
     context 'main init tests' do
       let(:facts) do
-        {
-          osfamily: os.to_s,
+        facts.merge({
           concat_basedir: '/etc'
-        }
+        })
       end
       it { is_expected.to compile }
       it { is_expected.to contain_class('autofs') }
