@@ -50,7 +50,25 @@ include autofs
 By default this installs and starts the autofs service with the module's default master
 file. 
 
-Additional granularity will be coming in release 3.0.0
+You can also manage the state of the autofs package or service.
+
+By default the module will install the autofs package and start/enable the autofs service.
+You can configure this by using the parameters defined in the main init class.
+
+For example, to ensure the package is absent:
+```puppet
+class { 'autofs':
+  package_ensure => 'absent',
+}
+```
+
+To ensure that a service is disabled and not running:
+```puppet
+class { 'autofs':
+  service_ensure => 'stopped',
+  service_enable => false,
+}
+```
 
 
 ### Map Files
