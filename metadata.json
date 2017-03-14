@@ -79,6 +79,13 @@
         "24",
         "25"
       ]
+    },
+    {
+      "operatingsystem": "Solaris",
+      "operatingsystemrelease": [
+        "10",
+        "11"
+      ]
     }
   ],
   "requirements": [
