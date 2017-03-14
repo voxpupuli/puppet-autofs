@@ -1,6 +1,6 @@
 {
   "name": "puppet-autofs",
-  "version": "2.1.2-rc0",
+  "version": "3.0.0-rc1",
   "author": "Vox Pupuli",
   "summary": "Module for installing and managing autofs",
   "license": "Apache-2.0",
@@ -78,13 +78,6 @@
       "operatingsystemrelease": [
         "24",
         "25"
-      ]
-    },
-    {
-      "operatingsystem": "Solaris",
-      "operatingsystemrelease": [
-        "10",
-        "11"
       ]
     }
   ],
