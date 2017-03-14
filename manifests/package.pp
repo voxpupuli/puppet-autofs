@@ -22,7 +22,7 @@ class autofs::package {
   Package {
     ensure => $autofs::package_ensure,
   }
-  case $::osfamily {
+  case $facts['osfamily'] {
     'Debian', 'Ubuntu': {
       package { 'autofs': }
     }
@@ -37,7 +37,7 @@ class autofs::package {
       # Block to prevent failures
     }
     default: {
-      fail("${::operatingsystem} not supported.")
+      fail("${facts['operatingsystem']} not supported.")
     }
   }
 }
