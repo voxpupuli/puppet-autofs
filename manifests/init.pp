@@ -64,18 +64,12 @@
 # @param service_enable Determines if the service should start with the system boot. true
 #   will start the autofs service on boot. false will not start the autofs service
 #   on boot.
-# @param service_restart Determines if the service has a restart command. If true,
-#   puppet will use the restart command to restart the service. If false, the
-#   stop, then start commands will be used instead.
-# @param service_status Determines if service has a status command.
 #
 class autofs (
   Optional[Hash] $mounts                       = undef,
   String $package_ensure                       = installed,
   Enum[ 'stopped', 'running' ] $service_ensure = 'running',
   Boolean $service_enable                      = true,
-  Boolean $service_restart                     = true,
-  Boolean $service_status                      = true,
 ) {
   contain '::autofs::package'
   contain '::autofs::service'
