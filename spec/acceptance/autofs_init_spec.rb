@@ -219,7 +219,14 @@ describe 'autofs' do
       end
 
       describe service('autofs') do
-        xit { is_expected.not_to be_running }
+        it { is_expected.not_to be_running }
+      end
+      
+      # Skipped until we can pinpoint why serverspec
+      # doesn't properly check if an Upstart service
+      # is enabled or not
+      describe service('autofs') do
+        xit { is_expected.not_to be_enabled }
       end
     end
   end
