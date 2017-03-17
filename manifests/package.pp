@@ -32,6 +32,9 @@ class autofs::package {
     'Suse': {
       package { 'autofs': }
     }
+    'Solaris': {
+      # Already installed in Solaris
+    }
     default: {
       fail("${facts['operatingsystem']} not supported.")
     }
