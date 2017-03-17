@@ -67,12 +67,14 @@
 #
 class autofs (
   Optional[Hash] $mounts                       = undef,
-  String $package_ensure                       = installed,
+  String $package_ensure                       = 'installed',
   Enum[ 'stopped', 'running' ] $service_ensure = 'running',
   Boolean $service_enable                      = true,
 ) {
   contain '::autofs::package'
-  contain '::autofs::service'
+  unless $package_ensure == 'absent' {
+    contain '::autofs::service'
+  }
 
   if $mounts {
     $data = hiera_hash('autofs::mounts', $mounts)
