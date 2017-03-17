@@ -30,13 +30,11 @@ describe 'autofs', type: :class do
 
     context 'disable package' do
       let(:facts) do
-        facts.merge({
-            concat_basedir: '/etc'
-        })
+        facts.merge(concat_basedir: '/etc')
       end
       let(:params) do
         {
-            package_ensure: 'absent'
+          package_ensure: 'absent'
         }
       end
       it { is_expected.to contain_package('autofs').with_ensure('absent') }
