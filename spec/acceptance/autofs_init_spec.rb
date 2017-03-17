@@ -220,7 +220,6 @@ describe 'autofs' do
 
       describe service('autofs') do
         it { is_expected.not_to be_running }
-        it { is_expected.not_to be_enabled }
       end
     end
   end
