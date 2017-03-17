@@ -2,6 +2,8 @@ require 'beaker-rspec/spec_helper'
 require 'beaker-rspec/helpers/serverspec'
 require 'beaker/puppet_install_helper'
 
+run_puppet_install_helper unless ENV['BEAKER_provision'] == 'no'
+
 RSpec.configure do |c|
   # Project root
   module_root = File.expand_path(File.join(File.dirname(__FILE__), '..'))
@@ -10,7 +12,6 @@ RSpec.configure do |c|
   c.before :suite do
     # Install module and deps
     hosts.each do |host|
-      install_puppet_agent_on(hosts, options)
       install_dev_puppet_module_on(host, source: module_root, module_name: 'autofs',
                                          target_module_path: '/opt/puppetlabs/puppet/modules')
       # Due to RE-6764, running yum update renders the machine unable to install
