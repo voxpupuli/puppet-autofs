@@ -15,7 +15,7 @@ describe 'autofs', type: :class do
         let(:facts) do
           facts.merge(concat_basedir: '/etc')
         end
-        it { is_expected.to compile }
+        it { is_expected.to compile.with_all_deps }
         it { is_expected.to contain_class('autofs') }
         it { is_expected.to contain_class('autofs::package') }
         it { is_expected.to contain_class('autofs::service') }
