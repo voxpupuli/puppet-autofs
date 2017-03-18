@@ -20,9 +20,9 @@
 #
 class autofs::package {
   Package {
-    ensure => installed,
+    ensure => $autofs::package_ensure,
   }
-  case $::osfamily {
+  case $facts['os']['family'] {
     'Debian', 'Ubuntu': {
       package { 'autofs': }
     }
@@ -33,11 +33,10 @@ class autofs::package {
       package { 'autofs': }
     }
     'Solaris': {
-      # Solaris includes autofs
-      # Block to prevent failures
+      # Already installed in Solaris
     }
     default: {
-      fail("${::operatingsystem} not supported.")
+      fail("${facts['operatingsystem']} not supported.")
     }
   }
 }

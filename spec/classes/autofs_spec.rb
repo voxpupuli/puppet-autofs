@@ -4,30 +4,40 @@ require 'hiera'
 describe 'autofs', type: :class do
   let(:hiera_config) { 'spec/fixtures/hiera/hiera.yaml' }
   hiera = Hiera.new(config: 'spec/fixtures/hiera/hiera.yaml')
-  opsys = %w(
-    Debian
-    Ubuntu
-    RedHat
-    CentOS
-    Suse
-  )
 
-  opsys.each do |os|
-    context 'main init tests' do
+  on_supported_os.select { |_, f| f[:os]['family'] != 'Solaris' }.each do |os, facts|
+    context "on #{os}" do
+      let :facts do
+        facts
+      end
+
+      context 'main init tests' do
+        let(:facts) do
+          facts.merge(concat_basedir: '/etc')
+        end
+        it { is_expected.to compile }
+        it { is_expected.to contain_class('autofs') }
+        it { is_expected.to contain_class('autofs::package') }
+        it { is_expected.to contain_class('autofs::service') }
+
+        # Check Package and service
+        it { is_expected.to contain_package('autofs').with_ensure('installed') }
+        it { is_expected.to contain_service('autofs').that_requires('Package[autofs]') }
+        it { is_expected.to contain_service('autofs').with_ensure('running') }
+        it { is_expected.to contain_service('autofs').with_enable(true) }
+      end
+    end
+
+    context 'disable package' do
       let(:facts) do
+        facts.merge(concat_basedir: '/etc')
+      end
+      let(:params) do
         {
-          osfamily: os.to_s,
-          concat_basedir: '/etc'
+          package_ensure: 'absent'
         }
       end
-      it { is_expected.to compile }
-      it { is_expected.to contain_class('autofs') }
-      it { is_expected.to contain_class('autofs::package') }
-      it { is_expected.to contain_class('autofs::service') }
-
-      # Check Package and service
-      it { is_expected.to contain_package('autofs').with_ensure('installed') }
-      it { is_expected.to contain_service('autofs').that_requires('Package[autofs]') }
+      it { is_expected.to contain_package('autofs').with_ensure('absent') }
     end
   end
 

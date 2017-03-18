@@ -175,5 +175,59 @@ describe 'autofs' do
         end
       end
     end
+
+    context 'package set to absent' do
+      before(:context) do
+        cleanup_helper
+      end
+
+      it 'applies' do
+        pp = <<-EOS
+          class { 'autofs':
+            package_ensure => 'absent',
+          }
+        EOS
+
+        apply_manifest(pp, catch_failures: true)
+        apply_manifest(pp, catch_changes: true)
+      end
+
+      describe package('autofs') do
+        it { is_expected.not_to be_installed }
+      end
+    end
+
+    context 'package installed but service disabled' do
+      before(:context) do
+        cleanup_helper
+      end
+
+      it 'applies' do
+        pp = <<-EOS
+          class { 'autofs':
+            service_ensure => 'stopped',
+            service_enable => false,
+          }
+        EOS
+
+        apply_manifest(pp, catch_failures: true)
+        apply_manifest(pp, catch_changes: true)
+      end
+
+      describe package('autofs') do
+        it { is_expected.to be_installed }
+      end
+
+      describe service('autofs') do
+        it { is_expected.not_to be_running }
+      end
+
+      # Skipped until we can pinpoint why serverspec
+      # doesn't properly check if an Upstart service
+      # is enabled or not
+      describe service('autofs') do
+        xit { is_expected.not_to be_enabled }
+      end
+    end
   end
 end

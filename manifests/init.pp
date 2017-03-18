@@ -12,8 +12,23 @@
 # @author Vox Pupuli <voxpupuli@groups.io>
 # @author David Hollinger III <david.hollinger@moduletux.com>
 #
+# To use this module, simply declare it in your manifest.
 # @example Declaring the autofs class
 #    include autofs
+#
+# The module now supports the ability to not only enable autofs,
+# but to also disable or uninstall it completely.
+# @example Removing the package
+#    class { 'autofs':
+#      package_ensure => 'absent',
+#    }
+#
+# @example Disable the autofs service
+#    class { 'autofs':
+#      service_ensure => 'stopped',
+#      service_enable => false,
+#    }
+#
 #
 # @example using hiera with automatic lookup
 #    ---
@@ -44,12 +59,22 @@
 # @option mounts [Array] :mapcontents Mount point options and parameters. Each
 #   array element represents a line in the configuration file.
 # @option mounts [Boolean] :replace Enforce the configuration state or not.
+# @param package_ensure Determines the state of the package. Can be set to: installed, absent, lastest, or a specific version string.
+# @param service_ensure Determines state of the service. Can be set to: running or stopped.
+# @param service_enable Determines if the service should start with the system boot. true
+#   will start the autofs service on boot. false will not start the autofs service
+#   on boot.
 #
 class autofs (
-  Optional[Hash] $mounts = undef
+  Optional[Hash] $mounts                       = undef,
+  String $package_ensure                       = 'installed',
+  Enum[ 'stopped', 'running' ] $service_ensure = 'running',
+  Boolean $service_enable                      = true,
 ) {
   contain '::autofs::package'
-  contain '::autofs::service'
+  unless $package_ensure == 'absent' {
+    contain '::autofs::service'
+  }
 
   if $mounts {
     $data = hiera_hash('autofs::mounts', $mounts)
