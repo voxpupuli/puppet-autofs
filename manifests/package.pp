@@ -1,3 +1,4 @@
+# @api private
 # Class: autofs::package
 #
 # The autofs::package class installs the autofs package.
@@ -18,7 +19,10 @@
 # If the code doesn't find a matching supported OS, then the Puppet run will fail
 # with a "OS not supported" message.
 #
+# This is a private class and cannot be called outside of the autofs module.
+#
 class autofs::package {
+  assert_private('Package class is private, please use main class parameters')
   Package {
     ensure => $autofs::package_ensure,
   }
