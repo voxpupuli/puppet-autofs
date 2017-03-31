@@ -101,7 +101,6 @@ The direct and execute parameters allow for the creation of indirect mounts, see
 
 In hiera, there's a `autofs::mounts` class you can configure, for example:
 ```yaml
----
 autofs::mounts:
   home:
     mount: '/home'
@@ -131,7 +130,6 @@ autofs::mount { 'foo':
 
 Hiera:
 ``` yaml
----
 autofs::mounts:
   foo:
     mount: '/-'
@@ -163,7 +161,6 @@ autofs::mount { 'home':
 
 Hiera:
 ```yaml
----
 autofs::mounts:
   home:
     mount: '/home'
@@ -175,53 +172,175 @@ autofs::mounts:
     use_dir: true
 ```
 
-Reference
-----------
+## Reference
 
-#### Parameters
-* **mount_name** - This is a logical, descriptive name for what what autofs will be
+### Classes
+
+#### Public Classes
+
+* autofs: Main class. Contains or calls all other classes or defines.
+
+#### Private Classes
+
+* autofs::package: Handles autofs packages.
+* autofs::service: Handles the service.
+
+### Parameters
+
+#### `mounts`
+
+Optional.
+
+Data type: Hash
+
+A hash of options that will build the configuration. This hash is passed to the Defined type.
+Each hash key is the equivalent to a parameter in the `autofs::mount` defined type.
+
+Default: `undef`
+
+#### `package_ensure`
+
+Data type: String
+
+Determines the state of the package. Can be set to: installed, absent, lastest, or a specific version string.
+
+Default: 'installed'
+
+#### `service_ensure`
+
+Data type: Enum['running', 'stopped']
+
+Determines state of the service.
+
+Default: 'running'
+
+#### `service_enable`
+
+Data type: Boolean
+
+Determines if the service should start with the system boot.
+
+Default: `true`
+
+### Defines
+
+#### Public Defines
+
+* autofs::mount: Builds the autofs configuration.
+
+### Parameters
+
+#### `mount_name`
+
+Data type: String
+
+This is a logical, descriptive name for what what autofs will be
 mounting. This is represented by the `home:` and `tmp:` entries above.
-* **mount** - This Mapping describes where autofs will be mounting to. This map
+
+#### `mount`
+
+Data type: Stblib::Absolutepath
+
+This Mapping describes where autofs will be mounting to. This map
 entry is referenced by concat as part of the generation of the /etc/auto.master
 file.
-* **mapfile** - This Mapping describes the name and path of the autofs map file.
+
+#### `mapfile`
+
+Data type: Stdlib::Absolutepath
+
+This Mapping describes the name and path of the autofs map file.
 This mapping is used in the auto.master generation, as well as generating the map
 file from the auto.map.erb template. This parameter is no longer required.
-* **mapcontent** - This Mapping describes the folders that will be mounted, the
+
+#### `mapcontents`
+
+Data type: Array
+
+This Mapping describes the folders that will be mounted, the
 mount options, and the path to the remote or local share to be mounted. Used in
 mapfile generation.
-* **options** - This Mapping describes the auto.master options to use (if any)
+
+Default: []
+
+#### `options`
+
+Optional.
+
+Data type: String
+
+This Mapping describes the auto.master options to use (if any)
 when mounting the automounts.
-* **order** - This Mapping describes where in the auto.master file the entry will
+
+Default: ''
+
+#### `order` 
+
+Data type: Integer
+
+This Mapping describes where in the auto.master file the entry will
 be placed. Order CANNOT be duplicated.
-* **master** - This Parameter sets the path to the auto.master file. Defaults to
-`/etc/auto.master`.
-* **map_dir** - This Parameter sets the path to the Autofs configuration directory
-for map files. Applies only to autofs 5.0.5 or later. Defaults to
-`/etc/auto.master.d`.
-* **use_dir** - This Parameter tells the module if it is going to use $map_dir.
-Defaults to `false`.
-* **direct** - Boolean to allow for indirect map. Defaults to true to be backwards compatible.
-* **execute** - Boolean to set the map to be executable. Defaults to false to be backward compatible.
-* **replace** - Boolean to set the map file to not be replaced. Defaults to true as Puppet File resource does.
+
+Default: `undef`
+
+#### `master`
+
+Data type: Stdlib::Absolutepath
+
+This Parameter sets the path to the auto.master file.
+
+Default: '/etc/auto.master'
+
+#### `map_dir`
+
+Data type: Stdlib::Absolutepath
+
+This Parameter sets the path to the Autofs configuration directory
+for map files. Applies only to autofs 5.0.5 or later. 
+
+Default: '/etc/auto.master.d'
+
+#### `use_dir`
+
+Data type: Boolean
+
+This Parameter tells the module if it is going to use $map_dir.
+
+Default: `false`
+
+#### `direct`
+
+Data type: Boolean
+
+Enable or disable indirect maps.
+
+Default: `true`
+
+#### `execute`
+
+Data type: Boolean
+
+Set mapfile to be executable.
+
+Default: `false`
+
+#### `replace`
+
+Data type: Boolean
+
+Whether or not to replace the mapfile if it already exists.
+
+Default: `true`
 
 Limitations
 ------------
 
-#### Deprecations
-Directly calling the `autofs::package` and `autofs::service` classes is deprecated in this
-release. They will be private classes in the next release.
+#### Removals
+Directly calling the `autofs::package` and `autofs::service` classes is disabled in 3.0.0.
+These are now private classes.
 
 #### Puppet platforms
-Release 2.0.0 (and above) only support Puppet 4.x and Puppet Enterprise 2015.2.0 or newer
-
-#### Puppet 3.x Compatibility
-Puppet 3.x was End of Life starting January 1st, 2017, if Puppet 3.x functionality is still needed, please install using one of the following method:
-* `git clone git@github.com:voxpupuli/puppet-autofs.git -b puppet3 <module_path>/autofs`
-
-Support for Puppet 3.x Functionality:
-* No new features will be added to the puppet3 branch.
-* No new deployments will be issued to the Puppet Forge.
+Compatible with Puppet 4 only. Puppet 4.6.0 will provide best results.
 
 #### Operating Systems
 
