@@ -14,8 +14,6 @@ These should not impact the functionality of the module.
 - Make package and service classes private [\#24](https://github.com/voxpupuli/puppet-autofs/issues/24)
 - Remove autofs::mounts class [\#22](https://github.com/voxpupuli/puppet-autofs/issues/22)
 - Add parameters for managing the package and service state [\#21](https://github.com/voxpupuli/puppet-autofs/issues/21)
-- Update data types and docs [\#37](https://github.com/voxpupuli/puppet-autofs/pull/37) ([dhollinger](https://github.com/dhollinger))
-- Add new fact for tracking autofs version [\#33](https://github.com/voxpupuli/puppet-autofs/pull/33) ([dhollinger](https://github.com/dhollinger))
 
 **Closed issues:**
 
@@ -23,8 +21,10 @@ These should not impact the functionality of the module.
 
 **Merged pull requests:**
 
+- BREAKING Update data types and docs [\#37](https://github.com/voxpupuli/puppet-autofs/pull/37) ([dhollinger](https://github.com/dhollinger))
 - BREAKING Remove unused mounts class  [\#35](https://github.com/voxpupuli/puppet-autofs/pull/35) ([dhollinger](https://github.com/dhollinger))
 - BREAKING Make package and service private [\#34](https://github.com/voxpupuli/puppet-autofs/pull/34) ([dhollinger](https://github.com/dhollinger))
+- Add new fact for tracking autofs version [\#33](https://github.com/voxpupuli/puppet-autofs/pull/33) ([dhollinger](https://github.com/dhollinger))
 - Add with\_all\_deps method to compile test [\#32](https://github.com/voxpupuli/puppet-autofs/pull/32) ([dhollinger](https://github.com/dhollinger))
 - Add parameters for configuring package and service [\#31](https://github.com/voxpupuli/puppet-autofs/pull/31) ([dhollinger](https://github.com/dhollinger))
 
