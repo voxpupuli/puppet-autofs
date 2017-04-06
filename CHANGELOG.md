@@ -4,8 +4,32 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not impact the functionality of the module.
 
-## [v2.1.1](https://github.com/voxpupuli/puppet-autofs/tree/2.1.1) (2017-03-08)
-[Full Changelog](https://github.com/voxpupuli/puppet-autofs/compare/v2.1.0...2.1.1)
+## [v3.0.0](https://github.com/voxpupuli/puppet-autofs/tree/v3.0.0) (2017-04-06)
+[Full Changelog](https://github.com/voxpupuli/puppet-autofs/compare/v2.1.1...v3.0.0)
+
+**Implemented enhancements:**
+
+- Clean up data types [\#36](https://github.com/voxpupuli/puppet-autofs/issues/36)
+- Autofs version fact [\#26](https://github.com/voxpupuli/puppet-autofs/issues/26)
+- Make package and service classes private [\#24](https://github.com/voxpupuli/puppet-autofs/issues/24)
+- Remove autofs::mounts class [\#22](https://github.com/voxpupuli/puppet-autofs/issues/22)
+- Add parameters for managing the package and service state [\#21](https://github.com/voxpupuli/puppet-autofs/issues/21)
+
+**Closed issues:**
+
+- Point Forge to the Module Documentation site [\#25](https://github.com/voxpupuli/puppet-autofs/issues/25)
+
+**Merged pull requests:**
+
+- BREAKING Update data types and docs [\#37](https://github.com/voxpupuli/puppet-autofs/pull/37) ([dhollinger](https://github.com/dhollinger))
+- BREAKING Remove unused mounts class  [\#35](https://github.com/voxpupuli/puppet-autofs/pull/35) ([dhollinger](https://github.com/dhollinger))
+- BREAKING Make package and service private [\#34](https://github.com/voxpupuli/puppet-autofs/pull/34) ([dhollinger](https://github.com/dhollinger))
+- Add new fact for tracking autofs version [\#33](https://github.com/voxpupuli/puppet-autofs/pull/33) ([dhollinger](https://github.com/dhollinger))
+- Add with\_all\_deps method to compile test [\#32](https://github.com/voxpupuli/puppet-autofs/pull/32) ([dhollinger](https://github.com/dhollinger))
+- Add parameters for configuring package and service [\#31](https://github.com/voxpupuli/puppet-autofs/pull/31) ([dhollinger](https://github.com/dhollinger))
+
+## [v2.1.1](https://github.com/voxpupuli/puppet-autofs/tree/v2.1.1) (2017-03-10)
+[Full Changelog](https://github.com/voxpupuli/puppet-autofs/compare/v2.1.0...v2.1.1)
 
 **Fixed bugs:**
 
@@ -17,6 +41,8 @@ These should not impact the functionality of the module.
 
 **Merged pull requests:**
 
+- Fix CHANGELOG release tag name for v2.1.1 [\#27](https://github.com/voxpupuli/puppet-autofs/pull/27) ([dhollinger](https://github.com/dhollinger))
+- Prepare for 2.1.1 release [\#23](https://github.com/voxpupuli/puppet-autofs/pull/23) ([dhollinger](https://github.com/dhollinger))
 - Remove invalid documentation [\#20](https://github.com/voxpupuli/puppet-autofs/pull/20) ([dhollinger](https://github.com/dhollinger))
 - update project information [\#17](https://github.com/voxpupuli/puppet-autofs/pull/17) ([benkevan](https://github.com/benkevan))
 - General cleanup and corrections [\#15](https://github.com/voxpupuli/puppet-autofs/pull/15) ([dhollinger](https://github.com/dhollinger))
