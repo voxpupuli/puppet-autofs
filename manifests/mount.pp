@@ -40,18 +40,18 @@
 define autofs::mount (
   Stdlib::Absolutepath $mount,
   Integer              $order,
-  Stdlib::Absolutepath $mapfile = '',
-  Optional[String] $options     = '',
-  Stdlib::Absolutepath $master  = '/etc/auto.master',
-  Stdlib::Absolutepath $map_dir = '/etc/auto.master.d',
-  Boolean $use_dir              = false,
-  Boolean $direct               = true,
-  Boolean $execute              = false,
-  Array $mapcontents            = [],
-  Boolean $replace              = true
+  Optional[Stdlib::Absolutepath] $mapfile = undef,
+  Optional[String] $options               = '',
+  Stdlib::Absolutepath $master            = '/etc/auto.master',
+  Stdlib::Absolutepath $map_dir           = '/etc/auto.master.d',
+  Boolean $use_dir                        = false,
+  Boolean $direct                         = true,
+  Boolean $execute                        = false,
+  Array $mapcontents                      = [],
+  Boolean $replace                        = true
 ) {
 
-  if $mapfile != '' {
+  if $mapfile {
     $contents = "${mount} ${mapfile} ${options}\n"
   } else {
     $contents = "${mount} ${options}\n"
@@ -111,7 +111,7 @@ define autofs::mount (
     }
   }
 
-  if $mapfile != '' {
+  if $mapfile {
     file { $mapfile:
       ensure  => present,
       owner   => 'root',
