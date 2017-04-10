@@ -127,4 +127,22 @@ describe 'autofs::mount', type: :define do
       is_expected.to contain_file('/etc/auto.home').with('mode' => '0755')
     end
   end
+
+  context 'without mapfile' do
+    let(:params) do
+      {
+        mount: '/net',
+        options: '-host',
+        use_dir: false,
+        order: 1
+      }
+    end
+
+    it do
+      is_expected.not_to contain_file('/etc/auto.-host')
+      is_expected.to contain_concat__fragment('autofs::fragment preamble /net ').with_content(
+        %r{/net -host\n}
+      )
+    end
+  end
 end
