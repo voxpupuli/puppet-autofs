@@ -1,4 +1,5 @@
 Facter.add(:autofs_version) do
+  confine :kernel => 'Linux'
   setcode do
     if Facter::Util::Resolution.which('automount')
       autofs_version_command = 'automount -V 2>&1'
