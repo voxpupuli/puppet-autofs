@@ -4,6 +4,28 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not impact the functionality of the module.
 
+## [v3.0.2](https://github.com/voxpupuli/puppet-autofs/tree/v3.0.2) (2017-05-11)
+[Full Changelog](https://github.com/voxpupuli/puppet-autofs/compare/v3.0.1...v3.0.2)
+
+**Implemented enhancements:**
+
+- Fixtures file now uses upstream git repos [\#53](https://github.com/voxpupuli/puppet-autofs/pull/53) ([dhollinger](https://github.com/dhollinger))
+
+**Fixed bugs:**
+
+- Update the concat allowed version range to include 3.0.0 and 4.0.0 [\#54](https://github.com/voxpupuli/puppet-autofs/pull/54) ([dhollinger](https://github.com/dhollinger))
+
+**Closed issues:**
+
+- autofs module forces use of puppetlabs/concat 2.x [\#48](https://github.com/voxpupuli/puppet-autofs/issues/48)
+- Incorrect puppet/stdlib dependency declaration [\#46](https://github.com/voxpupuli/puppet-autofs/issues/46)
+
+**Merged pull requests:**
+
+- Fix rubocop errors [\#52](https://github.com/voxpupuli/puppet-autofs/pull/52) ([dhollinger](https://github.com/dhollinger))
+- modulesync 0.21.2 [\#51](https://github.com/voxpupuli/puppet-autofs/pull/51) ([dhollinger](https://github.com/dhollinger))
+- Bump minimum required stdlib version to 4.13.0 [\#47](https://github.com/voxpupuli/puppet-autofs/pull/47) ([alexjfisher](https://github.com/alexjfisher))
+
 ## [v3.0.1](https://github.com/voxpupuli/puppet-autofs/tree/v3.0.1) (2017-04-10)
 [Full Changelog](https://github.com/voxpupuli/puppet-autofs/compare/v3.0.0...v3.0.1)
 
@@ -14,6 +36,10 @@ These should not impact the functionality of the module.
 **Closed issues:**
 
 - puppet-autofs [\#39](https://github.com/voxpupuli/puppet-autofs/issues/39)
+
+**Merged pull requests:**
+
+- Release 3.0.1 [\#41](https://github.com/voxpupuli/puppet-autofs/pull/41) ([dhollinger](https://github.com/dhollinger))
 
 ## [v3.0.0](https://github.com/voxpupuli/puppet-autofs/tree/v3.0.0) (2017-04-06)
 [Full Changelog](https://github.com/voxpupuli/puppet-autofs/compare/v2.1.1...v3.0.0)
