@@ -112,19 +112,12 @@ define autofs::mount (
   }
 
   if $mapfile {
-    concat { $mapfile:
-      ensure  => present,
-      owner   => 'root',
-      group   => 'root',
-      mode    => $mapperms,
-      replace => $replace,
-      require => Package[ 'autofs' ],
-      notify  => Service[ 'autofs' ],
-    }
-    concat::fragment{"${mapfile}_entries":
-      target  => $mapfile,
-      content => template($maptempl),
-      order   => 1,
+    autofs::map { $title:
+      mapfile    => $mapfile,
+      mapcontent => $mapcontents,
+      replace    => $replace,
+      template   => $maptempl,
+      mapmode    => $mapperms,
     }
   }
 }
