@@ -35,6 +35,8 @@
 #   backwards compatible.
 # @param execute If true, it will make the $mapfile an executable script,
 #   otherwise the file is a standard "auto." configuration file.
+# @param mapfile_manage Boolean will manaage the map file specifed in mapfile
+#   paramter. Defaults to true to maintin backwards compatability.
 # @param replace Set to false if you only want to place the file if it is missing.
 #
 define autofs::mount (
@@ -47,6 +49,7 @@ define autofs::mount (
   Boolean $use_dir                        = false,
   Boolean $direct                         = true,
   Boolean $execute                        = false,
+  Boolean $mapfile_manage                 = true,
   Array $mapcontents                      = [],
   Boolean $replace                        = true
 ) {
@@ -111,7 +114,7 @@ define autofs::mount (
     }
   }
 
-  if $mapfile {
+  if $mapfile and $mapfile_manage {
     autofs::map { $title:
       mapfile    => $mapfile,
       mapcontent => $mapcontents,
