@@ -42,7 +42,7 @@ define autofs::map (
     notify  => Service['autofs'],
   }
 
-  concat::fragment{"${mapfile}_${mapcontent}":
+  concat::fragment{"${mapfile}_entries":
     target  => $mapfile,
     content => template($template),
     order   => $order,
