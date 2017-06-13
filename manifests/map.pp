@@ -38,8 +38,8 @@ define autofs::map (
     group   => 'root',
     mode    => $mapmode,
     replace => $replace,
-    require => Package[ 'autofs' ],
-    notify  => Service[ 'autofs' ],
+    require => Package['autofs'],
+    notify  => Service['autofs'],
   }
 
   concat::fragment{"${mapfile}_${mapcontent}":

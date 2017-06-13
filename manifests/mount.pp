@@ -72,7 +72,7 @@ define autofs::mount (
       group          => 'root',
       mode           => '0644',
       ensure_newline => true,
-      notify         => Service[ 'autofs' ],
+      notify         => Service['autofs'],
     }
   }
 
@@ -96,7 +96,7 @@ define autofs::mount (
         target  => $master,
         content => "+dir:${map_dir}",
         order   => $order,
-        require => File[ $map_dir ],
+        require => File[$map_dir],
       }
     }
 
@@ -106,8 +106,8 @@ define autofs::mount (
       group   => 'root',
       mode    => $mapperms,
       content => $contents,
-      require => File[ $map_dir ],
-      notify  => Service[ 'autofs' ],
+      require => File[$map_dir],
+      notify  => Service['autofs'],
     }
   }
 
