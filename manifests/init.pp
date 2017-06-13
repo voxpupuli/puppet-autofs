@@ -67,6 +67,7 @@
 #
 class autofs (
   Optional[Hash] $mounts                       = undef,
+  Optional[Hash] $maps                         = undef,
   String $package_ensure                       = 'installed',
   Enum[ 'stopped', 'running' ] $service_ensure = 'running',
   Boolean $service_enable                      = true,
@@ -79,5 +80,9 @@ class autofs (
   if $mounts {
     $data = hiera_hash('autofs::mounts', $mounts)
     create_resources('autofs::mount', $data)
+  }
+  if $maps {
+    $_datamaps = hiera_hash('autofs::maps', $maps)
+    create_resources('autofs::map',$_datamaps)
   }
 }

@@ -8,6 +8,9 @@ homedir:
       - 'bar'
     options: '--timeout=120'
     order: 01
+homedir_maps:
+    mapfile: '/etc/auto.home'
+    mapcontent: '/home /another'
 direct:
     mount: '/-'
     mapfile: '/etc/auto.home'
