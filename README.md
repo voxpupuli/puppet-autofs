@@ -172,6 +172,38 @@ autofs::mounts:
     use_dir: true
 ```
 
+#### Map Entries
+In addition to adding map entries via the `mapcontents` parameter to `autofs::mount the `autofs::map` type can also be used.
+
+##### Usage
+
+Define:
+```puppet
+autofs::map{'data':
+  map => '/etc/auto.data',
+  mapcontent => 'data -user,rw,soft server.example.com:/path/to/data,
+}
+```
+
+Hiera:
+```yaml
+autofs::maps:
+  data:
+    map: '/etc/auto.data'
+    mapcontent: 'data -user,rw server.example.com:/path/to/data'
+```
+
+It is assumed that the map file itself has already been defined with
+and `autofs::mount` first.
+
+```puppet
+autofs::mount{'auto.data':
+  mapfile => '/etc/auto.data',
+  mount   => '/big',
+}
+```
+
+
 ## Reference
 
 ### Classes
@@ -227,8 +259,9 @@ Default: `true`
 #### Public Defines
 
 * autofs::mount: Builds the autofs configuration.
+* autofs::map: Builds map entires for autofs configuration.
 
-### Parameters
+### Parameters for autofs::mount
 
 #### `mount_name`
 
@@ -331,6 +364,23 @@ Data type: Boolean
 Whether or not to replace the mapfile if it already exists.
 
 Default: `true`
+
+### Parameters for autofs::map
+
+#### `mapfile`
+
+Data type: Stdlib::Absolutepath
+
+mapfile file to add entry to. e.g '/etc/auto.data'.
+
+#### `mapcontent`
+
+Data type: String
+
+This Mapping describes a folder that will be mounted, the
+mount options, and the path to the remote or local share to be mounted. Used in
+mapfile generation. e.g. 'data -rw nfs.example.org:/data/big
+
 
 Limitations
 ------------

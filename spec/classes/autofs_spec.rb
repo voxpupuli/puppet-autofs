@@ -46,6 +46,7 @@ describe 'autofs', type: :class do
 
   context 'it should create auto.home' do
     mounts = hiera.lookup('homedir', nil, nil)
+    maps = hiera.lookup('homedir_maps', nil, nil)
     let(:params) { { mounts: mounts } }
 
     it 'is expected to have auto.home hiera values' do
@@ -55,6 +56,12 @@ describe 'autofs', type: :class do
         'mapcontents' => %w[test foo bar],
         'options' => '--timeout=120',
         'order' => 1
+      )
+    end
+    it 'is expected to have auto.home hiera values' do
+      expect(maps).to include(
+        'mapfile' => '/etc/auto.home',
+        'mapcontent' => '/home /another'
       )
     end
   end
