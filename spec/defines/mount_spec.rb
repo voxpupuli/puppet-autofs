@@ -26,14 +26,11 @@ describe 'autofs::mount', type: :define do
     end
 
     it do
-      is_expected.to contain_concat('/etc/auto.home').with(
+      is_expected.to contain_file('/etc/auto.home').with(
         'ensure' => 'present',
         'owner'  => 'root',
         'group'  => 'root',
         'mode'   => '0644'
-      )
-      is_expected.to contain_concat__fragment('/etc/auto.home_entries').with(
-        'target' => '/etc/auto.home'
       )
     end
   end
@@ -105,7 +102,7 @@ describe 'autofs::mount', type: :define do
         'mode'   => '0644'
       )
 
-      is_expected.to contain_concat('/etc/auto.home').with(
+      is_expected.to contain_file('/etc/auto.home').with(
         'ensure' => 'present',
         'owner'  => 'root',
         'group'  => 'root',
@@ -127,7 +124,7 @@ describe 'autofs::mount', type: :define do
     end
 
     it do
-      is_expected.to contain_concat('/etc/auto.home').with('mode' => '0755')
+      is_expected.to contain_file('/etc/auto.home').with('mode' => '0755')
     end
   end
 
@@ -142,7 +139,7 @@ describe 'autofs::mount', type: :define do
     end
 
     it do
-      is_expected.not_to contain_concat('/etc/auto.-host')
+      is_expected.not_to contain_file('/etc/auto.-host')
       is_expected.to contain_concat__fragment('autofs::fragment preamble /net ').with_content(
         %r{/net -host\n}
       )
