@@ -32,7 +32,7 @@ describe 'autofs::mount', type: :define do
         'group'  => 'root',
         'mode'   => '0644'
       )
-      is_expected.to contain_concat__fragment('/etc/auto.home_entries').with(
+      is_expected.to contain_concat__fragment('/etc/auto.home_auto.home_entries').with(
         'target' => '/etc/auto.home'
       )
       is_expected.to contain_autofs__map('auto.home')

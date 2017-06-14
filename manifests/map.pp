@@ -32,7 +32,7 @@ define autofs::map (
   Integer $order                                                    = 1,
 ) {
 
-  concat { $mapfile:
+  ensure_resource(concat,$mapfile,{
     ensure  => present,
     owner   => 'root',
     group   => 'root',
@@ -40,9 +40,9 @@ define autofs::map (
     replace => $replace,
     require => Package['autofs'],
     notify  => Service['autofs'],
-  }
+  })
 
-  concat::fragment{"${mapfile}_entries":
+  concat::fragment{"${mapfile}_${name}_entries":
     target  => $mapfile,
     content => template($template),
     order   => $order,

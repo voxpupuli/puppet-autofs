@@ -23,7 +23,7 @@ describe 'autofs::map', type: :define do
         'group'  => 'root',
         'mode'   => '0644'
       )
-      is_expected.to contain_concat__fragment('/etc/auto.data_entries').with(
+      is_expected.to contain_concat__fragment('/etc/auto.data_data_entries').with(
         'target' => '/etc/auto.data'
       )
     end
