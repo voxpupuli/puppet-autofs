@@ -286,6 +286,14 @@ This Mapping describes the name and path of the autofs map file.
 This mapping is used in the auto.master generation, as well as generating the map
 file from the auto.map.erb template. This parameter is no longer required.
 
+#### `mapfile_manage`
+
+Data type: Boolean
+
+If true the the mapfile file will be created and maintained. Defaults
+to true. Set this to false when the map file is maintained some other way,
+e.g auto.smb from the autofs package.
+
 #### `mapcontents`
 
 Data type: Array

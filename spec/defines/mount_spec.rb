@@ -39,6 +39,23 @@ describe 'autofs::mount', type: :define do
     end
   end
 
+  context 'with unmanged mapfile' do
+    let(:params) do
+      {
+        mount: '/smb',
+        mapfile: '/etc/auto.smb',
+        mapfile_manage: false,
+        options: '--timeout=120',
+        order: 2,
+        direct: false
+      }
+    end
+
+    it do
+      is_expected.not_to contain_file('/etc/auto.smb')
+    end
+  end
+
   context 'with indirect map' do
     let(:params) do
       {
