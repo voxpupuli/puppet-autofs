@@ -24,14 +24,27 @@
 # @param order Order in which entries will appear in the autofs map file.
 
 define autofs::map (
-  String               $mapcontent,
+  Array $mapcontent,
   Stdlib::Absolutepath $mapfile,
-  Integer              $order = 1,
+  Enum['autofs/auto.map.erb', 'autofs/auto.map.exec.erb'] $template = 'autofs/auto.map.erb',
+  String $mapmode                                                   = '0644',
+  Boolean $replace                                                  = true,
+  Integer $order                                                    = 1,
 ) {
 
-  concat::fragment{"${mapfile}_${mapcontent}":
+  concat { $mapfile:
+    ensure  => present,
+    owner   => 'root',
+    group   => 'root',
+    mode    => $mapmode,
+    replace => $replace,
+    require => Package['autofs'],
+    notify  => Service['autofs'],
+  }
+
+  concat::fragment{"${mapfile}_entries":
     target  => $mapfile,
-    content => "${mapcontent}\n",
+    content => template($template),
     order   => $order,
   }
 

@@ -14,7 +14,7 @@ describe 'autofs::mount', type: :define do
       mapfile: '/etc/auto.home',
       mapcontents: %w[test foo bar],
       options: '--timeout=120',
-      order: 0o1,
+      order: 1,
       master: '/etc/auto.master'
     }
   end
@@ -35,6 +35,7 @@ describe 'autofs::mount', type: :define do
       is_expected.to contain_concat__fragment('/etc/auto.home_entries').with(
         'target' => '/etc/auto.home'
       )
+      is_expected.to contain_autofs__map('auto.home')
     end
   end
 
@@ -45,7 +46,7 @@ describe 'autofs::mount', type: :define do
         mapfile: '/etc/auto.home',
         mapcontents: %w[test foo bar],
         options: '--timeout=120',
-        order: 0o1,
+        order: 1,
         direct: false
       }
     end
@@ -62,7 +63,7 @@ describe 'autofs::mount', type: :define do
         mapfile: '/etc/auto.home',
         mapcontents: ['/home /test', '/home /foo', '/home /bar'],
         options: '--timeout=120',
-        order: 0o1,
+        order: 1,
         direct: true
       }
     end
@@ -80,7 +81,7 @@ describe 'autofs::mount', type: :define do
         mapfile: '/etc/auto.home',
         mapcontents: %w[test foo bar],
         options: '--timeout=120',
-        order: 0o1,
+        order: 1,
         map_dir: '/etc/auto.master.d',
         use_dir: true
       }
@@ -121,7 +122,7 @@ describe 'autofs::mount', type: :define do
         mapfile: '/etc/auto.home',
         mapcontents: %w[test foo bar],
         options: '--timeout=120',
-        order: 0o1,
+        order: 1,
         execute: true
       }
     end
