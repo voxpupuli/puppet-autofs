@@ -13,15 +13,24 @@
 #
 # @example Using the autofs::mount defined type to setup automount for user home directories.
 #   autofs::mount { 'home':
-#     mount       => '/home',
-#     mapfile     => '/etc/auto.home',
-#     mapcontents => ['* -user,rw,soft,intr,rsize=32768,wsize=32768,tcp,nfsvers=3,noacl server.example.com:/path/to/home/shares'],
-#     options     => '--timeout=120',
-#     order       => 01
+#     mount          => '/home',
+#     mapfile        => '/etc/auto.home',
+#     mapcontents    => ['* -user,rw,soft,intr,rsize=32768,wsize=32768,tcp,nfsvers=3,noacl server.example.com:/path/to/home/shares'],
+#     options        => '--timeout=120',
+#     order          => 01
+#   }
+#
+# @example Using autofs::mount defined type to create an enty for an existing auto.smb file.
+#    autofs::mount { 'smb':
+#     mount          => '/smb',
+#     mapfile        => 'program:/etc/auto.smb',
+#     mapfile_manage => false,
+#     options        => '--timeout=120',
 #   }
 #
 # @param mount Location where you will mount the remote NFS Share.
 # @param mapfile Name of the "auto." configuration file that will be generated.
+#   can be a filepath or maptype and path.
 # @param mapcontents The mount point options and parameters.
 #   Example: '* -user,rw,soft server.example.com:/path/to/home/shares'
 # @param master Full path, including filename, to the autofs master file.
@@ -36,13 +45,13 @@
 # @param execute If true, it will make the $mapfile an executable script,
 #   otherwise the file is a standard "auto." configuration file.
 # @param mapfile_manage Boolean will manaage the map file specifed in mapfile
-#   paramter. Defaults to true to maintin backwards compatability.
+#   paramter.
 # @param replace Set to false if you only want to place the file if it is missing.
 #
 define autofs::mount (
   Stdlib::Absolutepath $mount,
   Integer              $order,
-  Optional[Stdlib::Absolutepath] $mapfile = undef,
+  Optional[Variant[Stdlib::Absolutepath,Autofs::Mapentry]] $mapfile = undef,
   Optional[String] $options               = '',
   Stdlib::Absolutepath $master            = '/etc/auto.master',
   Stdlib::Absolutepath $map_dir           = '/etc/auto.master.d',
@@ -53,6 +62,10 @@ define autofs::mount (
   Array $mapcontents                      = [],
   Boolean $replace                        = true
 ) {
+
+  if $mapfile.is_a(Autofs::Mapentry) and $mapfile_manage {
+    fail("Parameter 'mapfile_manage' must be false for complicated 'mapfile' ${mapfile}")
+  }
 
   if $mapfile {
     $contents = "${mount} ${mapfile} ${options}\n"
