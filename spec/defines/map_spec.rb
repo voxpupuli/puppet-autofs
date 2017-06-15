@@ -11,7 +11,7 @@ describe 'autofs::map', type: :define do
   let(:params) do
     {
       mapfile: '/etc/auto.data',
-      mapcontent: ['test foo bar']
+      mapcontents: ['test foo bar']
     }
   end
 

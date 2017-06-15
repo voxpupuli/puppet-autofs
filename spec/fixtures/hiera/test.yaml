@@ -10,7 +10,7 @@ homedir:
     order: 01
 homedir_maps:
     mapfile: '/etc/auto.home'
-    mapcontent: '/home /another'
+    mapcontents: '/home /another'
 direct:
     mount: '/-'
     mapfile: '/etc/auto.home'
