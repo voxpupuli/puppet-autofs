@@ -181,7 +181,7 @@ Define:
 ```puppet
 autofs::map{'data':
   map => '/etc/auto.data',
-  mapcontent => 'data -user,rw,soft server.example.com:/path/to/data,
+  mapcontents => 'data -user,rw,soft server.example.com:/path/to/data,
 }
 ```
 

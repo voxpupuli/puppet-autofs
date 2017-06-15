@@ -13,18 +13,18 @@
 #
 # @example Using the autofs::map defined type to setup automount for nfs data directory.
 #   autofs::map { 'data':
-#     mapcontent => 'mydata -user,rw,soft,intr,rsize=32768,wsize=32768  nfs.example.org:/path/to/some/data',
+#     mapcontents => 'mydata -user,rw,soft,intr,rsize=32768,wsize=32768  nfs.example.org:/path/to/some/data',
 #     mapfile => '/etc/auto.data',
 #     order   => '01',
 #   }
 #
-# @param mapcontent The mount point options and parameters, 
+# @param mapcontents The mount point options and parameters, 
 #   Example: '* -user,rw,soft nfs.example.org:/path/to'
 # @param mapfile Name of the "auto." configuration file that will be generated.
 # @param order Order in which entries will appear in the autofs map file.
 
 define autofs::map (
-  Array $mapcontent,
+  Array $mapcontents,
   Stdlib::Absolutepath $mapfile,
   Enum['autofs/auto.map.erb', 'autofs/auto.map.exec.erb'] $template = 'autofs/auto.map.erb',
   String $mapmode                                                   = '0644',

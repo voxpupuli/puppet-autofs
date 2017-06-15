@@ -7,7 +7,7 @@ describe 'autofs::map  tests' do
         class { 'autofs': }
         autofs::map { 'datamapA':
           mapfile     => '/etc/auto.data',
-          mapcontent  => [ 'dataA -o rw /mnt/dataA', 'dataB -o rw /mnt/dataB' ],
+          mapcontents => [ 'dataA -o rw /mnt/dataA', 'dataB -o rw /mnt/dataB' ],
         }
       EOS
 
@@ -40,11 +40,11 @@ describe 'autofs::map  tests' do
         class { 'autofs': }
         autofs::map { 'datamapA':
           mapfile     => '/etc/auto.data',
-          mapcontent  => [ 'dataA -o rw /mnt/dataA', 'dataB -o rw /mnt/dataB' ],
+          mapcontents => [ 'dataA -o rw /mnt/dataA', 'dataB -o rw /mnt/dataB' ],
         }
         autofs::map { 'datamapB':
           mapfile     => '/etc/auto.data',
-          mapcontent  => [ 'dataC -o rw /mnt/dataC', 'dataD -o rw /mnt/dataD' ],
+          mapcontents => [ 'dataC -o rw /mnt/dataC', 'dataD -o rw /mnt/dataD' ],
         }
       EOS
 

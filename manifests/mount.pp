@@ -116,11 +116,11 @@ define autofs::mount (
 
   if $mapfile and $mapfile_manage {
     autofs::map { $title:
-      mapfile    => $mapfile,
-      mapcontent => $mapcontents,
-      replace    => $replace,
-      template   => $maptempl,
-      mapmode    => $mapperms,
+      mapfile     => $mapfile,
+      mapcontents => $mapcontents,
+      replace     => $replace,
+      template    => $maptempl,
+      mapmode     => $mapperms,
     }
   }
 }

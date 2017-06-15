@@ -61,7 +61,7 @@ describe 'autofs', type: :class do
     it 'is expected to have auto.home hiera values' do
       expect(maps).to include(
         'mapfile' => '/etc/auto.home',
-        'mapcontent' => '/home /another'
+        'mapcontents' => '/home /another'
       )
     end
   end
