@@ -56,6 +56,40 @@ describe 'autofs::mount', type: :define do
     end
   end
 
+  context 'with unmanged maptype specified' do
+    let(:params) do
+      {
+        mount: '/smb',
+        mapfile: 'program:/etc/auto.smb',
+        mapfile_manage: false,
+        options: '--timeout=120',
+        order: 2,
+        direct: false
+      }
+    end
+
+    it do
+      is_expected.not_to contain_file('/etc/auto.smb')
+    end
+  end
+
+  context 'with manged maptype' do
+    let(:params) do
+      {
+        mount: '/smb',
+        mapfile: 'program:/etc/auto.smb',
+        mapfile_manage: true,
+        options: '--timeout=120',
+        order: 2,
+        direct: false
+      }
+    end
+
+    it 'is expected to fail' do
+      is_expected.to compile.and_raise_error(%r{Parameter 'mapfile_manage' must be false for complicated})
+    end
+  end
+
   context 'with indirect map' do
     let(:params) do
       {

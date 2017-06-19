@@ -280,11 +280,12 @@ file.
 
 #### `mapfile`
 
-Data type: Stdlib::Absolutepath
+Data type: Stdlib::Absolutepath or Autofs::MapEntry
 
 This Mapping describes the name and path of the autofs map file.
 This mapping is used in the auto.master generation, as well as generating the map
 file from the auto.map.erb template. This parameter is no longer required.
+When anything other than a simple file path is used `mapfile_manage` must be false.
 
 #### `mapfile_manage`
 
