@@ -200,4 +200,41 @@ describe 'autofs::mount', type: :define do
       )
     end
   end
+
+  context 'with indirect map and invalid title' do
+    let(:params) do
+      {
+        mapfile: '/etc/auto.home',
+        mapcontents: %w[test foo bar],
+        options: '--timeout=120',
+        order: 1,
+        direct: false
+      }
+    end
+
+    it 'is expected to fail' do
+      is_expected.to compile.and_raise_error(%r{parameter 'mount' expects a match for})
+    end
+  end
+
+  context 'with indirect map and valid title' do
+    let(:title) { '/data' }
+    let(:params) do
+      {
+        mapfile: '/etc/auto.data',
+        mapcontents: %w[dataA dataB dataC],
+        options: '--timeout=360',
+        order: 1,
+        direct: false
+      }
+    end
+
+    it do
+      is_expected.to contain_concat('/etc/auto.master')
+      is_expected.to contain_concat__fragment('autofs::fragment preamble /data /etc/auto.data').with_target('/etc/auto.master')
+      is_expected.to contain_concat('/etc/auto.data')
+      is_expected.to contain_concat__fragment('/etc/auto.data_/data_entries').with_target('/etc/auto.data')
+      is_expected.not_to contain_file('/data').with('ensure' => 'directory')
+    end
+  end
 end

@@ -276,7 +276,7 @@ Data type: Stblib::Absolutepath
 
 This Mapping describes where autofs will be mounting to. This map
 entry is referenced by concat as part of the generation of the /etc/auto.master
-file.
+file. Defaults to the `title` of the `autofs::mount`
 
 #### `mapfile`
 
