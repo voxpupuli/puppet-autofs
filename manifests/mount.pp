@@ -50,7 +50,7 @@
 #
 define autofs::mount (
   Stdlib::Absolutepath $mount,
-  Integer              $order,
+  Integer $order                          = 1,
   Optional[Variant[Stdlib::Absolutepath,Autofs::Mapentry]] $mapfile = undef,
   Optional[String] $options               = '',
   Stdlib::Absolutepath $master            = '/etc/auto.master',
