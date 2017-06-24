@@ -4,6 +4,35 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not impact the functionality of the module.
 
+## [v3.1.0](https://github.com/voxpupuli/puppet-autofs/tree/v3.1.0) (2017-06-24)
+[Full Changelog](https://github.com/voxpupuli/puppet-autofs/compare/v3.0.2...v3.1.0)
+
+**Implemented enhancements:**
+
+- Support map types in auto.master [\#67](https://github.com/voxpupuli/puppet-autofs/pull/67) ([traylenator](https://github.com/traylenator))
+- Let `autofs::mount` mount option default to title. [\#66](https://github.com/voxpupuli/puppet-autofs/pull/66) ([traylenator](https://github.com/traylenator))
+- Specify default for order parameter on auto::mount [\#65](https://github.com/voxpupuli/puppet-autofs/pull/65) ([traylenator](https://github.com/traylenator))
+- Multiple autofs::map instances per map. [\#62](https://github.com/voxpupuli/puppet-autofs/pull/62) ([traylenator](https://github.com/traylenator))
+- New boolean mapfile\_manage to manage mapfile [\#58](https://github.com/voxpupuli/puppet-autofs/pull/58) ([traylenator](https://github.com/traylenator))
+- Introduce new type autofs::map [\#57](https://github.com/voxpupuli/puppet-autofs/pull/57) ([traylenator](https://github.com/traylenator))
+
+**Fixed bugs:**
+
+- Confine autofs\_version fact to Linux kernel. [\#69](https://github.com/voxpupuli/puppet-autofs/pull/69) ([jgreen210](https://github.com/jgreen210))
+
+**Closed issues:**
+
+- autofs\_version fact throws exception on mac OS X [\#68](https://github.com/voxpupuli/puppet-autofs/issues/68)
+- mapcontents or mapcontent [\#63](https://github.com/voxpupuli/puppet-autofs/issues/63)
+- autofs::map has issues when order not set [\#59](https://github.com/voxpupuli/puppet-autofs/issues/59)
+
+**Merged pull requests:**
+
+- bump minimal stdlib version to 4.13.1 [\#71](https://github.com/voxpupuli/puppet-autofs/pull/71) ([bastelfreak](https://github.com/bastelfreak))
+- bump minimal puppet version to 4.7.0 [\#70](https://github.com/voxpupuli/puppet-autofs/pull/70) ([bastelfreak](https://github.com/bastelfreak))
+- Fixes \#63 autofs::map mapcontent parameter to  mapcontents [\#64](https://github.com/voxpupuli/puppet-autofs/pull/64) ([traylenator](https://github.com/traylenator))
+- Update map and mount defined types to address \#59 [\#61](https://github.com/voxpupuli/puppet-autofs/pull/61) ([dhollinger](https://github.com/dhollinger))
+
 ## [v3.0.2](https://github.com/voxpupuli/puppet-autofs/tree/v3.0.2) (2017-05-11)
 [Full Changelog](https://github.com/voxpupuli/puppet-autofs/compare/v3.0.1...v3.0.2)
 
@@ -22,6 +51,7 @@ These should not impact the functionality of the module.
 
 **Merged pull requests:**
 
+- Release 3.0.2 [\#55](https://github.com/voxpupuli/puppet-autofs/pull/55) ([dhollinger](https://github.com/dhollinger))
 - Fix rubocop errors [\#52](https://github.com/voxpupuli/puppet-autofs/pull/52) ([dhollinger](https://github.com/dhollinger))
 - modulesync 0.21.2 [\#51](https://github.com/voxpupuli/puppet-autofs/pull/51) ([dhollinger](https://github.com/dhollinger))
 - Bump minimum required stdlib version to 4.13.0 [\#47](https://github.com/voxpupuli/puppet-autofs/pull/47) ([alexjfisher](https://github.com/alexjfisher))
