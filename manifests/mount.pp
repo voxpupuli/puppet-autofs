@@ -62,6 +62,7 @@ define autofs::mount (
   Array $mapcontents                      = [],
   Boolean $replace                        = true
 ) {
+  include 'autofs'
 
   if $mapfile.is_a(Autofs::Mapentry) and $mapfile_manage {
     fail("Parameter 'mapfile_manage' must be false for complicated 'mapfile' ${mapfile}")
