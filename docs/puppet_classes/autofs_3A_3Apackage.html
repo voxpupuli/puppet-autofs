@@ -6,7 +6,7 @@
 <title>
   Puppet Class: autofs::package
   
-    &mdash; Documentation by YARD 0.9.8
+    &mdash; Documentation by YARD 0.9.9
   
 </title>
 
@@ -70,6 +70,7 @@
     </dd>
   </dl>
 </div>
+
 <h2>Overview</h2>
 <div class="docstring">
   <div class="discussion">
@@ -84,6 +85,8 @@ by default.</p>
 
 <p>If the code doesn&#39;t find a matching supported OS, then the Puppet run will fail
 with a &quot;OS not supported&quot; message.</p>
+
+<p>This is a private class and cannot be called outside of the autofs module.</p>
 
   </div>
 </div>
@@ -136,9 +139,6 @@ with a &quot;OS not supported&quot; message.</p>
         <pre class="lines">
 
 
-21
-22
-23
 24
 25
 26
@@ -158,16 +158,20 @@ with a &quot;OS not supported&quot; message.</p>
 40
 41
 42
-43</pre>
+43
+44
+45
+46</pre>
       </td>
       <td>
-        <pre class="code"><span class="info file"># File 'manifests/package.pp', line 21</span>
+        <pre class="code"><span class="info file"># File 'manifests/package.pp', line 24</span>
 
 class autofs::package {
+  assert_private(&#39;Package class is private, please use main class parameters&#39;)
   Package {
-    ensure =&gt; installed,
+    ensure =&gt; $autofs::package_ensure,
   }
-  case $::osfamily {
+  case $facts[&#39;os&#39;][&#39;family&#39;] {
     &#39;Debian&#39;, &#39;Ubuntu&#39;: {
       package { &#39;autofs&#39;: }
     }
@@ -178,11 +182,10 @@ class autofs::package {
       package { &#39;autofs&#39;: }
     }
     &#39;Solaris&#39;: {
-      # Solaris includes autofs
-      # Block to prevent failures
+      # Already installed in Solaris
     }
     default: {
-      fail(&quot;${::operatingsystem} not supported.&quot;)
+      fail(&quot;${facts[&#39;operatingsystem&#39;]} not supported.&quot;)
     }
   }
 }</pre>
@@ -193,9 +196,9 @@ class autofs::package {
 </div>
 
       <div id="footer">
-  Generated on Sat Jan 14 13:46:48 2017 by
+  Generated on Sun Jul  2 12:09:02 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.8 (ruby-2.2.6).
+  0.9.9 (ruby-2.4.1).
 </div>
 
     </div>

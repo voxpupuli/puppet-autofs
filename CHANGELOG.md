@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not impact the functionality of the module.
 
+## [v3.2.0](https://github.com/voxpupuli/puppet-autofs/tree/v3.2.0) (2017-07-02)
+[Full Changelog](https://github.com/voxpupuli/puppet-autofs/compare/v3.1.0...v3.2.0)
+
+**Implemented enhancements:**
+
+- Add Puppet 5 compatibility [\#74](https://github.com/voxpupuli/puppet-autofs/pull/74) ([dhollinger](https://github.com/dhollinger))
+
+**Closed issues:**
+
+- Not compatible with Puppet 5 [\#73](https://github.com/voxpupuli/puppet-autofs/issues/73)
+
 ## [v3.1.0](https://github.com/voxpupuli/puppet-autofs/tree/v3.1.0) (2017-06-24)
 [Full Changelog](https://github.com/voxpupuli/puppet-autofs/compare/v3.0.2...v3.1.0)
 
@@ -28,6 +39,7 @@ These should not impact the functionality of the module.
 
 **Merged pull requests:**
 
+- Release 3.1.0 [\#72](https://github.com/voxpupuli/puppet-autofs/pull/72) ([bastelfreak](https://github.com/bastelfreak))
 - bump minimal stdlib version to 4.13.1 [\#71](https://github.com/voxpupuli/puppet-autofs/pull/71) ([bastelfreak](https://github.com/bastelfreak))
 - bump minimal puppet version to 4.7.0 [\#70](https://github.com/voxpupuli/puppet-autofs/pull/70) ([bastelfreak](https://github.com/bastelfreak))
 - Fixes \#63 autofs::map mapcontent parameter to  mapcontents [\#64](https://github.com/voxpupuli/puppet-autofs/pull/64) ([traylenator](https://github.com/traylenator))

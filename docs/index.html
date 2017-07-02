@@ -6,7 +6,7 @@
 <title>
   File: README
   
-    &mdash; Documentation by YARD 0.9.8
+    &mdash; Documentation by YARD 0.9.9
   
 </title>
 
@@ -115,15 +115,26 @@ configuration files.</p>
 <pre class="code puppet"><code class="puppet">include autofs
 </code></pre>
 
-<p>By default this installs and starts the autofs service with the default master
-file. No parameters exist yet, but are in active development to allow for more
-granular control.</p>
+<p>By default this installs and starts the autofs service with the module&#39;s default master
+file. </p>
 
-<p>To manage the service, use the following code in your profile:</p>
+<p>You can also manage the state of the autofs package or service.</p>
+
+<p>By default the module will install the autofs package and start/enable the autofs service.
+You can configure this by using the parameters defined in the main init class.</p>
+
+<p>For example, to ensure the package is absent:</p>
 
 <pre class="code puppet"><code class="puppet">class { &#39;autofs&#39;:
+  package_ensure =&gt; &#39;absent&#39;,
+}
+</code></pre>
+
+<p>To ensure that a service is disabled and not running:</p>
+
+<pre class="code puppet"><code class="puppet">class { &#39;autofs&#39;:
+  service_ensure =&gt; &#39;stopped&#39;,
   service_enable =&gt; false,
-  service_ensure =&gt; &#39;stopped&#39;
 }
 </code></pre>
 
@@ -158,8 +169,7 @@ The direct and execute parameters allow for the creation of indirect mounts, see
 
 <p>In hiera, there&#39;s a <code>autofs::mounts</code> class you can configure, for example:</p>
 
-<pre class="code yaml"><code class="yaml">---
-autofs::mounts:
+<pre class="code yaml"><code class="yaml">autofs::mounts:
   home:
     mount: &#39;/home&#39;
     mapfile: &#39;/etc/auto.home&#39;
@@ -188,8 +198,7 @@ autofs::mounts:
 
 <p>Hiera:</p>
 
-<pre class="code yaml"><code class="yaml">---
-autofs::mounts:
+<pre class="code yaml"><code class="yaml">autofs::mounts:
   foo:
     mount: &#39;/-&#39;
     mapfile: &#39;/etc/auto.foo&#39;
@@ -220,8 +229,7 @@ This option is 100% functional, but does require some work to simplify it.</p>
 
 <p>Hiera:</p>
 
-<pre class="code yaml"><code class="yaml">---
-autofs::mounts:
+<pre class="code yaml"><code class="yaml">autofs::mounts:
   home:
     mount: &#39;/home&#39;
     mapfile: &#39;/etc/auto.home&#39;
@@ -232,58 +240,239 @@ autofs::mounts:
     use_dir: true
 </code></pre>
 
+<h4>Map Entries</h4>
+
+<p>In addition to adding map entries via the <code>mapcontents</code> parameter to <code>autofs::mount the</code>autofs::map` type can also be used.</p>
+
+<h5>Usage</h5>
+
+<p>Define:</p>
+
+<pre class="code puppet"><code class="puppet">autofs::map{&#39;data&#39;:
+  map =&gt; &#39;/etc/auto.data&#39;,
+  mapcontents =&gt; &#39;data -user,rw,soft server.example.com:/path/to/data,
+}
+</code></pre>
+
+<p>Hiera:</p>
+
+<pre class="code yaml"><code class="yaml">autofs::maps:
+  data:
+    map: &#39;/etc/auto.data&#39;
+    mapcontent: &#39;data -user,rw server.example.com:/path/to/data&#39;
+</code></pre>
+
+<p>It is assumed that the map file itself has already been defined with
+and <code>autofs::mount</code> first.</p>
+
+<pre class="code puppet"><code class="puppet">autofs::mount{&#39;auto.data&#39;:
+  mapfile =&gt; &#39;/etc/auto.data&#39;,
+  mount   =&gt; &#39;/big&#39;,
+}
+</code></pre>
+
 <h2>Reference</h2>
 
-<h4>Parameters</h4>
+<h3>Classes</h3>
+
+<h4>Public Classes</h4>
 
 <ul>
-<li><strong>mount_name</strong> - This is a logical, descriptive name for what what autofs will be
-mounting. This is represented by the <code>home:</code> and <code>tmp:</code> entries above.</li>
-<li><strong>mount</strong> - This Mapping describes where autofs will be mounting to. This map
-entry is referenced by concat as part of the generation of the /etc/auto.master
-file.</li>
-<li><strong>mapfile</strong> - This Mapping describes the name and path of the autofs map file.
-This mapping is used in the auto.master generation, as well as generating the map
-file from the auto.map.erb template. This parameter is no longer required.</li>
-<li><strong>mapcontent</strong> - This Mapping describes the folders that will be mounted, the
-mount options, and the path to the remote or local share to be mounted. Used in
-mapfile generation.</li>
-<li><strong>options</strong> - This Mapping describes the auto.master options to use (if any)
-when mounting the automounts.</li>
-<li><strong>order</strong> - This Mapping describes where in the auto.master file the entry will
-be placed. Order CANNOT be duplicated.</li>
-<li><strong>master</strong> - This Parameter sets the path to the auto.master file. Defaults to
-<code>/etc/auto.master</code>.</li>
-<li><strong>map_dir</strong> - This Parameter sets the path to the Autofs configuration directory
-for map files. Applies only to autofs 5.0.5 or later. Defaults to
-<code>/etc/auto.master.d</code>.</li>
-<li><strong>use_dir</strong> - This Parameter tells the module if it is going to use $map_dir.
-Defaults to <code>false</code>.</li>
-<li><strong>direct</strong> - Boolean to allow for indirect map. Defaults to true to be backwards compatible.</li>
-<li><strong>execute</strong> - Boolean to set the map to be executable. Defaults to false to be backward compatible.</li>
-<li><strong>replace</strong> - Boolean to set the map file to not be replaced. Defaults to true as Puppet File resource does.</li>
+<li>autofs: Main class. Contains or calls all other classes or defines.</li>
 </ul>
+
+<h4>Private Classes</h4>
+
+<ul>
+<li>autofs::package: Handles autofs packages.</li>
+<li>autofs::service: Handles the service.</li>
+</ul>
+
+<h3>Parameters</h3>
+
+<h4><code>mounts</code></h4>
+
+<p>Optional.</p>
+
+<p>Data type: Hash</p>
+
+<p>A hash of options that will build the configuration. This hash is passed to the Defined type.
+Each hash key is the equivalent to a parameter in the <code>autofs::mount</code> defined type.</p>
+
+<p>Default: <code>undef</code></p>
+
+<h4><code>package_ensure</code></h4>
+
+<p>Data type: String</p>
+
+<p>Determines the state of the package. Can be set to: installed, absent, lastest, or a specific version string.</p>
+
+<p>Default: &#39;installed&#39;</p>
+
+<h4><code>service_ensure</code></h4>
+
+<p>Data type: Enum[&#39;running&#39;, &#39;stopped&#39;]</p>
+
+<p>Determines state of the service.</p>
+
+<p>Default: &#39;running&#39;</p>
+
+<h4><code>service_enable</code></h4>
+
+<p>Data type: Boolean</p>
+
+<p>Determines if the service should start with the system boot.</p>
+
+<p>Default: <code>true</code></p>
+
+<h3>Defines</h3>
+
+<h4>Public Defines</h4>
+
+<ul>
+<li>autofs::mount: Builds the autofs configuration.</li>
+<li>autofs::map: Builds map entires for autofs configuration.</li>
+</ul>
+
+<h3>Parameters for autofs::mount</h3>
+
+<h4><code>mount_name</code></h4>
+
+<p>Data type: String</p>
+
+<p>This is a logical, descriptive name for what what autofs will be
+mounting. This is represented by the <code>home:</code> and <code>tmp:</code> entries above.</p>
+
+<h4><code>mount</code></h4>
+
+<p>Data type: Stblib::Absolutepath</p>
+
+<p>This Mapping describes where autofs will be mounting to. This map
+entry is referenced by concat as part of the generation of the /etc/auto.master
+file. Defaults to the <code>title</code> of the <code>autofs::mount</code></p>
+
+<h4><code>mapfile</code></h4>
+
+<p>Data type: Stdlib::Absolutepath or Autofs::MapEntry</p>
+
+<p>This Mapping describes the name and path of the autofs map file.
+This mapping is used in the auto.master generation, as well as generating the map
+file from the auto.map.erb template. This parameter is no longer required.
+When anything other than a simple file path is used <code>mapfile_manage</code> must be false.</p>
+
+<h4><code>mapfile_manage</code></h4>
+
+<p>Data type: Boolean</p>
+
+<p>If true the the mapfile file will be created and maintained. Defaults
+to true. Set this to false when the map file is maintained some other way,
+e.g auto.smb from the autofs package.</p>
+
+<h4><code>mapcontents</code></h4>
+
+<p>Data type: Array</p>
+
+<p>This Mapping describes the folders that will be mounted, the
+mount options, and the path to the remote or local share to be mounted. Used in
+mapfile generation.</p>
+
+<p>Default: []</p>
+
+<h4><code>options</code></h4>
+
+<p>Optional.</p>
+
+<p>Data type: String</p>
+
+<p>This Mapping describes the auto.master options to use (if any)
+when mounting the automounts.</p>
+
+<p>Default: &#39;&#39;</p>
+
+<h4><code>order</code></h4>
+
+<p>Data type: Integer</p>
+
+<p>This Mapping describes where in the auto.master file the entry will
+be placed. Order CANNOT be duplicated.</p>
+
+<p>Default: <code>undef</code></p>
+
+<h4><code>master</code></h4>
+
+<p>Data type: Stdlib::Absolutepath</p>
+
+<p>This Parameter sets the path to the auto.master file.</p>
+
+<p>Default: &#39;/etc/auto.master&#39;</p>
+
+<h4><code>map_dir</code></h4>
+
+<p>Data type: Stdlib::Absolutepath</p>
+
+<p>This Parameter sets the path to the Autofs configuration directory
+for map files. Applies only to autofs 5.0.5 or later. </p>
+
+<p>Default: &#39;/etc/auto.master.d&#39;</p>
+
+<h4><code>use_dir</code></h4>
+
+<p>Data type: Boolean</p>
+
+<p>This Parameter tells the module if it is going to use $map_dir.</p>
+
+<p>Default: <code>false</code></p>
+
+<h4><code>direct</code></h4>
+
+<p>Data type: Boolean</p>
+
+<p>Enable or disable indirect maps.</p>
+
+<p>Default: <code>true</code></p>
+
+<h4><code>execute</code></h4>
+
+<p>Data type: Boolean</p>
+
+<p>Set mapfile to be executable.</p>
+
+<p>Default: <code>false</code></p>
+
+<h4><code>replace</code></h4>
+
+<p>Data type: Boolean</p>
+
+<p>Whether or not to replace the mapfile if it already exists.</p>
+
+<p>Default: <code>true</code></p>
+
+<h3>Parameters for autofs::map</h3>
+
+<h4><code>mapfile</code></h4>
+
+<p>Data type: Stdlib::Absolutepath</p>
+
+<p>mapfile file to add entry to. e.g &#39;/etc/auto.data&#39;.</p>
+
+<h4><code>mapcontent</code></h4>
+
+<p>Data type: String</p>
+
+<p>This Mapping describes a folder that will be mounted, the
+mount options, and the path to the remote or local share to be mounted. Used in
+mapfile generation. e.g. &#39;data -rw nfs.example.org:/data/big</p>
 
 <h2>Limitations</h2>
 
+<h4>Removals</h4>
+
+<p>Directly calling the <code>autofs::package</code> and <code>autofs::service</code> classes is disabled in 3.0.0.
+These are now private classes.</p>
+
 <h4>Puppet platforms</h4>
 
-<p>Release 2.0.0 (and above) only support Puppet 4.x and Puppet Enterprise 2015.2.0 or newer</p>
-
-<h4>Puppet 3.x Compatibility</h4>
-
-<p>Puppet 3.x was End of Life starting January 1st, 2017, if Puppet 3.x functionality is still needed, please install using one of the following method:</p>
-
-<ul>
-<li><code>git clone git@github.com:voxpupuli/puppet-autofs.git -b puppet3 &lt;module_path&gt;/autofs</code></li>
-</ul>
-
-<p>Support for Puppet 3.x Functionality:</p>
-
-<ul>
-<li>No new features will be added to the puppet3 branch.</li>
-<li>No new deployments will be issued to the Puppet Forge.</li>
-</ul>
+<p>Compatible with Puppet 4 only. Puppet 4.6.0 will provide best results.</p>
 
 <h4>Operating Systems</h4>
 
@@ -346,9 +535,9 @@ Defaults to <code>false</code>.</li>
 </div></div>
 
       <div id="footer">
-  Generated on Sat Jan 14 13:46:48 2017 by
+  Generated on Sun Jul  2 12:09:02 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.8 (ruby-2.2.6).
+  0.9.9 (ruby-2.4.1).
 </div>
 
     </div>

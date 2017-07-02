@@ -59,6 +59,14 @@
 # @option mounts [Array] :mapcontents Mount point options and parameters. Each
 #   array element represents a line in the configuration file.
 # @option mounts [Boolean] :replace Enforce the configuration state or not.
+# @param maps the options to build an autofs mapfile.
+# @option maps [Array]:mapcontents Mount point options and parameters. Each
+#   array element represents a line in the mapfile.
+# @option maps [Stdlib::Absolutepath] :mapfile Full path to where the mapfile will be placed
+# @option maps [Enum['autofs/auto.map.erb', 'autofs/auto.map.exec.erb']] :template Template to use the generate the mapfile
+# @option maps [String] :mapmode The UNIX permissions to apply to the mapfile.
+# @option maps [Boolean] :replace Replace the file if it changes or not.
+# @option maps [Integer] :order The order in which to place mapfile contents.
 # @param package_ensure Determines the state of the package. Can be set to: installed, absent, lastest, or a specific version string.
 # @param service_ensure Determines state of the service. Can be set to: running or stopped.
 # @param service_enable Determines if the service should start with the system boot. true
