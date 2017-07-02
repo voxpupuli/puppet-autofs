@@ -6,7 +6,7 @@
 <title>
   Puppet Class: autofs
   
-    &mdash; Documentation by YARD 0.9.8
+    &mdash; Documentation by YARD 0.9.9
   
 </title>
 
@@ -70,6 +70,7 @@
     </dd>
   </dl>
 </div>
+
 <h2>Overview</h2>
 <div class="docstring">
   <div class="discussion">
@@ -79,6 +80,10 @@
 
 <p>This class includes defined types for looping through arrays of configuration
 file names.</p>
+
+<p>To use this module, simply declare it in your manifest.
+The module now supports the ability to not only enable autofs,
+but to also disable or uninstall it completely.</p>
 
   </div>
 </div>
@@ -92,6 +97,23 @@ file names.</p>
 </div></p>
       
       <pre class="example code"><code><span class='id identifier rubyid_include'>include</span> <span class='id identifier rubyid_autofs'>autofs</span></code></pre>
+    
+      
+        <p class="example_title"><div class='inline'><p>Removing the package</p>
+</div></p>
+      
+      <pre class="example code"><code>class { &#39;autofs&#39;:
+  package_ensure =&gt; &#39;absent&#39;,
+}</code></pre>
+    
+      
+        <p class="example_title"><div class='inline'><p>Disable the autofs service</p>
+</div></p>
+      
+      <pre class="example code"><code>class { &#39;autofs&#39;:
+  service_ensure =&gt; &#39;stopped&#39;,
+  service_enable =&gt; false,
+}</code></pre>
     
       
         <p class="example_title"><div class='inline'><p>using hiera with automatic lookup</p>
@@ -124,6 +146,76 @@ autofs::mounts:
       
         &mdash;
         <div class='inline'><p>the options to build the autofs config from</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>maps</span>
+      
+      
+        <span class='type'>(<tt>Optional[Hash]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>the options to build an autofs mapfile.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>package_ensure</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>&#39;installed&#39;</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Determines the state of the package. Can be set to: installed, absent, lastest, or a specific version string.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>service_ensure</span>
+      
+      
+        <span class='type'>(<tt>Enum[ 'stopped', 'running' ]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>&#39;running&#39;</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Determines state of the service. Can be set to: running or stopped.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>service_enable</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>true</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Determines if the service should start with the system boot. true
+will start the autofs service on boot. false will not start the autofs service
+on boot.</p>
 </div>
       
     </li>
@@ -275,6 +367,92 @@ array element represents a line in the configuration file.</p>
       
     </ul>
   
+    
+    
+    <p class="tag_title">Options Hash (<tt>maps</tt>):</p>
+    <ul class="option">
+      
+        <li>
+          <span class="name">:mapcontents</span>
+          <span class="type">(<tt>Array</tt>)</span>
+          <span class="default">
+            
+          </span>
+          
+            &mdash; <div class='inline'><p>Mount point options and parameters. Each
+array element represents a line in the mapfile.</p>
+</div>
+          
+        </li>
+      
+        <li>
+          <span class="name">:mapfile</span>
+          <span class="type">(<tt>Stdlib::Absolutepath</tt>)</span>
+          <span class="default">
+            
+          </span>
+          
+            &mdash; <div class='inline'><p>Full path to where the mapfile will be placed</p>
+</div>
+          
+        </li>
+      
+        <li>
+          <span class="name">:template</span>
+          <span class="type">(<tt>Enum['<span class='object_link'><a href="" title="puppet_classes::autofs (puppet_class)">autofs</a></span>/auto.map.erb', '<span class='object_link'><a href="" title="puppet_classes::autofs (puppet_class)">autofs</a></span>/auto.map.exec.erb']</tt>)</span>
+          <span class="default">
+            
+          </span>
+          
+            &mdash; <div class='inline'><p>Template to use the generate the mapfile</p>
+</div>
+          
+        </li>
+      
+        <li>
+          <span class="name">:mapmode</span>
+          <span class="type">(<tt>String</tt>)</span>
+          <span class="default">
+            
+          </span>
+          
+            &mdash; <div class='inline'><p>The UNIX permissions to apply to the mapfile.</p>
+</div>
+          
+        </li>
+      
+        <li>
+          <span class="name">:replace</span>
+          <span class="type">(<tt>Boolean</tt>)</span>
+          <span class="default">
+            
+          </span>
+          
+            &mdash; <div class='inline'><p>Replace the file if it changes or not.</p>
+</div>
+          
+        </li>
+      
+        <li>
+          <span class="name">:order</span>
+          <span class="type">(<tt>Integer</tt>)</span>
+          <span class="default">
+            
+          </span>
+          
+            &mdash; <div class='inline'><p>The order in which to place mapfile contents.</p>
+</div>
+          
+        </li>
+      
+    </ul>
+  
+    
+    
+    
+    
+    
+    
 
 
   <p class="tag_title">See Also:</p>
@@ -282,7 +460,7 @@ array element represents a line in the configuration file.</p>
     
       <li><a href="https://voxpupuli.org/puppet-autofs" target="_parent" title="Home">Home</a></li>
     
-      <li><a href="https://www.github.com/voxpupuli/autofs-puppet" target="_parent" title="Github">Github</a></li>
+      <li><a href="https://www.github.com/voxpupuli/puppet-autofs" target="_parent" title="Github">Github</a></li>
     
       <li><a href="https://forge.puppet.com/puppet/autofs" target="_parent" title="Puppet Forge">Puppet Forge</a></li>
     
@@ -321,30 +499,50 @@ array element represents a line in the configuration file.</p>
         <pre class="lines">
 
 
-48
-49
-50
-51
-52
-53
-54
-55
-56
-57
-58</pre>
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96</pre>
       </td>
       <td>
-        <pre class="code"><span class="info file"># File 'manifests/init.pp', line 48</span>
+        <pre class="code"><span class="info file"># File 'manifests/init.pp', line 76</span>
 
 class autofs (
-  Optional[Hash] $mounts = undef
+  Optional[Hash] $mounts                       = undef,
+  Optional[Hash] $maps                         = undef,
+  String $package_ensure                       = &#39;installed&#39;,
+  Enum[ &#39;stopped&#39;, &#39;running&#39; ] $service_ensure = &#39;running&#39;,
+  Boolean $service_enable                      = true,
 ) {
   contain &#39;::autofs::package&#39;
-  contain &#39;::autofs::service&#39;
+  unless $package_ensure == &#39;absent&#39; {
+    contain &#39;::autofs::service&#39;
+  }
 
   if $mounts {
     $data = hiera_hash(&#39;autofs::mounts&#39;, $mounts)
     create_resources(&#39;autofs::mount&#39;, $data)
+  }
+  if $maps {
+    $_datamaps = hiera_hash(&#39;autofs::maps&#39;, $maps)
+    create_resources(&#39;autofs::map&#39;,$_datamaps)
   }
 }</pre>
       </td>
@@ -354,9 +552,9 @@ class autofs (
 </div>
 
       <div id="footer">
-  Generated on Sat Jan 14 13:46:48 2017 by
+  Generated on Sun Jul  2 12:09:02 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.8 (ruby-2.2.6).
+  0.9.9 (ruby-2.4.1).
 </div>
 
     </div>

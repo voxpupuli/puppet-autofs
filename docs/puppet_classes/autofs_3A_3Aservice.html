@@ -6,7 +6,7 @@
 <title>
   Puppet Class: autofs::service
   
-    &mdash; Documentation by YARD 0.9.8
+    &mdash; Documentation by YARD 0.9.9
   
 </title>
 
@@ -70,6 +70,7 @@
     </dd>
   </dl>
 </div>
+
 <h2>Overview</h2>
 <div class="docstring">
   <div class="discussion">
@@ -80,86 +81,12 @@ This class can be used to disable or limit the autofs service
 if necessary. Such as allowing the service to run, but not at
 startup.</p>
 
+<p>This class is private and cannot be called outside of the autofs module</p>
+
   </div>
 </div>
 <div class="tags">
-  <p class="tag_title">Parameters:</p>
-<ul class="param">
   
-    <li>
-      
-        <span class='name'>ensure</span>
-      
-      
-        <span class='type'>(<tt>String</tt>)</span>
-      
-      
-        <em class="default">(defaults to: <tt>running</tt>)</em>
-      
-      
-        &mdash;
-        <div class='inline'><p>Determines state of the service. Can be set to: running or stopped.</p>
-</div>
-      
-    </li>
-  
-    <li>
-      
-        <span class='name'>enable</span>
-      
-      
-        <span class='type'>(<tt>Boolean</tt>)</span>
-      
-      
-        <em class="default">(defaults to: <tt>true</tt>)</em>
-      
-      
-        &mdash;
-        <div class='inline'><p>Determines if the service should start with the system boot. true
-will start the autofs service on boot. false will not start the autofs service
-on boot.</p>
-</div>
-      
-    </li>
-  
-    <li>
-      
-        <span class='name'>service_restart</span>
-      
-      
-        <span class='type'>(<tt>Boolean</tt>)</span>
-      
-      
-        <em class="default">(defaults to: <tt>true</tt>)</em>
-      
-      
-        &mdash;
-        <div class='inline'><p>Determines if the service has a restart command. If true,
-puppet will use the restart command to restart the service. If false, the
-stop, then start commands will be used instead.</p>
-</div>
-      
-    </li>
-  
-    <li>
-      
-        <span class='name'>service_status</span>
-      
-      
-        <span class='type'>(<tt>Boolean</tt>)</span>
-      
-      
-        <em class="default">(defaults to: <tt>true</tt>)</em>
-      
-      
-        &mdash;
-        <div class='inline'><p>Determines if service has a status command.</p>
-</div>
-      
-    </li>
-  
-</ul>
-
 
   <p class="tag_title">See Also:</p>
   <ul class="see">
@@ -207,35 +134,27 @@ stop, then start commands will be used instead.</p>
         <pre class="lines">
 
 
+19
+20
+21
+22
+23
+24
 25
 26
 27
-28
-29
-30
-31
-32
-33
-34
-35
-36
-37
-38</pre>
+28</pre>
       </td>
       <td>
-        <pre class="code"><span class="info file"># File 'manifests/service.pp', line 25</span>
+        <pre class="code"><span class="info file"># File 'manifests/service.pp', line 19</span>
 
-class autofs::service (
-  String $ensure           = running,
-  Boolean $enable          = true,
-  Boolean $service_restart = true,
-  Boolean $service_status  = true
-){
+class autofs::service {
+  assert_private(&#39;Service class is private, please use main class parameters.&#39;)
   service { &#39;autofs&#39;:
-    ensure     =&gt; $ensure,
-    enable     =&gt; $enable,
-    hasstatus  =&gt; $service_status,
-    hasrestart =&gt; $service_restart,
+    ensure     =&gt; $autofs::service_ensure,
+    enable     =&gt; $autofs::service_enable,
+    hasstatus  =&gt; true,
+    hasrestart =&gt; true,
     require    =&gt; Package[&#39;autofs&#39;],
   }
 }</pre>
@@ -246,9 +165,9 @@ class autofs::service (
 </div>
 
       <div id="footer">
-  Generated on Sat Jan 14 13:46:48 2017 by
+  Generated on Sun Jul  2 12:09:02 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.8 (ruby-2.2.6).
+  0.9.9 (ruby-2.4.1).
 </div>
 
     </div>

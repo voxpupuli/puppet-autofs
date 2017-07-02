@@ -21,8 +21,11 @@
 # @param mapcontents The mount point options and parameters, 
 #   Example: '* -user,rw,soft nfs.example.org:/path/to'
 # @param mapfile Name of the "auto." configuration file that will be generated.
+# @param template Template to use to generate the mapfile.
+# @param mapmode UNIX permissions to be added to the file.
+# @param replace Whether or not to replace an existing mapfile of the same filename/path.
 # @param order Order in which entries will appear in the autofs map file.
-
+#
 define autofs::map (
   Array $mapcontents,
   Stdlib::Absolutepath $mapfile,
