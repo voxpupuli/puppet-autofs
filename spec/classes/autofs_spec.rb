@@ -102,7 +102,7 @@ describe 'autofs', type: :class do
     let(:params) { { mounts: mounts } }
 
     it 'is expected to fail' do
-      is_expected.to compile.and_raise_error(%r{parameter 'mounts' expects a value of type Undef or Hash})
+      is_expected.to compile.and_raise_error(%r{parameter 'mounts' expects a Hash value})
     end
   end
 end
