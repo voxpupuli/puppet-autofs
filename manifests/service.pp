@@ -23,6 +23,6 @@ class autofs::service {
     enable     => $autofs::service_enable,
     hasstatus  => true,
     hasrestart => true,
-    require    => Package['autofs'],
+    require    => Class['autofs::package'],
   }
 }

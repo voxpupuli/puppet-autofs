@@ -28,3 +28,12 @@ confdir:
     options: '--timeout=120'
     order: 01
     use_dir: true
+autofs::mounts:
+  confdir:
+    mount: '/home'
+    mapfile: '/etc/auto.home'
+    mapcontents:
+      - '* -user,rw,soft,intr,rsize=32768,wsize=32768,tcp,nfsvers=3,noacl server.example.com:/path/to/home/shares'
+    options: '--timeout=120'
+    order: 01
+    use_dir: true
