@@ -111,6 +111,28 @@ autofs::mounts:
     order: 01
 ```
 
+If you need to merge the `autofs::mounts` key from multiple files or hiera lookups, be sure to add the `lookup_options`
+key and set the merge behavior for `autofs::mounts` to `merge: hash`
+
+```yaml
+lookup_options:
+  autofs::mounts:
+    merge: hash
+autofs::mounts:
+  home:
+    mount: '/home'
+    mapfile: '/etc/auto.home'
+    mapcontents:
+      - '* -user,rw,soft,intr,rsize=32768,wsize=32768,tcp,nfsvers=3,noacl server.example.com:/path/to/home/shares'
+    options: '--timeout=120'
+    order: 01
+```
+
+For more information about merge behavior see the doc for:
+
+* [Lookup docs](https://docs.puppet.com/puppet/4.7/lookup_quick.html#puppet-lookup:-quick-reference-for-hiera-users) 
+* [Hiera 5 docs](https://docs.puppet.com/puppet/5.1/hiera_merging.html) if using Puppet >= 4.9
+
 ##### Direct Map `/-` arugment
 
 The autofs module also supports the use of the built in autofs `/-` argument used with Direct Maps.
