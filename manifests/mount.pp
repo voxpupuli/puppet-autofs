@@ -68,6 +68,11 @@ define autofs::mount (
     fail("Parameter 'mapfile_manage' must be false for complicated 'mapfile' ${mapfile}")
   }
 
+  $require_type = $facts['os']['family'] ? {
+    'Solaris' => undef,
+    default   => Package['autofs'],
+  }
+
   if $mapfile {
     $contents = "${mount} ${mapfile} ${options}\n"
   } else {
@@ -105,7 +110,7 @@ define autofs::mount (
       'owner'   => 'root',
       'group'   => 'root',
       'mode'    => '0755',
-      'require' => Package['autofs'],
+      'require' => $require_type,
     })
 
     if !defined(Concat::Fragment['autofs::fragment preamble map directory']) {

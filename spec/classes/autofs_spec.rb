@@ -105,4 +105,13 @@ describe 'autofs', type: :class do
       is_expected.to compile.and_raise_error(%r{parameter 'mounts' expects a Hash value})
     end
   end
+
+  context 'Solaris Tests' do
+    mounts = hiera.lookup('autofs::mounts', nil, nil)
+    let(:facts) { { os: { family: 'Solaris' } } }
+    let(:params) { { mounts: mounts } }
+
+    it { is_expected.not_to contain_package('autofs') }
+    it { is_expected.not_to contain_service('autofs').that_requires('Package[autofs]') }
+  end
 end
