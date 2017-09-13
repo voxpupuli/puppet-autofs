@@ -34,7 +34,12 @@ define autofs::map (
   Boolean $replace                                                  = true,
   Integer $order                                                    = 1,
 ) {
-
+  # On Solaris, as the package is already installed, it isn't going to be present in the catalog,
+  # so this check leaves the require as undef if we're on Solaris.
+  #$require_type = $facts['os']['family'] ? {
+  #  'Solaris'   => undef,
+  #  default => Package['autofs'],
+  #}
   ensure_resource(concat,$mapfile,{
     ensure  => present,
     owner   => 'root',
