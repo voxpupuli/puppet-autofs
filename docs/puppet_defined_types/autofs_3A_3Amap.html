@@ -270,8 +270,7 @@ Example: &#39;* -user,rw,soft nfs.example.org:/path/to&#39;</p>
 50
 51
 52
-53
-54</pre>
+53</pre>
       </td>
       <td>
         <pre class="code"><span class="info file"># File 'manifests/map.pp', line 29</span>
@@ -284,14 +283,13 @@ define autofs::map (
   Boolean $replace                                                  = true,
   Integer $order                                                    = 1,
 ) {
-
   ensure_resource(concat,$mapfile,{
     ensure  =&gt; present,
     owner   =&gt; &#39;root&#39;,
     group   =&gt; &#39;root&#39;,
     mode    =&gt; $mapmode,
     replace =&gt; $replace,
-    require =&gt; Package[&#39;autofs&#39;],
+    require =&gt; Class[&#39;autofs::package&#39;],
     notify  =&gt; Service[&#39;autofs&#39;],
   })
 
@@ -309,7 +307,7 @@ define autofs::map (
 </div>
 
       <div id="footer">
-  Generated on Sun Jul  2 12:09:02 2017 by
+  Generated on Wed Sep 13 10:22:53 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.9 (ruby-2.4.1).
 </div>
