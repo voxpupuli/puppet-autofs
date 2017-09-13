@@ -138,10 +138,10 @@ autofs::mounts:
         <span class='name'>mounts</span>
       
       
-        <span class='type'>(<tt>Optional[Hash]</tt>)</span>
+        <span class='type'>(<tt>Hash[String, Hash]</tt>)</span>
       
       
-        <em class="default">(defaults to: <tt>undef</tt>)</em>
+        <em class="default">(defaults to: <tt>{}</tt>)</em>
       
       
         &mdash;
@@ -155,10 +155,10 @@ autofs::mounts:
         <span class='name'>maps</span>
       
       
-        <span class='type'>(<tt>Optional[Hash]</tt>)</span>
+        <span class='type'>(<tt>Hash[String, Hash]</tt>)</span>
       
       
-        <em class="default">(defaults to: <tt>undef</tt>)</em>
+        <em class="default">(defaults to: <tt>{}</tt>)</em>
       
       
         &mdash;
@@ -518,15 +518,14 @@ array element represents a line in the mapfile.</p>
 92
 93
 94
-95
-96</pre>
+95</pre>
       </td>
       <td>
         <pre class="code"><span class="info file"># File 'manifests/init.pp', line 76</span>
 
 class autofs (
-  Optional[Hash] $mounts                       = undef,
-  Optional[Hash] $maps                         = undef,
+  Hash[String, Hash] $mounts                   = {},
+  Hash[String, Hash] $maps                     = {},
   String $package_ensure                       = &#39;installed&#39;,
   Enum[ &#39;stopped&#39;, &#39;running&#39; ] $service_ensure = &#39;running&#39;,
   Boolean $service_enable                      = true,
@@ -536,13 +535,12 @@ class autofs (
     contain &#39;::autofs::service&#39;
   }
 
-  if $mounts {
-    $data = hiera_hash(&#39;autofs::mounts&#39;, $mounts)
-    create_resources(&#39;autofs::mount&#39;, $data)
+  $mounts.each |String $mount, Hash $attributes| {
+    autofs::mount { $mount: * =&gt; $attributes }
   }
-  if $maps {
-    $_datamaps = hiera_hash(&#39;autofs::maps&#39;, $maps)
-    create_resources(&#39;autofs::map&#39;,$_datamaps)
+
+  $maps.each |String $map, Hash $attributes| {
+    autofs::map { $map: * =&gt; $attributes }
   }
 }</pre>
       </td>
@@ -552,7 +550,7 @@ class autofs (
 </div>
 
       <div id="footer">
-  Generated on Sun Jul  2 12:09:02 2017 by
+  Generated on Wed Sep 13 10:22:53 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.9 (ruby-2.4.1).
 </div>

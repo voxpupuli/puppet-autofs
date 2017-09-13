@@ -523,7 +523,7 @@ define autofs::mount (
       &#39;owner&#39;   =&gt; &#39;root&#39;,
       &#39;group&#39;   =&gt; &#39;root&#39;,
       &#39;mode&#39;    =&gt; &#39;0755&#39;,
-      &#39;require&#39; =&gt; Package[&#39;autofs&#39;],
+      &#39;require&#39; =&gt; Class[&#39;autofs::package&#39;],
     })
 
     if !defined(Concat::Fragment[&#39;autofs::fragment preamble map directory&#39;]) {
@@ -563,7 +563,7 @@ define autofs::mount (
 </div>
 
       <div id="footer">
-  Generated on Sun Jul  2 12:09:02 2017 by
+  Generated on Wed Sep 13 10:22:53 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.9 (ruby-2.4.1).
 </div>

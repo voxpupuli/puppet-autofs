@@ -179,6 +179,29 @@ The direct and execute parameters allow for the creation of indirect mounts, see
     order: 01
 </code></pre>
 
+<p>If you need to merge the <code>autofs::mounts</code> key from multiple files or hiera lookups, be sure to add the <code>lookup_options</code>
+key and set the merge behavior for <code>autofs::mounts</code> to <code>merge: hash</code></p>
+
+<pre class="code yaml"><code class="yaml">lookup_options:
+  autofs::mounts:
+    merge: hash
+autofs::mounts:
+  home:
+    mount: &#39;/home&#39;
+    mapfile: &#39;/etc/auto.home&#39;
+    mapcontents:
+      - &#39;* -user,rw,soft,intr,rsize=32768,wsize=32768,tcp,nfsvers=3,noacl server.example.com:/path/to/home/shares&#39;
+    options: &#39;--timeout=120&#39;
+    order: 01
+</code></pre>
+
+<p>For more information about merge behavior see the doc for:</p>
+
+<ul>
+<li><a href="https://docs.puppet.com/puppet/4.7/lookup_quick.html#puppet-lookup:-quick-reference-for-hiera-users">Lookup docs</a> </li>
+<li><a href="https://docs.puppet.com/puppet/5.1/hiera_merging.html">Hiera 5 docs</a> if using Puppet &gt;= 4.9</li>
+</ul>
+
 <h5>Direct Map <code>/-</code> arugment</h5>
 
 <p>The autofs module also supports the use of the built in autofs <code>/-</code> argument used with Direct Maps.</p>
@@ -535,7 +558,7 @@ These are now private classes.</p>
 </div></div>
 
       <div id="footer">
-  Generated on Sun Jul  2 12:09:02 2017 by
+  Generated on Wed Sep 13 10:22:53 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.9 (ruby-2.4.1).
 </div>
