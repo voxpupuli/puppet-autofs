@@ -51,16 +51,16 @@ describe 'autofs', type: :class do
 
     it 'is expected to have auto.home hiera values' do
       expect(mounts).to include(
-        'mount' => '/home',
-        'mapfile' => '/etc/auto.home',
+        'mount'       => '/home',
+        'mapfile'     => '/etc/auto.home',
         'mapcontents' => %w[test foo bar],
-        'options' => '--timeout=120',
-        'order' => 1
+        'options'     => '--timeout=120',
+        'order'       => 1
       )
     end
     it 'is expected to have auto.home hiera values' do
       expect(maps).to include(
-        'mapfile' => '/etc/auto.home',
+        'mapfile'     => '/etc/auto.home',
         'mapcontents' => '/home /another'
       )
     end
@@ -72,11 +72,11 @@ describe 'autofs', type: :class do
 
     it 'is expected to have direct mount hiera values' do
       expect(mounts).to include(
-        'mount' => '/-',
-        'mapfile' => '/etc/auto.home',
+        'mount'       => '/-',
+        'mapfile'     => '/etc/auto.home',
         'mapcontents' => %w[/home\ /test /home\ /foo /home\ /bar],
-        'options' => '--timeout=120',
-        'order' => 1
+        'options'     => '--timeout=120',
+        'order'       => 1
       )
     end
   end
@@ -87,12 +87,12 @@ describe 'autofs', type: :class do
 
     it 'is expected to have auto.master.d hiera values' do
       expect(mounts).to include(
-        'mount' => '/home',
-        'mapfile' => '/etc/auto.home',
+        'mount'       => '/home',
+        'mapfile'     => '/etc/auto.home',
         'mapcontents' => %w[*\ -user,rw,soft,intr,rsize=32768,wsize=32768,tcp,nfsvers=3,noacl\ server.example.com:/path/to/home/shares],
-        'options' => '--timeout=120',
-        'order' => 1,
-        'use_dir' => true
+        'options'     => '--timeout=120',
+        'order'       => 1,
+        'use_dir'     => true
       )
     end
   end
@@ -104,5 +104,14 @@ describe 'autofs', type: :class do
     it 'is expected to fail' do
       is_expected.to compile.and_raise_error(%r{parameter 'mounts' expects a Hash value})
     end
+  end
+
+  context 'Solaris Tests' do
+    mounts = hiera.lookup('autofs::mounts', nil, nil)
+    let(:facts) { { os: { family: 'Solaris' } } }
+    let(:params) { { mounts: mounts } }
+
+    it { is_expected.not_to contain_package('autofs') }
+    it { is_expected.not_to contain_service('autofs').that_requires('Package[autofs]') }
   end
 end

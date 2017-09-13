@@ -34,14 +34,13 @@ define autofs::map (
   Boolean $replace                                                  = true,
   Integer $order                                                    = 1,
 ) {
-
   ensure_resource(concat,$mapfile,{
     ensure  => present,
     owner   => 'root',
     group   => 'root',
     mode    => $mapmode,
     replace => $replace,
-    require => Package['autofs'],
+    require => Class['autofs::package'],
     notify  => Service['autofs'],
   })
 
