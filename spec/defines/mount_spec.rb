@@ -215,7 +215,7 @@ describe 'autofs::mount', type: :define do
         end
 
         it 'is expected to fail' do
-          is_expected.to compile.and_raise_error(%r{parameter 'mount' expects a match for})
+          is_expected.to compile.and_raise_error(%r{parameter 'mount' expects a Stdlib::Absolutepath|parameter 'mount' expects a match for})
         end
       end
 

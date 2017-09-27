@@ -24,7 +24,7 @@
 class autofs::package {
   assert_private('Package class is private, please use main class parameters')
   Package {
-    ensure => $autofs::package_ensure,
+    ensure => $::autofs::package_ensure,
   }
   case $facts['os']['family'] {
     'Debian', 'Ubuntu': {

@@ -34,6 +34,14 @@ define autofs::map (
   Boolean $replace                                                  = true,
   Integer $order                                                    = 1,
 ) {
+  include '::autofs'
+
+  unless $::autofs::package_ensure == 'absent' {
+    Concat {
+      notify => Service['autofs'],
+    }
+  }
+
   ensure_resource(concat,$mapfile,{
     ensure  => present,
     owner   => 'root',
@@ -41,7 +49,6 @@ define autofs::map (
     mode    => $mapmode,
     replace => $replace,
     require => Class['autofs::package'],
-    notify  => Service['autofs'],
   })
 
   concat::fragment{"${mapfile}_${name}_entries":
