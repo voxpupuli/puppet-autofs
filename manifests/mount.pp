@@ -83,13 +83,18 @@ define autofs::mount (
     $maptempl = 'autofs/auto.map.erb'
   }
 
+  unless $::autofs::package_ensure == 'absent' {
+    Concat {
+      notify => Service['autofs'],
+    }
+  }
+
   if !defined(Concat[$master]) {
     concat { $master:
       owner          => 'root',
       group          => 'root',
       mode           => '0644',
       ensure_newline => true,
-      notify         => Service['autofs'],
     }
   }
 
@@ -124,7 +129,6 @@ define autofs::mount (
       mode    => $mapperms,
       content => $contents,
       require => File[$map_dir],
-      notify  => Service['autofs'],
     }
   }
 
