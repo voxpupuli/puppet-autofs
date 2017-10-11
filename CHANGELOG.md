@@ -1,8 +1,15 @@
-# Change log
+# Changelog
 
 All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
-These should not impact the functionality of the module.
+These should not affect the functionality of the module.
+
+## [v4.1.0](https://github.com/voxpupuli/puppet-autofs/tree/v4.1.0) (2017-10-11)
+[Full Changelog](https://github.com/voxpupuli/puppet-autofs/compare/v4.0.0...v4.1.0)
+
+**Merged pull requests:**
+
+- Several fixes related to failing modulesync tests/support puppet5 [\#82](https://github.com/voxpupuli/puppet-autofs/pull/82) ([dhollinger](https://github.com/dhollinger))
 
 ## [v4.0.0](https://github.com/voxpupuli/puppet-autofs/tree/v4.0.0) (2017-09-13)
 [Full Changelog](https://github.com/voxpupuli/puppet-autofs/compare/v3.2.0...v4.0.0)
@@ -15,6 +22,10 @@ These should not impact the functionality of the module.
 **Fixed bugs:**
 
 - Solaris support with tests [\#78](https://github.com/voxpupuli/puppet-autofs/pull/78) ([Nekototori](https://github.com/Nekototori))
+
+**Merged pull requests:**
+
+- Release 4.0.0 [\#79](https://github.com/voxpupuli/puppet-autofs/pull/79) ([dhollinger](https://github.com/dhollinger))
 
 ## [v3.2.0](https://github.com/voxpupuli/puppet-autofs/tree/v3.2.0) (2017-07-02)
 [Full Changelog](https://github.com/voxpupuli/puppet-autofs/compare/v3.1.0...v3.2.0)
