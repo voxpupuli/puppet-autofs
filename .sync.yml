@@ -1,30 +1,13 @@
 ---
 .travis.yml:
-  extras:
-  - rvm: 2.4.0
-    env: PUPPET_INSTALL_TYPE=agent CHECK=acceptance BEAKER_debug=true BEAKER_set=docker/centos-7
-    services: docker
-    sudo: required
-    bundler_args: --without development
-    dist: trusty
-  - rvm: 2.4.0
-    env: PUPPET_INSTALL_TYPE=agent CHECK=acceptance BEAKER_debug=true BEAKER_set=docker/debian-8
-    services: docker
-    sudo: required
-    bundler_args: --without development
-    dist: trusty
-  - rvm: 2.4.0
-    env: PUPPET_INSTALL_TYPE=agent CHECK=acceptance BEAKER_debug=true BEAKER_set=docker/ubuntu-14.04
-    services: docker
-    sudo: required
-    bundler_args: --without development
-    dist: trusty
-  - rvm: 2.4.0
-    env: PUPPET_INSTALL_TYPE=agent CHECK=acceptance BEAKER_debug=true BEAKER_set=docker/ubuntu-16.04
-    services: docker
-    sudo: required
-    bundler_args: --without development
-    dist: trusty
+  docker_sets:
+  - set: docker/centos-5
+  - set: docker/centos-6
+  - set: docker/centos-7
+  - set: docker/ubuntu-14.04
+  - set: docker/ubuntu-16.04
+  - set: docker/debian-7
+  - set: docker/debian-8
   secure: "MZqQwYbb+SzRq+9NhBRILmNxA0dFPoQ9Q4ueidPUP7V4VGgm1HGG59K1ajdAnxayWvTmrLhtpNWw11HBLeSC6GVdkAdxd5NMpJSlqr7GRDfezx14Mi4sF+4NnAB39Kb0jyaA/jLnY/JBuk7FMAvicdrC5nvwMXz0yy2SxohLILf3i8FIL4dfpBLUcp+bnyXB/v2q59h/z1zsCng1s4Mz1zsW+jSKGY3to5gOiD6HBvZbveY3t0emon0pwQA9sP3FUDtgCmXsmfYfuKzWL1p3jNAC7ago22Y/UMKmOEg4dCTAjHpnzeE+RtUVjDVYKVZYdUDJiA/8aQbGTfsljfnHhqnrWUlb32pU4FM0qRARZiSzRkr7F43NZf4kPE9gpD6VuOqXWYPjQNim/pU3SGBDiEI1YcrAWloJxbpPbfk5QEoJ+uFUVAHmdV+a9Mb+8s7fXn1jO7qF4qn2M2ruxr3rWj0DZmVahQCtZ6y3/FXUNj3nLzTlqzwgnW9iwOguWlp343vDVTOy1CRjC4QX6PRhRbeC8qOlfQQsVZQ49DCOiqJKyhKJ5vsAWBXqxybQgAcUM8vnovqFrz2rhrg/SJqdZqtX9t03R7MvYRiFQ41sGFgCP9cOSyVeE82sawu1jj55gSPvpgaM2Lqrla78mirJsWcznWwU0hhct408VLoEtPk="
 Gemfile:
   optional:
