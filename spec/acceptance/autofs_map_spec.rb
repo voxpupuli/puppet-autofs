@@ -63,4 +63,51 @@ describe 'autofs::map  tests' do
       end
     end
   end
+
+  context 'multiple entry maptest' do
+    it 'applies' do
+      pp = <<-EOS
+        class { 'autofs': }
+        autofs::map { 'datamapA':
+          mapfile     => '/etc/auto.data',
+          mapcontents => [ 'dataB -o rw /mnt/dataB' ],
+        }
+      EOS
+
+      apply_manifest(pp, catch_failures: true)
+      apply_manifest(pp, catch_changes: true)
+    end
+    describe file('/etc/auto.data') do
+      it 'exists and removes dataA entry' do
+        is_expected.to exist
+        is_expected.to be_owned_by 'root'
+        is_expected.to be_grouped_into 'root'
+        is_expected.not_to contain 'dataA -o rw /mnt/dataA'
+        is_expected.to contain 'dataB -o rw /mnt/dataB'
+        is_expected.not_to contain 'dataC -o rw /mnt/dataC'
+        is_expected.not_to contain 'dataD -o rw /mnt/dataD'
+      end
+    end
+  end
+
+  context 'rmmap entire' do
+    it 'applies' do
+      pp = <<-MANIFEST
+        class { 'autofs': }
+        autofs::map { 'datamapA':
+          ensure  => 'absent',
+          mapfile => '/etc/auto.data',
+        }
+      MANIFEST
+
+      apply_manifest(pp, catch_failures: true)
+      apply_manifest(pp, catch_changes: true)
+    end
+
+    describe file('/etc/auto.data') do
+      it 'does not exist' do
+        is_expected.not_to exist
+      end
+    end
+  end
 end

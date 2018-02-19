@@ -113,6 +113,35 @@ describe 'autofs' do
       include_examples 'basic tests'
     end
 
+    context 'without home map' do
+      it 'applies' do
+        pp = <<-MANIFEST
+          class { 'autofs':
+            mounts => {
+              'home' => {
+                ensure  => 'absent',
+                mount   => '/home',
+                mapfile => '/etc/auto.home',
+              }
+            }
+          }
+        MANIFEST
+
+        apply_manifest(pp, catch_failures: true)
+      end
+
+      describe file('/etc/auto.master') do
+        it do
+          is_expected.to exist
+          is_expected.to be_file
+          is_expected.to be_owned_by 'root'
+          is_expected.to be_grouped_into 'root'
+        end
+
+        its(:content) { is_expected.not_to contain("/home /etc/auto.home \n") }
+      end
+    end
+
     context 'master directory test' do
       before(:context) do
         cleanup_helper

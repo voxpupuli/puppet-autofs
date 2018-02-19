@@ -37,3 +37,6 @@ autofs::mounts:
     options: '--timeout=120'
     order: 01
     use_dir: true
+rmdir:
+    ensure: 'absent'
+    mapfile: '/etc/auto.home'

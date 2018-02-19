@@ -21,13 +21,20 @@
 #   }
 #
 # @example Using autofs::mount defined type to create an enty for an existing auto.smb file.
-#    autofs::mount { 'smb':
+#   autofs::mount { 'smb':
 #     mount          => '/smb',
 #     mapfile        => 'program:/etc/auto.smb',
 #     mapfile_manage => false,
 #     options        => '--timeout=120',
 #   }
 #
+# @example Remove an autofs::mount
+#   autofs::mount { '/smb':
+#     ensure  => 'absent',
+#     mapfile => 'program:/etc/auto.smb',
+#   }
+#
+# @param ensure Whether the mount should exist or not.
 # @param mount Location where you will mount the remote NFS Share.
 # @param mapfile Name of the "auto." configuration file that will be generated.
 #   can be a filepath or maptype and path.
@@ -49,6 +56,7 @@
 # @param replace Set to false if you only want to place the file if it is missing.
 #
 define autofs::mount (
+  Enum['present', 'absent'] $ensure       = 'present',
   Stdlib::Absolutepath $mount             = $title,
   Integer $order                          = 1,
   Optional[Variant[Stdlib::Absolutepath,Autofs::Mapentry]] $mapfile = undef,
@@ -99,21 +107,31 @@ define autofs::mount (
   }
 
   if $use_dir == false {
-    concat::fragment { "autofs::fragment preamble ${mount} ${mapfile}":
-      target  => $master,
-      content => $contents,
-      order   => $order,
+    if $ensure == 'present' {
+      concat::fragment { "autofs::fragment preamble ${mount} ${mapfile}":
+        target  => $master,
+        content => $contents,
+        order   => $order,
+      }
+    } else {
+      file_line { "remove_contents_${mount}_${mapfile}":
+        ensure            => absent,
+        path              => $master,
+        match             => "^${contents}",
+        match_for_absence => true,
+        notify            => Service['autofs'],
+      }
     }
   } else {
     ensure_resource('file', $map_dir, {
-      'ensure'  => 'directory',
+      'ensure'  => directory,
       'owner'   => 'root',
       'group'   => 'root',
       'mode'    => '0755',
       'require' => Class['autofs::package'],
     })
 
-    if !defined(Concat::Fragment['autofs::fragment preamble map directory']) {
+    if !defined(Concat::Fragment['autofs::fragment preamble map directory']) and $ensure == 'present' {
       concat::fragment { 'autofs::fragment preamble map directory':
         target  => $master,
         content => "+dir:${map_dir}",
@@ -123,7 +141,7 @@ define autofs::mount (
     }
 
     file { "${map_dir}/${name}.autofs":
-      ensure  => present,
+      ensure  => $ensure,
       owner   => 'root',
       group   => 'root',
       mode    => $mapperms,
@@ -134,6 +152,7 @@ define autofs::mount (
 
   if $mapfile and $mapfile_manage {
     autofs::map { $title:
+      ensure      => $ensure,
       mapfile     => $mapfile,
       mapcontents => $mapcontents,
       replace     => $replace,
