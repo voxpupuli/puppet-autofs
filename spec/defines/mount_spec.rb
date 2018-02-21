@@ -240,6 +240,22 @@ describe 'autofs::mount', type: :define do
           is_expected.not_to contain_file('/data').with('ensure' => 'directory')
         end
       end
+
+      context 'with special -hosts map' do
+        let(:title) { 'auto.NET' }
+        let(:params) do
+          {
+            mount: '/net',
+            mapfile_manage: false,
+            mapfile: '-hosts'
+          }
+        end
+
+        it do
+          is_expected.to contain_concat('/etc/auto.master')
+          is_expected.to contain_concat__fragment('autofs::fragment preamble /net -hosts').with_target('/etc/auto.master')
+        end
+      end
     end
   end
 end
