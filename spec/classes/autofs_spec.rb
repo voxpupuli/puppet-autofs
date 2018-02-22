@@ -6,7 +6,23 @@ describe 'autofs', type: :class do
 
   hiera = Hiera.new(config: 'spec/fixtures/hiera/hiera.yaml')
 
-  on_supported_os.reject { |_, f| f[:os]['family'] == 'Solaris' }.each do |os, facts|
+  on_supported_os.each do |os, facts|
+    case facts[:os]['family']
+    when 'AIX'
+      package = 'bos.net.nfs.client'
+      service = 'automountd'
+    when 'Solaris'
+      package = if facts[:os]['release']['major'].to_s == '11'
+                  'system/file-system/autofs'
+                else
+                  'SUNWatfsu' # and SUNWatfsr, but close enough
+                end
+      service = 'autofs'
+    else
+      package = 'autofs'
+      service = 'autofs'
+    end
+
     context "on #{os}" do
       let :facts do
         facts
@@ -23,10 +39,10 @@ describe 'autofs', type: :class do
         it { is_expected.to contain_class('autofs::service') }
 
         # Check Package and service
-        it { is_expected.to contain_package('autofs').with_ensure('installed') }
-        it { is_expected.to contain_service('autofs').that_requires('Package[autofs]') }
-        it { is_expected.to contain_service('autofs').with_ensure('running') }
-        it { is_expected.to contain_service('autofs').with_enable(true) }
+        it { is_expected.to contain_package(package).with_ensure('installed') }
+        it { is_expected.to contain_service(service).that_requires("Package[#{package}]") }
+        it { is_expected.to contain_service(service).with_ensure('running') }
+        it { is_expected.to contain_service(service).with_enable(true) }
       end
     end
 
@@ -40,7 +56,7 @@ describe 'autofs', type: :class do
         }
       end
 
-      it { is_expected.to contain_package('autofs').with_ensure('absent') }
+      it { is_expected.to contain_package(package).with_ensure('absent') }
     end
   end
 
@@ -116,14 +132,5 @@ describe 'autofs', type: :class do
     it 'is expected to fail' do
       is_expected.to compile.and_raise_error(%r{parameter 'mounts' expects a Hash value})
     end
-  end
-
-  context 'Solaris Tests' do
-    mounts = hiera.lookup('autofs::mounts', nil, nil)
-    let(:facts) { { os: { family: 'Solaris' } } }
-    let(:params) { { mounts: mounts } }
-
-    it { is_expected.not_to contain_package('autofs') }
-    it { is_expected.not_to contain_service('autofs').that_requires('Package[autofs]') }
   end
 end

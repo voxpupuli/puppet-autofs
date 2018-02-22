@@ -497,6 +497,7 @@ Compatible with Puppet 4 only. Puppet 4.6.0 will provide best results.
       * 8 "Jessie"
 * Self Support - should work, support not provided by developer
     * Solaris 10, 11
+    * AIX 7.1, 7.2
     * Fedora 24, 25
     * SLES 10
     * CentOS/RHEL/Scientific/Oracle Linux 5.x

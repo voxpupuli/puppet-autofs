@@ -23,24 +23,11 @@
 #
 class autofs::package {
   assert_private('Package class is private, please use main class parameters')
-  Package {
-    ensure => $::autofs::package_ensure,
-  }
-  case $facts['os']['family'] {
-    'Debian', 'Ubuntu': {
-      package { 'autofs': }
-    }
-    'RedHat', 'CentOS': {
-      package { 'autofs': }
-    }
-    'Suse': {
-      package { 'autofs': }
-    }
-    'Solaris': {
-      # Already installed in Solaris
-    }
-    default: {
-      fail("${facts['operatingsystem']} not supported.")
+
+  if $autofs::package_name {
+    package { $autofs::package_name:
+      ensure => $::autofs::package_ensure,
+      source => $autofs::package_source,
     }
   }
 }

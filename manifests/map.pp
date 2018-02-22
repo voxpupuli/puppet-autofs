@@ -39,15 +39,22 @@ define autofs::map (
   include '::autofs'
 
   unless $::autofs::package_ensure == 'absent' {
-    Concat {
-      notify => Service['autofs'],
+    if $autofs::reload_command {
+      Concat {
+        before => Service[$autofs::service_name],
+        notify => Exec['automount-reload'],
+      }
+    } else {
+      Concat {
+        notify => Service[$autofs::service_name],
+      }
     }
   }
 
   ensure_resource(concat,$mapfile,{
     ensure  => $ensure,
-    owner   => 'root',
-    group   => 'root',
+    owner   => $autofs::map_file_owner,
+    group   => $autofs::map_file_group,
     mode    => $mapmode,
     replace => $replace,
     require => Class['autofs::package'],
