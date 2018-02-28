@@ -18,6 +18,7 @@
 #     order   => '01',
 #   }
 #
+# @param ensure Whether to create the mapfile or not.
 # @param mapcontents The mount point options and parameters, 
 #   Example: '* -user,rw,soft nfs.example.org:/path/to'
 # @param mapfile Name of the "auto." configuration file that will be generated.
@@ -27,12 +28,13 @@
 # @param order Order in which entries will appear in the autofs map file.
 #
 define autofs::map (
-  Array $mapcontents,
-  Stdlib::Absolutepath $mapfile,
+  Enum['present', 'absent'] $ensure                                 = 'present',
+  Stdlib::Absolutepath $mapfile                                     = $title,
   Enum['autofs/auto.map.erb', 'autofs/auto.map.exec.erb'] $template = 'autofs/auto.map.erb',
   String $mapmode                                                   = '0644',
   Boolean $replace                                                  = true,
   Integer $order                                                    = 1,
+  Variant[Array, String] $mapcontents                               = [],
 ) {
   include '::autofs'
 
@@ -43,7 +45,7 @@ define autofs::map (
   }
 
   ensure_resource(concat,$mapfile,{
-    ensure  => present,
+    ensure  => $ensure,
     owner   => 'root',
     group   => 'root',
     mode    => $mapmode,
@@ -51,10 +53,12 @@ define autofs::map (
     require => Class['autofs::package'],
   })
 
-  concat::fragment{"${mapfile}_${name}_entries":
-    target  => $mapfile,
-    content => template($template),
-    order   => $order,
+  unless $ensure == 'absent' {
+    concat::fragment { "${mapfile}_${name}_entries":
+      target  => $mapfile,
+      content => template($template),
+      order   => $order,
+    }
   }
 
 }

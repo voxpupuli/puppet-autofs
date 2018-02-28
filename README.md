@@ -202,7 +202,7 @@ In addition to adding map entries via the `mapcontents` parameter to `autofs::mo
 Define:
 ```puppet
 autofs::map{'data':
-  map => '/etc/auto.data',
+  map         => '/etc/auto.data',
   mapcontents => 'data -user,rw,soft server.example.com:/path/to/data,
 }
 ```
@@ -224,6 +224,47 @@ autofs::mount{'auto.data':
   mount   => '/big',
 }
 ```
+
+##### Removing Entries
+
+To remove entries from a `mapfile` simply remove the element from the `mapcontents` array in your `manifest` or `hiera` data.
+
+Example:
+
+```puppet
+autofs::map {'data':
+  map         => '/etc/auto.data',
+  mapcontents => [ 'dataA -o rw /mnt/dataA', 'dataB -o rw /mnt/dataB' ]
+}
+```
+
+```yaml
+autofs::maps:
+  data:
+    map: '/etc/auto.data'
+    mapcontents:
+      - 'dataA -o rw /mnt/dataA'
+      - 'dataB -o rw /mnt/dataB'
+```
+
+To remove the `dataA` entry from the `/etc/auto.data`, simply remove that array element:
+
+```puppet
+autofs::map {'data':
+  map         => '/etc/auto.data',
+  mapcontents => [ 'dataB -o rw /mnt/dataB' ]
+}
+```
+
+```yaml
+autofs::maps:
+  data:
+    map: '/etc/auto.data'
+    mapcontents:
+      - 'dataB -o rw /mnt/dataB'
+```
+
+**NOTE: Do NOT set `ensure => 'absent'` as that removes the entire `mapfile`**
 
 
 ## Reference
@@ -291,6 +332,14 @@ Data type: String
 
 This is a logical, descriptive name for what what autofs will be
 mounting. This is represented by the `home:` and `tmp:` entries above.
+
+#### `ensure`
+
+Data type: String
+
+Ensure the state of the mount content. If set to `absent` it will remove any `concat::fragments` 
+with the `name` matching `'autofs::fragment preamble <mount> <mapfile>"`, as well as any `autofs::maps`
+created by that `autofs::mount` resource. Defaults to `present`.
 
 #### `mount`
 
@@ -397,6 +446,13 @@ Whether or not to replace the mapfile if it already exists.
 Default: `true`
 
 ### Parameters for autofs::map
+
+#### `ensure`
+
+Data type: String
+
+Ensures the state of the `mapfile`. Setting to `absent` **WILL REMOVE THE MAPFILE**, if you just
+to remove an entry in the `mapfile`, remove the `mapcontents` string or array element you want to remove.
 
 #### `mapfile`
 

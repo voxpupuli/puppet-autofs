@@ -97,6 +97,18 @@ describe 'autofs', type: :class do
     end
   end
 
+  context 'should remove the mount' do
+    mounts = hiera.lookup('rmdir', nil, nil)
+    let(:params) { { mounts: mounts } }
+
+    it 'is expected to remove the mount' do
+      expect(mounts).to include(
+        'ensure'  => 'absent',
+        'mapfile' => '/etc/auto.home'
+      )
+    end
+  end
+
   context 'Parameter is not a hash' do
     mounts = 'string'
     let(:params) { { mounts: mounts } }
