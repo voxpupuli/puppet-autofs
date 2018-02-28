@@ -34,7 +34,7 @@ define autofs::map (
   String $mapmode                                                   = '0644',
   Boolean $replace                                                  = true,
   Integer $order                                                    = 1,
-  Optional[Array] $mapcontents                                      = undef,
+  Variant[Array, String] $mapcontents                               = [],
 ) {
   include '::autofs'
 

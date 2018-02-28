@@ -67,7 +67,7 @@ define autofs::mount (
   Boolean $direct                         = true,
   Boolean $execute                        = false,
   Boolean $mapfile_manage                 = true,
-  Array $mapcontents                      = [],
+  Variant[Array, String] $mapcontents     = [],
   Boolean $replace                        = true
 ) {
   include '::autofs'
