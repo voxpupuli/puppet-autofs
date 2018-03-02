@@ -2,6 +2,14 @@ require 'spec_helper'
 
 describe 'autofs::map', type: :define do
   on_supported_os.each do |os, facts|
+    let(:pre_condition) { 'include autofs' }
+
+    group = if facts[:os]['family'] == 'AIX'
+              'system'
+            else
+              'root'
+            end
+
     context "on #{os}" do
       let(:title) { 'data' }
       let(:facts) do
@@ -19,7 +27,7 @@ describe 'autofs::map', type: :define do
           is_expected.to contain_concat('/etc/auto.data').with(
             'ensure' => 'present',
             'owner'  => 'root',
-            'group'  => 'root',
+            'group'  => group,
             'mode'   => '0644'
           )
           is_expected.to contain_concat__fragment('/etc/auto.data_data_entries').with(

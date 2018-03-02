@@ -1,0 +1,5 @@
+---
+autofs::package_name: ['SUNWatfsr', 'SUNWatfsu']
+autofs::auto_master_map: /etc/auto_master
+#autofs::map_file_group: bin # root group exists, but it is bin by default
+autofs::reload_command: /usr/sbin/automount -v

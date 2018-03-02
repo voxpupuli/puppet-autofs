@@ -83,6 +83,13 @@
         "10",
         "11"
       ]
+    },
+    {
+      "operatingsystem": "AIX",
+      "operatingsystemrelease": [
+        "7.1",
+        "7.2"
+      ]
     }
   ],
   "requirements": [

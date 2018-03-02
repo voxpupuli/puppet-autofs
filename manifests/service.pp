@@ -18,11 +18,20 @@
 #
 class autofs::service {
   assert_private('Service class is private, please use main class parameters.')
-  service { 'autofs':
+  service { $autofs::service_name:
     ensure     => $autofs::service_ensure,
     enable     => $autofs::service_enable,
     hasstatus  => true,
     hasrestart => true,
     require    => Class['autofs::package'],
+  }
+
+  if $autofs::reload_command {
+    exec { 'automount-reload':
+      path        => '/sbin:/usr/sbin',
+      command     => $autofs::reload_command,
+      refreshonly => true,
+      require     => Service[$autofs::service_name],
+    }
   }
 }

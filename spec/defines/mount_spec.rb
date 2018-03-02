@@ -1,6 +1,20 @@
 require 'spec_helper'
 describe 'autofs::mount', type: :define do
   on_supported_os.each do |os, facts|
+    let(:pre_condition) { 'include autofs' }
+
+    case facts[:os]['family']
+    when 'AIX'
+      group = 'system'
+      master_map_file = '/etc/auto_master'
+    when 'Solaris'
+      group = 'root'
+      master_map_file = '/etc/auto_master'
+    else
+      group = 'root'
+      master_map_file = '/etc/auto.master'
+    end
+
     context "on #{os}" do
       let(:title) { 'auto.home' }
 
@@ -29,7 +43,7 @@ describe 'autofs::mount', type: :define do
           is_expected.to contain_concat('/etc/auto.home').with(
             'ensure' => 'present',
             'owner'  => 'root',
-            'group'  => 'root',
+            'group'  => group,
             'mode'   => '0644'
           )
           is_expected.to contain_concat__fragment('/etc/auto.home_auto.home_entries').with(
@@ -148,21 +162,21 @@ describe 'autofs::mount', type: :define do
           is_expected.to contain_file('/etc/auto.master.d').with(
             'ensure' => 'directory',
             'owner'  => 'root',
-            'group'  => 'root',
+            'group'  => group,
             'mode'   => '0755'
           )
 
           is_expected.to contain_file('/etc/auto.master.d/home.autofs').with(
             'ensure' => 'present',
             'owner'  => 'root',
-            'group'  => 'root',
+            'group'  => group,
             'mode'   => '0644'
           )
 
           is_expected.to contain_concat('/etc/auto.home').with(
             'ensure' => 'present',
             'owner'  => 'root',
-            'group'  => 'root',
+            'group'  => group,
             'mode'   => '0644'
           )
         end
@@ -233,8 +247,8 @@ describe 'autofs::mount', type: :define do
 
         it do
           is_expected.to contain_autofs__map('/data')
-          is_expected.to contain_concat('/etc/auto.master')
-          is_expected.to contain_concat__fragment('autofs::fragment preamble /data /etc/auto.data').with_target('/etc/auto.master')
+          is_expected.to contain_concat(master_map_file)
+          is_expected.to contain_concat__fragment('autofs::fragment preamble /data /etc/auto.data').with_target(master_map_file)
           is_expected.to contain_concat('/etc/auto.data')
           is_expected.to contain_concat__fragment('/etc/auto.data_/data_entries').with_target('/etc/auto.data')
           is_expected.not_to contain_file('/data').with('ensure' => 'directory')
@@ -252,8 +266,8 @@ describe 'autofs::mount', type: :define do
         end
 
         it do
-          is_expected.to contain_concat('/etc/auto.master')
-          is_expected.to contain_concat__fragment('autofs::fragment preamble /net -hosts').with_target('/etc/auto.master')
+          is_expected.to contain_concat(master_map_file)
+          is_expected.to contain_concat__fragment('autofs::fragment preamble /net -hosts').with_target(master_map_file)
         end
       end
 
@@ -269,7 +283,7 @@ describe 'autofs::mount', type: :define do
         it do
           is_expected.to contain_file_line('remove_contents_/data_/etc/auto.data').with(
             ensure: 'absent',
-            path: '/etc/auto.master',
+            path: master_map_file,
             match: "^/data /etc/auto.data \n"
           )
           is_expected.not_to contain_concat__fragment('autofs::fragment preamble /data /etc/auto.data')

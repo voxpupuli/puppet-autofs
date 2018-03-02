@@ -61,7 +61,7 @@ define autofs::mount (
   Integer $order                          = 1,
   Optional[Variant[Stdlib::Absolutepath,Autofs::Mapentry]] $mapfile = undef,
   Optional[String] $options               = '',
-  Stdlib::Absolutepath $master            = '/etc/auto.master',
+  Stdlib::Absolutepath $master            = $autofs::auto_master_map,
   Stdlib::Absolutepath $map_dir           = '/etc/auto.master.d',
   Boolean $use_dir                        = false,
   Boolean $direct                         = true,
@@ -92,15 +92,22 @@ define autofs::mount (
   }
 
   unless $::autofs::package_ensure == 'absent' {
-    Concat {
-      notify => Service['autofs'],
+    if $autofs::reload_command {
+      Concat {
+        before => Service[$autofs::service_name],
+        notify => Exec['automount-reload'],
+      }
+    } else {
+      Concat {
+        notify => Service[$autofs::service_name],
+      }
     }
   }
 
   if !defined(Concat[$master]) {
     concat { $master:
-      owner          => 'root',
-      group          => 'root',
+      owner          => $autofs::map_file_owner,
+      group          => $autofs::map_file_group,
       mode           => '0644',
       ensure_newline => true,
     }
@@ -125,8 +132,8 @@ define autofs::mount (
   } else {
     ensure_resource('file', $map_dir, {
       'ensure'  => directory,
-      'owner'   => 'root',
-      'group'   => 'root',
+      'owner'   => $autofs::map_file_owner,
+      'group'   => $autofs::map_file_group,
       'mode'    => '0755',
       'require' => Class['autofs::package'],
     })
@@ -142,8 +149,8 @@ define autofs::mount (
 
     file { "${map_dir}/${name}.autofs":
       ensure  => $ensure,
-      owner   => 'root',
-      group   => 'root',
+      owner   => $autofs::map_file_owner,
+      group   => $autofs::map_file_group,
       mode    => $mapperms,
       content => $contents,
       require => File[$map_dir],

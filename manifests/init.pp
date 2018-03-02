@@ -68,17 +68,31 @@
 # @option maps [Boolean] :replace Replace the file if it changes or not.
 # @option maps [Integer] :order The order in which to place mapfile contents.
 # @param package_ensure Determines the state of the package. Can be set to: installed, absent, lastest, or a specific version string.
+# @param package_name Determine the name of the package to install. Should be covered by hieradata.
+# @param package_source Determine the source of the package, required on certain platforms (AIX)
 # @param service_ensure Determines state of the service. Can be set to: running or stopped.
 # @param service_enable Determines if the service should start with the system boot. true
 #   will start the autofs service on boot. false will not start the autofs service
 #   on boot.
+# @param service_name Determine the name of the service for cross platform compatibility
+# @param auto_master_map Filename of the auto.master map for cross platform compatiblity
+# @param map_file_owner owner of the automount map files for cross platform compatiblity
+# @param map_file_group group of the automount map files for cross platform compatiblity
+# @param reload_command In lieu of a service reload capability in Puppet, exec this command to reload automount without restarting it.
 #
 class autofs (
-  Hash[String, Hash] $mounts                   = {},
-  Hash[String, Hash] $maps                     = {},
-  String $package_ensure                       = 'installed',
-  Enum[ 'stopped', 'running' ] $service_ensure = 'running',
-  Boolean $service_enable                      = true,
+  Hash[String, Hash] $mounts,
+  Hash[String, Hash] $maps,
+  String $package_ensure,
+  Variant[String, Array[String]] $package_name,
+  Optional[String] $package_source,
+  Enum[ 'stopped', 'running' ] $service_ensure,
+  Boolean $service_enable,
+  String $service_name,
+  String $auto_master_map,
+  String $map_file_owner,
+  String $map_file_group,
+  Optional[String] $reload_command,
 ) {
   contain '::autofs::package'
   unless $package_ensure == 'absent' {

@@ -1,0 +1,6 @@
+---
+autofs::service_name: automountd
+autofs::package_name: bos.net.nfs.client # NOTE: It seems to be already installed
+autofs::auto_master_map: /etc/auto_master
+autofs::map_file_group: system
+autofs::reload_command: /usr/sbin/automount -v

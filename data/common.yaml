@@ -1,0 +1,13 @@
+---
+autofs::mounts: {}
+autofs::maps: {}
+autofs::package_ensure: installed
+autofs::package_name: autofs
+autofs::package_source: null
+autofs::service_ensure: running
+autofs::service_enable: true
+autofs::service_name: autofs
+autofs::auto_master_map: /etc/auto.master
+autofs::map_file_owner: root
+autofs::map_file_group: root
+autofs::reload_command: null
