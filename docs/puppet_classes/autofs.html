@@ -141,8 +141,6 @@ autofs::mounts:
         <span class='type'>(<tt>Hash[String, Hash]</tt>)</span>
       
       
-        <em class="default">(defaults to: <tt>{}</tt>)</em>
-      
       
         &mdash;
         <div class='inline'><p>the options to build the autofs config from</p>
@@ -157,8 +155,6 @@ autofs::mounts:
       
         <span class='type'>(<tt>Hash[String, Hash]</tt>)</span>
       
-      
-        <em class="default">(defaults to: <tt>{}</tt>)</em>
       
       
         &mdash;
@@ -175,11 +171,39 @@ autofs::mounts:
         <span class='type'>(<tt>String</tt>)</span>
       
       
-        <em class="default">(defaults to: <tt>&#39;installed&#39;</tt>)</em>
-      
       
         &mdash;
         <div class='inline'><p>Determines the state of the package. Can be set to: installed, absent, lastest, or a specific version string.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>package_name</span>
+      
+      
+        <span class='type'>(<tt>Variant[String, Array[String]]</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>Determine the name of the package to install. Should be covered by hieradata.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>package_source</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>Determine the source of the package, required on certain platforms (AIX)</p>
 </div>
       
     </li>
@@ -191,8 +215,6 @@ autofs::mounts:
       
         <span class='type'>(<tt>Enum[ 'stopped', 'running' ]</tt>)</span>
       
-      
-        <em class="default">(defaults to: <tt>&#39;running&#39;</tt>)</em>
       
       
         &mdash;
@@ -209,13 +231,86 @@ autofs::mounts:
         <span class='type'>(<tt>Boolean</tt>)</span>
       
       
-        <em class="default">(defaults to: <tt>true</tt>)</em>
-      
       
         &mdash;
         <div class='inline'><p>Determines if the service should start with the system boot. true
 will start the autofs service on boot. false will not start the autofs service
 on boot.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>service_name</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>Determine the name of the service for cross platform compatibility</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>auto_master_map</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>Filename of the auto.master map for cross platform compatiblity</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>map_file_owner</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>owner of the automount map files for cross platform compatiblity</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>map_file_group</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>group of the automount map files for cross platform compatiblity</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>reload_command</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>In lieu of a service reload capability in Puppet, exec this command to reload automount without restarting it.</p>
 </div>
       
     </li>
@@ -453,6 +548,20 @@ array element represents a line in the mapfile.</p>
     
     
     
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 
 
   <p class="tag_title">See Also:</p>
@@ -499,13 +608,6 @@ array element represents a line in the mapfile.</p>
         <pre class="lines">
 
 
-76
-77
-78
-79
-80
-81
-82
 83
 84
 85
@@ -518,17 +620,38 @@ array element represents a line in the mapfile.</p>
 92
 93
 94
-95</pre>
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109</pre>
       </td>
       <td>
-        <pre class="code"><span class="info file"># File 'manifests/init.pp', line 76</span>
+        <pre class="code"><span class="info file"># File 'manifests/init.pp', line 83</span>
 
 class autofs (
-  Hash[String, Hash] $mounts                   = {},
-  Hash[String, Hash] $maps                     = {},
-  String $package_ensure                       = &#39;installed&#39;,
-  Enum[ &#39;stopped&#39;, &#39;running&#39; ] $service_ensure = &#39;running&#39;,
-  Boolean $service_enable                      = true,
+  Hash[String, Hash] $mounts,
+  Hash[String, Hash] $maps,
+  String $package_ensure,
+  Variant[String, Array[String]] $package_name,
+  Optional[String] $package_source,
+  Enum[ &#39;stopped&#39;, &#39;running&#39; ] $service_ensure,
+  Boolean $service_enable,
+  String $service_name,
+  String $auto_master_map,
+  String $map_file_owner,
+  String $map_file_group,
+  Optional[String] $reload_command,
 ) {
   contain &#39;::autofs::package&#39;
   unless $package_ensure == &#39;absent&#39; {
