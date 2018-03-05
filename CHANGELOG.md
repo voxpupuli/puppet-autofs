@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v4.3.0](https://github.com/voxpupuli/puppet-autofs/tree/v4.3.0) (2018-03-05)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-autofs/compare/v4.2.1...v4.3.0)
+
+**Closed issues:**
+
+- Add AIX support [\#96](https://github.com/voxpupuli/puppet-autofs/issues/96)
+
+**Merged pull requests:**
+
+- Release 4.2.1 [\#98](https://github.com/voxpupuli/puppet-autofs/pull/98) ([dhollinger](https://github.com/dhollinger))
+- Fix Issue-96 Add AIX Support [\#97](https://github.com/voxpupuli/puppet-autofs/pull/97) ([TJM](https://github.com/TJM))
+
 ## [v4.2.1](https://github.com/voxpupuli/puppet-autofs/tree/v4.2.1) (2018-02-28)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-autofs/compare/v4.2.0...v4.2.1)

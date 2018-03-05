@@ -272,7 +272,7 @@ This option is 100% functional, but does require some work to simplify it.</p>
 <p>Define:</p>
 
 <pre class="code puppet"><code class="puppet">autofs::map{&#39;data&#39;:
-  map =&gt; &#39;/etc/auto.data&#39;,
+  map         =&gt; &#39;/etc/auto.data&#39;,
   mapcontents =&gt; &#39;data -user,rw,soft server.example.com:/path/to/data,
 }
 </code></pre>
@@ -293,6 +293,43 @@ and <code>autofs::mount</code> first.</p>
   mount   =&gt; &#39;/big&#39;,
 }
 </code></pre>
+
+<h5>Removing Entries</h5>
+
+<p>To remove entries from a <code>mapfile</code> simply remove the element from the <code>mapcontents</code> array in your <code>manifest</code> or <code>hiera</code> data.</p>
+
+<p>Example:</p>
+
+<pre class="code puppet"><code class="puppet">autofs::map {&#39;data&#39;:
+  map         =&gt; &#39;/etc/auto.data&#39;,
+  mapcontents =&gt; [ &#39;dataA -o rw /mnt/dataA&#39;, &#39;dataB -o rw /mnt/dataB&#39; ]
+}
+</code></pre>
+
+<pre class="code yaml"><code class="yaml">autofs::maps:
+  data:
+    map: &#39;/etc/auto.data&#39;
+    mapcontents:
+      - &#39;dataA -o rw /mnt/dataA&#39;
+      - &#39;dataB -o rw /mnt/dataB&#39;
+</code></pre>
+
+<p>To remove the <code>dataA</code> entry from the <code>/etc/auto.data</code>, simply remove that array element:</p>
+
+<pre class="code puppet"><code class="puppet">autofs::map {&#39;data&#39;:
+  map         =&gt; &#39;/etc/auto.data&#39;,
+  mapcontents =&gt; [ &#39;dataB -o rw /mnt/dataB&#39; ]
+}
+</code></pre>
+
+<pre class="code yaml"><code class="yaml">autofs::maps:
+  data:
+    map: &#39;/etc/auto.data&#39;
+    mapcontents:
+      - &#39;dataB -o rw /mnt/dataB&#39;
+</code></pre>
+
+<p><strong>NOTE: Do NOT set <code>ensure =&gt; &#39;absent&#39;</code> as that removes the entire <code>mapfile</code></strong></p>
 
 <h2>Reference</h2>
 
@@ -365,6 +402,14 @@ Each hash key is the equivalent to a parameter in the <code>autofs::mount</code>
 
 <p>This is a logical, descriptive name for what what autofs will be
 mounting. This is represented by the <code>home:</code> and <code>tmp:</code> entries above.</p>
+
+<h4><code>ensure</code></h4>
+
+<p>Data type: String</p>
+
+<p>Ensure the state of the mount content. If set to <code>absent</code> it will remove any <code>concat::fragments</code> 
+with the <code>name</code> matching <code>&#39;autofs::fragment preamble &lt;mount&gt; &lt;mapfile&gt;&quot;</code>, as well as any <code>autofs::maps</code>
+created by that <code>autofs::mount</code> resource. Defaults to <code>present</code>.</p>
 
 <h4><code>mount</code></h4>
 
@@ -472,6 +517,13 @@ for map files. Applies only to autofs 5.0.5 or later. </p>
 
 <h3>Parameters for autofs::map</h3>
 
+<h4><code>ensure</code></h4>
+
+<p>Data type: String</p>
+
+<p>Ensures the state of the <code>mapfile</code>. Setting to <code>absent</code> <strong>WILL REMOVE THE MAPFILE</strong>, if you just
+to remove an entry in the <code>mapfile</code>, remove the <code>mapcontents</code> string or array element you want to remove.</p>
+
 <h4><code>mapfile</code></h4>
 
 <p>Data type: Stdlib::Absolutepath</p>
@@ -533,6 +585,7 @@ These are now private classes.</p>
 
 <ul>
 <li>Solaris 10, 11</li>
+<li>AIX 7.1, 7.2</li>
 <li>Fedora 24, 25</li>
 <li>SLES 10</li>
 <li>CentOS/RHEL/Scientific/Oracle Linux 5.x</li>

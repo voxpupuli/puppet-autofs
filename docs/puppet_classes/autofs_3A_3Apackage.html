@@ -148,44 +148,18 @@ with a &quot;OS not supported&quot; message.</p>
 30
 31
 32
-33
-34
-35
-36
-37
-38
-39
-40
-41
-42
-43
-44
-45
-46</pre>
+33</pre>
       </td>
       <td>
         <pre class="code"><span class="info file"># File 'manifests/package.pp', line 24</span>
 
 class autofs::package {
   assert_private(&#39;Package class is private, please use main class parameters&#39;)
-  Package {
-    ensure =&gt; $::autofs::package_ensure,
-  }
-  case $facts[&#39;os&#39;][&#39;family&#39;] {
-    &#39;Debian&#39;, &#39;Ubuntu&#39;: {
-      package { &#39;autofs&#39;: }
-    }
-    &#39;RedHat&#39;, &#39;CentOS&#39;: {
-      package { &#39;autofs&#39;: }
-    }
-    &#39;Suse&#39;: {
-      package { &#39;autofs&#39;: }
-    }
-    &#39;Solaris&#39;: {
-      # Already installed in Solaris
-    }
-    default: {
-      fail(&quot;${facts[&#39;operatingsystem&#39;]} not supported.&quot;)
+
+  if $autofs::package_name {
+    package { $autofs::package_name:
+      ensure =&gt; $::autofs::package_ensure,
+      source =&gt; $autofs::package_source,
     }
   }
 }</pre>

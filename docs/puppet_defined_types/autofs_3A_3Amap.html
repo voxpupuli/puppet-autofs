@@ -100,11 +100,30 @@ configuration files.</p>
   
     <li>
       
+        <span class='name'>ensure</span>
+      
+      
+        <span class='type'>(<tt>Enum['present', 'absent']</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>&#39;present&#39;</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Whether to create the mapfile or not.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
         <span class='name'>mapcontents</span>
       
       
-        <span class='type'>(<tt>Array</tt>)</span>
+        <span class='type'>(<tt>Variant[Array, String]</tt>)</span>
       
+      
+        <em class="default">(defaults to: <tt>[]</tt>)</em>
       
       
         &mdash;
@@ -121,6 +140,8 @@ Example: &#39;* -user,rw,soft nfs.example.org:/path/to&#39;</p>
       
         <span class='type'>(<tt>Stdlib::Absolutepath</tt>)</span>
       
+      
+        <em class="default">(defaults to: <tt>$title</tt>)</em>
       
       
         &mdash;
@@ -246,7 +267,6 @@ Example: &#39;* -user,rw,soft nfs.example.org:/path/to&#39;</p>
         <pre class="lines">
 
 
-29
 30
 31
 32
@@ -277,40 +297,61 @@ Example: &#39;* -user,rw,soft nfs.example.org:/path/to&#39;</p>
 57
 58
 59
-60</pre>
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71</pre>
       </td>
       <td>
-        <pre class="code"><span class="info file"># File 'manifests/map.pp', line 29</span>
+        <pre class="code"><span class="info file"># File 'manifests/map.pp', line 30</span>
 
 define autofs::map (
-  Array $mapcontents,
-  Stdlib::Absolutepath $mapfile,
+  Enum[&#39;present&#39;, &#39;absent&#39;] $ensure                                 = &#39;present&#39;,
+  Stdlib::Absolutepath $mapfile                                     = $title,
   Enum[&#39;autofs/auto.map.erb&#39;, &#39;autofs/auto.map.exec.erb&#39;] $template = &#39;autofs/auto.map.erb&#39;,
   String $mapmode                                                   = &#39;0644&#39;,
   Boolean $replace                                                  = true,
   Integer $order                                                    = 1,
+  Variant[Array, String] $mapcontents                               = [],
 ) {
   include &#39;::autofs&#39;
 
   unless $::autofs::package_ensure == &#39;absent&#39; {
-    Concat {
-      notify =&gt; Service[&#39;autofs&#39;],
+    if $autofs::reload_command {
+      Concat {
+        before =&gt; Service[$autofs::service_name],
+        notify =&gt; Exec[&#39;automount-reload&#39;],
+      }
+    } else {
+      Concat {
+        notify =&gt; Service[$autofs::service_name],
+      }
     }
   }
 
   ensure_resource(concat,$mapfile,{
-    ensure  =&gt; present,
-    owner   =&gt; &#39;root&#39;,
-    group   =&gt; &#39;root&#39;,
+    ensure  =&gt; $ensure,
+    owner   =&gt; $autofs::map_file_owner,
+    group   =&gt; $autofs::map_file_group,
     mode    =&gt; $mapmode,
     replace =&gt; $replace,
     require =&gt; Class[&#39;autofs::package&#39;],
   })
 
-  concat::fragment{&quot;${mapfile}_${name}_entries&quot;:
-    target  =&gt; $mapfile,
-    content =&gt; template($template),
-    order   =&gt; $order,
+  unless $ensure == &#39;absent&#39; {
+    concat::fragment { &quot;${mapfile}_${name}_entries&quot;:
+      target  =&gt; $mapfile,
+      content =&gt; template($template),
+      order   =&gt; $order,
+    }
   }
 
 }</pre>

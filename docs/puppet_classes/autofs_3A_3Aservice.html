@@ -143,19 +143,37 @@ startup.</p>
 25
 26
 27
-28</pre>
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37</pre>
       </td>
       <td>
         <pre class="code"><span class="info file"># File 'manifests/service.pp', line 19</span>
 
 class autofs::service {
   assert_private(&#39;Service class is private, please use main class parameters.&#39;)
-  service { &#39;autofs&#39;:
+  service { $autofs::service_name:
     ensure     =&gt; $autofs::service_ensure,
     enable     =&gt; $autofs::service_enable,
     hasstatus  =&gt; true,
     hasrestart =&gt; true,
     require    =&gt; Class[&#39;autofs::package&#39;],
+  }
+
+  if $autofs::reload_command {
+    exec { &#39;automount-reload&#39;:
+      path        =&gt; &#39;/sbin:/usr/sbin&#39;,
+      command     =&gt; $autofs::reload_command,
+      refreshonly =&gt; true,
+      require     =&gt; Service[$autofs::service_name],
+    }
   }
 }</pre>
       </td>

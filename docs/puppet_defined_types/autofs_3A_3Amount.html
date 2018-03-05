@@ -77,8 +77,6 @@
 <p>Defined type to generate autofs mount point
 configuration files.</p>
 
-<p>}</p>
-
   </div>
 </div>
 <div class="tags">
@@ -103,14 +101,41 @@ configuration files.</p>
 </div></p>
       
       <pre class="example code"><code>autofs::mount { &#39;smb&#39;:
- mount          =&gt; &#39;/smb&#39;,
- mapfile        =&gt; &#39;program:/etc/auto.smb&#39;,
- mapfile_manage =&gt; false,
- options        =&gt; &#39;--timeout=120&#39;,</code></pre>
+  mount          =&gt; &#39;/smb&#39;,
+  mapfile        =&gt; &#39;program:/etc/auto.smb&#39;,
+  mapfile_manage =&gt; false,
+  options        =&gt; &#39;--timeout=120&#39;,
+}</code></pre>
+    
+      
+        <p class="example_title"><div class='inline'><p>Remove an autofs::mount</p>
+</div></p>
+      
+      <pre class="example code"><code>autofs::mount { &#39;/smb&#39;:
+  ensure  =&gt; &#39;absent&#39;,
+  mapfile =&gt; &#39;program:/etc/auto.smb&#39;,
+}</code></pre>
     
   </div>
 <p class="tag_title">Parameters:</p>
 <ul class="param">
+  
+    <li>
+      
+        <span class='name'>ensure</span>
+      
+      
+        <span class='type'>(<tt>Enum['present', 'absent']</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>&#39;present&#39;</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Whether the mount should exist or not.</p>
+</div>
+      
+    </li>
   
     <li>
       
@@ -152,7 +177,7 @@ can be a filepath or maptype and path.</p>
         <span class='name'>mapcontents</span>
       
       
-        <span class='type'>(<tt>Array</tt>)</span>
+        <span class='type'>(<tt>Variant[Array, String]</tt>)</span>
       
       
         <em class="default">(defaults to: <tt>[]</tt>)</em>
@@ -173,7 +198,7 @@ Example: &#39;* -user,rw,soft server.example.com:/path/to/home/shares&#39;</p>
         <span class='type'>(<tt>Stdlib::Absolutepath</tt>)</span>
       
       
-        <em class="default">(defaults to: <tt>&#39;/etc/auto.master&#39;</tt>)</em>
+        <em class="default">(defaults to: <tt>$autofs::auto_master_map</tt>)</em>
       
       
         &mdash;
@@ -372,13 +397,6 @@ paramter.</p>
         <pre class="lines">
 
 
-51
-52
-53
-54
-55
-56
-57
 58
 59
 60
@@ -465,23 +483,50 @@ paramter.</p>
 141
 142
 143
-144</pre>
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170</pre>
       </td>
       <td>
-        <pre class="code"><span class="info file"># File 'manifests/mount.pp', line 51</span>
+        <pre class="code"><span class="info file"># File 'manifests/mount.pp', line 58</span>
 
 define autofs::mount (
+  Enum[&#39;present&#39;, &#39;absent&#39;] $ensure       = &#39;present&#39;,
   Stdlib::Absolutepath $mount             = $title,
   Integer $order                          = 1,
   Optional[Variant[Stdlib::Absolutepath,Autofs::Mapentry]] $mapfile = undef,
   Optional[String] $options               = &#39;&#39;,
-  Stdlib::Absolutepath $master            = &#39;/etc/auto.master&#39;,
+  Stdlib::Absolutepath $master            = $autofs::auto_master_map,
   Stdlib::Absolutepath $map_dir           = &#39;/etc/auto.master.d&#39;,
   Boolean $use_dir                        = false,
   Boolean $direct                         = true,
   Boolean $execute                        = false,
   Boolean $mapfile_manage                 = true,
-  Array $mapcontents                      = [],
+  Variant[Array, String] $mapcontents     = [],
   Boolean $replace                        = true
 ) {
   include &#39;::autofs&#39;
@@ -506,36 +551,53 @@ define autofs::mount (
   }
 
   unless $::autofs::package_ensure == &#39;absent&#39; {
-    Concat {
-      notify =&gt; Service[&#39;autofs&#39;],
+    if $autofs::reload_command {
+      Concat {
+        before =&gt; Service[$autofs::service_name],
+        notify =&gt; Exec[&#39;automount-reload&#39;],
+      }
+    } else {
+      Concat {
+        notify =&gt; Service[$autofs::service_name],
+      }
     }
   }
 
   if !defined(Concat[$master]) {
     concat { $master:
-      owner          =&gt; &#39;root&#39;,
-      group          =&gt; &#39;root&#39;,
+      owner          =&gt; $autofs::map_file_owner,
+      group          =&gt; $autofs::map_file_group,
       mode           =&gt; &#39;0644&#39;,
       ensure_newline =&gt; true,
     }
   }
 
   if $use_dir == false {
-    concat::fragment { &quot;autofs::fragment preamble ${mount} ${mapfile}&quot;:
-      target  =&gt; $master,
-      content =&gt; $contents,
-      order   =&gt; $order,
+    if $ensure == &#39;present&#39; {
+      concat::fragment { &quot;autofs::fragment preamble ${mount} ${mapfile}&quot;:
+        target  =&gt; $master,
+        content =&gt; $contents,
+        order   =&gt; $order,
+      }
+    } else {
+      file_line { &quot;remove_contents_${mount}_${mapfile}&quot;:
+        ensure            =&gt; absent,
+        path              =&gt; $master,
+        match             =&gt; &quot;^${contents}&quot;,
+        match_for_absence =&gt; true,
+        notify            =&gt; Service[&#39;autofs&#39;],
+      }
     }
   } else {
     ensure_resource(&#39;file&#39;, $map_dir, {
-      &#39;ensure&#39;  =&gt; &#39;directory&#39;,
-      &#39;owner&#39;   =&gt; &#39;root&#39;,
-      &#39;group&#39;   =&gt; &#39;root&#39;,
+      &#39;ensure&#39;  =&gt; directory,
+      &#39;owner&#39;   =&gt; $autofs::map_file_owner,
+      &#39;group&#39;   =&gt; $autofs::map_file_group,
       &#39;mode&#39;    =&gt; &#39;0755&#39;,
       &#39;require&#39; =&gt; Class[&#39;autofs::package&#39;],
     })
 
-    if !defined(Concat::Fragment[&#39;autofs::fragment preamble map directory&#39;]) {
+    if !defined(Concat::Fragment[&#39;autofs::fragment preamble map directory&#39;]) and $ensure == &#39;present&#39; {
       concat::fragment { &#39;autofs::fragment preamble map directory&#39;:
         target  =&gt; $master,
         content =&gt; &quot;+dir:${map_dir}&quot;,
@@ -545,9 +607,9 @@ define autofs::mount (
     }
 
     file { &quot;${map_dir}/${name}.autofs&quot;:
-      ensure  =&gt; present,
-      owner   =&gt; &#39;root&#39;,
-      group   =&gt; &#39;root&#39;,
+      ensure  =&gt; $ensure,
+      owner   =&gt; $autofs::map_file_owner,
+      group   =&gt; $autofs::map_file_group,
       mode    =&gt; $mapperms,
       content =&gt; $contents,
       require =&gt; File[$map_dir],
@@ -556,6 +618,7 @@ define autofs::mount (
 
   if $mapfile and $mapfile_manage {
     autofs::map { $title:
+      ensure      =&gt; $ensure,
       mapfile     =&gt; $mapfile,
       mapcontents =&gt; $mapcontents,
       replace     =&gt; $replace,
