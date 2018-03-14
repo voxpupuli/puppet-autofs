@@ -21,48 +21,44 @@ Autofs Puppet Module
 
 Description
 -----------
-The Autofs module is a Puppet module for managing the configuration of automount
-network file system. This is a global module designed to be used by any
-organization. This module assumes the use of Hiera to set variables and serve up
-configuration files.
+The Autofs module is a Puppet module for managing the configuration of on-demand mounting and
+automatic unmounting of local and remote filesystems via autofs / automount. This is a global
+module designed to be used by any organization.  It enables most details of Autofs
+configuration to be specified via the user's choice of Puppet manifest or external data.
 
 Setup
 -----
 ### The Module manages the following:
 * Autofs package
 * Autofs service
-* Autofs Configuration File (/etc/auto.master)
-* Autofs Map Files (i.e. /etc/auto.home)
+* Autofs master map (/etc/auto.master)
+* Autofs map files (e.g. /etc/auto.home)
 
 ### Requirements
 
-* The [stdlib](https://forge.puppetlabs.com/puppetlabs/stdlib) Puppet Library
-* The [concat](https://github.com/puppetlabs/puppetlabs-concat) Puppet Module
+* The [stdlib](https://forge.puppetlabs.com/puppetlabs/stdlib) Puppet module
+* The [concat](https://github.com/puppetlabs/puppetlabs-concat) Puppet module
 
 ### Usage
 
-The module includes a single class:
+The module provides one class:
 
 ```puppet
 include autofs
 ```
 
-By default this installs and starts the autofs service with the module's default master
-file. 
+By default, this installs, enables, and starts the autofs service with the module's default master
+map.  If desired, the required state of the autofs package and / or service can instead be specified explicitly
+via class parameters.  For example,
 
-You can also manage the state of the autofs package or service.
-
-By default the module will install the autofs package and start/enable the autofs service.
-You can configure this by using the parameters defined in the main init class.
-
-For example, to ensure the package is absent:
+To ensure the package is absent:
 ```puppet
 class { 'autofs':
   package_ensure => 'absent',
 }
 ```
 
-To ensure that a service is disabled and not running:
+To ensure the service is disabled and not running:
 ```puppet
 class { 'autofs':
   service_ensure => 'stopped',
@@ -70,10 +66,9 @@ class { 'autofs':
 }
 ```
 
-
 ### Map Files
 
-To setup the Autofs Map Files, there is a defined type that can be used:
+This module provides several ways to manage Autofs map files.  In the first place, there is a defined type serving this purpose:
 ```puppet
 autofs::mount { 'home':
   mount       => '/home',
@@ -83,7 +78,7 @@ autofs::mount { 'home':
   order       => 01
 }
 ```
-This will generate content in both the auto.master file and a new auto.home map
+This example will generate content in both the auto.master file and the auto.home map
 file:
 
 ##### auto.master
@@ -96,10 +91,7 @@ file:
 * -user,rw,soft,intr,rsize=32768,wsize=32768,tcp,nfsvers=3,noacl server.example.com:/path/to/home/shares
 ```
 
-The defined type requires all parameters, except direct and execute, to build the autofs config.
-The direct and execute parameters allow for the creation of indirect mounts, see the Parameters section for more information on the defaults for direct and execute.
-
-In hiera, there's a `autofs::mounts` class you can configure, for example:
+The same configuration can be achieved by specifying the same details in external data, as one element of a hash of hashes with key `autofs::mounts`. For example:
 ```yaml
 autofs::mounts:
   home:
@@ -111,8 +103,8 @@ autofs::mounts:
     order: 01
 ```
 
-If you need to merge the `autofs::mounts` key from multiple files or hiera lookups, be sure to add the `lookup_options`
-key and set the merge behavior for `autofs::mounts` to `merge: hash`
+If `autofs::mounts` data from multiple files or hierarchy levels need to be combined, then hash-merge behavior for this key
+should be specified via the `lookup_options` key:
 
 ```yaml
 lookup_options:
@@ -135,7 +127,9 @@ For more information about merge behavior see the doc for:
 
 ##### Direct Map `/-` arugment
 
-The autofs module also supports the use of the built in autofs `/-` argument used with Direct Maps.
+The autofs module supports Autofs direct maps naturally.  For a direct map, simply specify the `mount` parameter as `/-`,
+just as is used for the purpose in the `auto.master` file.  When this option is exercised, Autofs requires the keys in the
+corresponding map file to be absolute paths of mountpoint directories; this module does *not* validate that constraint.
 
 ###### Examples:
 
@@ -164,8 +158,11 @@ autofs::mounts:
 
 ##### Autofs `+dir:` options
 
-The autofs module now supports the use of the `+dir:` option in the auto.master.
-This option is 100% functional, but does require some work to simplify it.
+The autofs module supports the use of Autofs's `+dir:` option (Autofs 5.0.5 or later) in the `auto.master` file to
+incorporate the contents of all files from a specified directory into the master map's own logical content.  When a
+`mount`'s `use_dir` parameter is `true` (default is `false`), the corresponding `auto.master` content is created as a
+separate file in the appropriate directory instead of being written directly into `auto.master`.  `auto.master` is,
+however, ensured to contain an appropriate `+dir:` entry designating the chosen fragment directory.
 
 ###### Usage
 
@@ -195,14 +192,15 @@ autofs::mounts:
 ```
 
 #### Map Entries
-In addition to adding map entries via the `mapcontents` parameter to `autofs::mount the `autofs::map` type can also be used.
+As an alternative to adding map entries via the `mapcontents` parameter of an `autofs::mount`, there is an `autofs::map`
+type that serves the purpose as well.
 
 ##### Usage
 
 Define:
 ```puppet
 autofs::map{'data':
-  map         => '/etc/auto.data',
+  mapfile     => '/etc/auto.data',
   mapcontents => 'data -user,rw,soft server.example.com:/path/to/data,
 }
 ```
@@ -211,12 +209,11 @@ Hiera:
 ```yaml
 autofs::maps:
   data:
-    map: '/etc/auto.data'
+    mapfile: '/etc/auto.data'
     mapcontent: 'data -user,rw server.example.com:/path/to/data'
 ```
 
-It is assumed that the map file itself has already been defined with
-and `autofs::mount` first.
+It is assumed in this case that the map file itself is managed separately, such as via an `autofs::mount` resource.
 
 ```puppet
 autofs::mount{'auto.data':
@@ -227,13 +224,13 @@ autofs::mount{'auto.data':
 
 ##### Removing Entries
 
-To remove entries from a `mapfile` simply remove the element from the `mapcontents` array in your `manifest` or `hiera` data.
+To remove entries from a `mapfile` simply remove the element from the `mapcontents` array in your manifest or external data.
 
 Example:
 
 ```puppet
 autofs::map {'data':
-  map         => '/etc/auto.data',
+  mapfile     => '/etc/auto.data',
   mapcontents => [ 'dataA -o rw /mnt/dataA', 'dataB -o rw /mnt/dataB' ]
 }
 ```
@@ -241,7 +238,7 @@ autofs::map {'data':
 ```yaml
 autofs::maps:
   data:
-    map: '/etc/auto.data'
+    mapfile: '/etc/auto.data'
     mapcontents:
       - 'dataA -o rw /mnt/dataA'
       - 'dataB -o rw /mnt/dataB'
@@ -251,7 +248,7 @@ To remove the `dataA` entry from the `/etc/auto.data`, simply remove that array 
 
 ```puppet
 autofs::map {'data':
-  map         => '/etc/auto.data',
+  mapfile     => '/etc/auto.data',
   mapcontents => [ 'dataB -o rw /mnt/dataB' ]
 }
 ```
@@ -259,12 +256,12 @@ autofs::map {'data':
 ```yaml
 autofs::maps:
   data:
-    map: '/etc/auto.data'
+    mapfile: '/etc/auto.data'
     mapcontents:
       - 'dataB -o rw /mnt/dataB'
 ```
 
-**NOTE: Do NOT set `ensure => 'absent'` as that removes the entire `mapfile`**
+**NOTE: Do NOT set `ensure => 'absent'` unless your intent is to remove the entire `mapfile`!**
 
 
 ## Reference
@@ -273,12 +270,12 @@ autofs::maps:
 
 #### Public Classes
 
-* autofs: Main class. Contains or calls all other classes or defines.
+* `autofs`: Main class. Contains or calls all other classes or defines.
 
 #### Private Classes
 
-* autofs::package: Handles autofs packages.
-* autofs::service: Handles the service.
+* `autofs::package`: Handles autofs packages.
+* `autofs::service`: Handles the service.
 
 ### Parameters
 
@@ -288,16 +285,15 @@ Optional.
 
 Data type: Hash
 
-A hash of options that will build the configuration. This hash is passed to the Defined type.
-Each hash key is the equivalent to a parameter in the `autofs::mount` defined type.
-
-Default: `undef`
+A hash of options that describe contents of the master map, and possibly of individual map files.  Each entry is equivalent
+to the title and a hash of the parameters of one `autofs::mount` resource.
 
 #### `package_ensure`
 
 Data type: String
 
-Determines the state of the package. Can be set to: installed, absent, lastest, or a specific version string.
+Determines the required state of the autofs package. Can be set to: `installed`, `absent`, `lastest`, or a specific
+version string.
 
 Default: 'installed'
 
@@ -305,7 +301,7 @@ Default: 'installed'
 
 Data type: Enum['running', 'stopped']
 
-Determines state of the service.
+Determines required state of the autofs service.
 
 Default: 'running'
 
@@ -313,7 +309,7 @@ Default: 'running'
 
 Data type: Boolean
 
-Determines if the service should start with the system boot.
+Determines whether the autofs service should start at system boot.
 
 Default: `true`
 
@@ -321,58 +317,59 @@ Default: `true`
 
 #### Public Defines
 
-* autofs::mount: Builds the autofs configuration.
-* autofs::map: Builds map entires for autofs configuration.
+* `autofs::mount`: Describes an entry in the master map, and, optionally, some of or all of the contents of the corresponding
+  map file.
+* `autofs::map`: Describes a map file and some or all of its contents.
 
 ### Parameters for autofs::mount
-
-#### `mount_name`
-
-Data type: String
-
-This is a logical, descriptive name for what what autofs will be
-mounting. This is represented by the `home:` and `tmp:` entries above.
 
 #### `ensure`
 
 Data type: String
 
-Ensure the state of the mount content. If set to `absent` it will remove any `concat::fragments` 
-with the `name` matching `'autofs::fragment preamble <mount> <mapfile>"`, as well as any `autofs::maps`
-created by that `autofs::mount` resource. Defaults to `present`.
+The desired state of the mount definition in the master map.  If set to `absent`, the resulting master map will not
+contain a mountpoint definition corresponding to this resource, nor will it cause a map file or any map file content
+to be managed (but such content could still be created and managed via `autofs::map` resources or *other*
+`autofs::mount` resources). Defaults to `present`.
 
 #### `mount`
 
 Data type: Stblib::Absolutepath
 
-This Mapping describes where autofs will be mounting to. This map
-entry is referenced by concat as part of the generation of the /etc/auto.master
-file. Defaults to the `title` of the `autofs::mount`
+The Autofs mountpoint described by this resource.  When this parameter has the value `/-`, this resource describes a direct
+mount, and the keys in the corresponding map file must be absolute paths to mountpoint directories.  Otherwise, this
+resource describes an indirect map, and this parameter is a base path to the automounted directories
+described by the corresponding map file.   Defaults to the `title` of this `autofs::mount`.
 
 #### `mapfile`
 
+Optional.
+
 Data type: Stdlib::Absolutepath or Autofs::MapEntry
 
-This Mapping describes the name and path of the autofs map file.
-This mapping is used in the auto.master generation, as well as generating the map
-file from the auto.map.erb template. This parameter is no longer required.
-When anything other than a simple file path is used `mapfile_manage` must be false.
+This parameter designates the automount map serving this mount.  Autofs supports a variety of options
+here, but most commonly this is either an absolute path to a map file or the special string `-hosts`.
+If its value is anything other than a plain absolute path, then the `mapfile_manage` parameter must take the
+value `false`, and the specified mapfile must be managed separately.
+
+This parameter corresponds to content in the master map.  If `mapfile_manage` is `true` (its default), then
+the presence of this parameter also causes the corresponding map file to be created and managed.
 
 #### `mapfile_manage`
 
 Data type: Boolean
 
-If true the the mapfile file will be created and maintained. Defaults
-to true. Set this to false when the map file is maintained some other way,
-e.g auto.smb from the autofs package.
+If true the the mapfile file will be created and maintained. Set this to `false` when the map file is maintained
+some other way, e.g. `auto.smb` from the autofs package.
+
+Default: true
 
 #### `mapcontents`
 
-Data type: Array
+Data type: Array or String
 
-This Mapping describes the folders that will be mounted, the
-mount options, and the path to the remote or local share to be mounted. Used in
-mapfile generation.
+This string or each element of this array describes one filesystem to be configured for automounting.  It contributes to
+map file content.  See the documentation of `$autofs::map::mapcontents` for more details.
 
 Default: []
 
@@ -423,9 +420,11 @@ Default: `false`
 
 #### `direct`
 
+Deprecated.
+
 Data type: Boolean
 
-Enable or disable indirect maps.
+Retained for backwards compatibility, but has no effect.
 
 Default: `true`
 
@@ -433,7 +432,7 @@ Default: `true`
 
 Data type: Boolean
 
-Set mapfile to be executable.
+Whether the mapfile should be an executable shell script.
 
 Default: `false`
 
@@ -441,7 +440,7 @@ Default: `false`
 
 Data type: Boolean
 
-Whether or not to replace the mapfile if it already exists.
+Whether to replace the mapfile if it already exists.
 
 Default: `true`
 
@@ -451,22 +450,31 @@ Default: `true`
 
 Data type: String
 
-Ensures the state of the `mapfile`. Setting to `absent` **WILL REMOVE THE MAPFILE**, if you just
+Ensures the state of the `mapfile`. Setting to `absent` **WILL REMOVE THE MAPFILE**. If you just
 to remove an entry in the `mapfile`, remove the `mapcontents` string or array element you want to remove.
+
+Default: 'present'
 
 #### `mapfile`
 
 Data type: Stdlib::Absolutepath
 
-mapfile file to add entry to. e.g '/etc/auto.data'.
+The autofs map file managed to which this resource provides contents. e.g '/etc/auto.data'.
 
-#### `mapcontent`
+#### `mapcontents`
 
-Data type: String
+Data type: String or Array
 
-This Mapping describes a folder that will be mounted, the
-mount options, and the path to the remote or local share to be mounted. Used in
-mapfile generation. e.g. 'data -rw nfs.example.org:/data/big
+Each string corresponds to one line of the map file.
+
+For non-executable map files, such a line should describe one filesystem mapping, in automount format.  There
+are three whitespace-delimited fields: an identifying "key", which automount combines with the base path for
+this map to form the mount path; the mount options as a comma-delimited string; and the remote or local filesystem
+to be mounted.
+
+Used in mapfile generation. Example: 'data -rw nfs.example.org:/data/big'
+
+Default: []
 
 
 Limitations
@@ -503,7 +511,7 @@ Compatible with Puppet 4 only. Puppet 4.6.0 will provide best results.
     * CentOS/RHEL/Scientific/Oracle Linux 5.x
 * Unsupported
     * Windows (Autofs not available)
-    * Mac OS X (Autofs Not Available)
+    * Mac OS X
 
 Development
 -------------
