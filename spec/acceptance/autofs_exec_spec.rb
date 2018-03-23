@@ -107,7 +107,6 @@ describe 'autofs::mount exec tests' do
       end
     end
 
-
     describe package('autofs') do
       it { is_expected.to be_installed }
     end
