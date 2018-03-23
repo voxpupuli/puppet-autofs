@@ -151,7 +151,7 @@ define autofs::mount (
       ensure  => $ensure,
       owner   => $autofs::map_file_owner,
       group   => $autofs::map_file_group,
-      mode    => $mapperms,
+      mode    => '0644',
       content => $contents,
       require => File[$map_dir],
     }
