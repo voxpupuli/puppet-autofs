@@ -140,48 +140,6 @@ describe 'autofs::mount', type: :define do
         end
       end
 
-      context 'with EL7 directory' do
-        let(:params) do
-          {
-            name: 'home',
-            mount: '/home',
-            mapfile: '/etc/auto.home',
-            mapcontents: %w[test foo bar],
-            options: '--timeout=120',
-            order: 1,
-            map_dir: '/etc/auto.master.d',
-            use_dir: true
-          }
-        end
-
-        it do
-          is_expected.to contain_concat__fragment('autofs::fragment preamble map directory')
-        end
-
-        it do
-          is_expected.to contain_file('/etc/auto.master.d').with(
-            'ensure' => 'directory',
-            'owner'  => 'root',
-            'group'  => group,
-            'mode'   => '0755'
-          )
-
-          is_expected.to contain_file('/etc/auto.master.d/home.autofs').with(
-            'ensure' => 'present',
-            'owner'  => 'root',
-            'group'  => group,
-            'mode'   => '0644'
-          )
-
-          is_expected.to contain_concat('/etc/auto.home').with(
-            'ensure' => 'present',
-            'owner'  => 'root',
-            'group'  => group,
-            'mode'   => '0644'
-          )
-        end
-      end
-
       context 'with executable map' do
         let(:params) do
           {
@@ -196,6 +154,51 @@ describe 'autofs::mount', type: :define do
 
         it do
           is_expected.to contain_concat('/etc/auto.home').with('mode' => '0755')
+        end
+      end
+
+      [true, false].each do |execute|
+        context "with EL7 directory and #{execute ? '' : 'non-'}executable map" do
+          let(:params) do
+            {
+              name: 'home',
+              mount: '/home',
+              mapfile: '/etc/auto.home',
+              mapcontents: %w[test foo bar],
+              options: '--timeout=120',
+              order: 1,
+              map_dir: '/etc/auto.master.d',
+              use_dir: true,
+              execute: execute
+            }
+          end
+
+          it do
+            is_expected.to contain_concat__fragment('autofs::fragment preamble map directory')
+          end
+
+          it do
+            is_expected.to contain_file('/etc/auto.master.d').with(
+              'ensure' => 'directory',
+              'owner'  => 'root',
+              'group'  => group,
+              'mode'   => '0755'
+            )
+
+            is_expected.to contain_file('/etc/auto.master.d/home.autofs').with(
+              'ensure' => 'present',
+              'owner'  => 'root',
+              'group'  => group,
+              'mode'   => '0644'
+            )
+
+            is_expected.to contain_concat('/etc/auto.home').with(
+              'ensure' => 'present',
+              'owner'  => 'root',
+              'group'  => group,
+              'mode'   => execute ? '0755' : '0644'
+            )
+          end
         end
       end
 
