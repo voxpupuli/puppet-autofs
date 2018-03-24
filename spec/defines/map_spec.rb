@@ -35,6 +35,17 @@ describe 'autofs::map', type: :define do
           )
         end
       end
+
+      context 'with bare string mapcontents' do
+        let(:params) do
+          {
+            mapfile: '/etc/auto.data',
+            mapcontents: 'test foo bar'
+          }
+        end
+
+        it { is_expected.to compile }
+      end
     end
   end
 end

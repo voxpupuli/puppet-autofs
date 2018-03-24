@@ -14,6 +14,6 @@
 ###############################################################
 <% end -%>
 
-<% @mapcontents.each do |content| -%>
+<% [@mapcontents].flatten.each do |content| -%>
 <%= content %>
 <% end -%>
