@@ -41,6 +41,7 @@ describe 'autofs::mount exec tests' do
       its(:content) do
         is_expected.to start_with('#!/bin/bash')
         is_expected.to match(%r{^test_exec -o rw /mnt/test_exec$})
+        is_expected.not_to match(%r{^(?m)test.*\n#})
       end
     end
 
@@ -104,6 +105,7 @@ describe 'autofs::mount exec tests' do
       its(:content) do
         is_expected.to start_with('#!/bin/bash')
         is_expected.to match(%r{^test_exec -o rw /mnt/test_exec$})
+        is_expected.not_to match(%r{^(?m)test.*\n#})
       end
     end
 

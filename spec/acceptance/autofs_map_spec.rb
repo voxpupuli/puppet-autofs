@@ -1,10 +1,13 @@
 require 'spec_helper_acceptance'
 
-describe 'autofs::map  tests' do
+describe 'autofs::map tests' do
   context 'basic map test' do
     it 'applies' do
       pp = <<-EOS
         class { 'autofs': }
+        autofs::mount { '/mnt/datamap':
+          mapfile => '/etc/auto.data',
+        }
         autofs::map { 'datamapA':
           mapfile     => '/etc/auto.data',
           mapcontents => [ 'dataA -o rw /mnt/dataA', 'dataB -o rw /mnt/dataB' ],
@@ -20,8 +23,13 @@ describe 'autofs::map  tests' do
         is_expected.to exist
         is_expected.to be_owned_by 'root'
         is_expected.to be_grouped_into 'root'
+        is_expected.to be_mode 644
         is_expected.to contain 'dataA -o rw /mnt/dataA'
         is_expected.to contain 'dataB -o rw /mnt/dataB'
+      end
+      its(:content) do
+        is_expected.to start_with('##')
+        is_expected.not_to match(/^(?m)data.*\n#/)
       end
     end
 
@@ -38,6 +46,9 @@ describe 'autofs::map  tests' do
     it 'applies' do
       pp = <<-EOS
         class { 'autofs': }
+        autofs::mount { '/mnt/datamap':
+          mapfile => '/etc/auto.data',
+        }
         autofs::map { 'datamapA':
           mapfile     => '/etc/auto.data',
           mapcontents => [ 'dataA -o rw /mnt/dataA', 'dataB -o rw /mnt/dataB' ],
@@ -56,10 +67,15 @@ describe 'autofs::map  tests' do
         is_expected.to exist
         is_expected.to be_owned_by 'root'
         is_expected.to be_grouped_into 'root'
+        is_expected.to be_mode 644
         is_expected.to contain 'dataA -o rw /mnt/dataA'
         is_expected.to contain 'dataB -o rw /mnt/dataB'
         is_expected.to contain 'dataC -o rw /mnt/dataC'
         is_expected.to contain 'dataD -o rw /mnt/dataD'
+      end
+      its(:content) do
+        is_expected.to start_with('##')
+        is_expected.not_to match(/^(?m)data.*\n#/)
       end
     end
   end
@@ -68,6 +84,9 @@ describe 'autofs::map  tests' do
     it 'applies' do
       pp = <<-EOS
         class { 'autofs': }
+        autofs::mount { '/mnt/datamap':
+          mapfile => '/etc/auto.data',
+        }
         autofs::map { 'datamapA':
           mapfile     => '/etc/auto.data',
           mapcontents => [ 'dataB -o rw /mnt/dataB' ],
@@ -87,27 +106,10 @@ describe 'autofs::map  tests' do
         is_expected.not_to contain 'dataC -o rw /mnt/dataC'
         is_expected.not_to contain 'dataD -o rw /mnt/dataD'
       end
-    end
-  end
-
-  context 'rmmap entire' do
-    it 'applies' do
-      pp = <<-MANIFEST
-        class { 'autofs': }
-        autofs::map { 'datamapA':
-          ensure  => 'absent',
-          mapfile => '/etc/auto.data',
-        }
-      MANIFEST
-
-      apply_manifest(pp, catch_failures: true)
-      apply_manifest(pp, catch_changes: true)
-    end
-
-    describe file('/etc/auto.data') do
-      it 'does not exist' do
-        is_expected.not_to exist
-      end
+      # The content should start with the warning banner
+      its(:content) { is_expected.to start_with '##' }
+      # After the first map line, the banner should not be repeated
+      its(:content) { is_expected.not_to match /^(?m)data.*\n#/ }
     end
   end
 end

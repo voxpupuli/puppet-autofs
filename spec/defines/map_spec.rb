@@ -24,12 +24,7 @@ describe 'autofs::map', type: :define do
 
       context 'with default parameters' do
         it do
-          is_expected.to contain_concat('/etc/auto.data').with(
-            'ensure' => 'present',
-            'owner'  => 'root',
-            'group'  => group,
-            'mode'   => '0644'
-          )
+          is_expected.not_to contain_concat('/etc/auto.data')
           is_expected.to contain_concat__fragment('/etc/auto.data_data_entries').with(
             'target' => '/etc/auto.data'
           )
