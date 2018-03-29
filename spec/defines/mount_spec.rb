@@ -279,16 +279,16 @@ describe 'autofs::mount', type: :define do
         let(:params) do
           {
             mapfile: 'file,sun:/etc/auto.data',
-            mapfile_manage: false,
+            mapfile_manage: false
           }
         end
 
         it do
           is_expected.to compile
           is_expected.to contain_concat(master_map_file)
-          is_expected.to contain_concat__fragment('autofs::fragment preamble /data file,sun:/etc/auto.data')
-            .with_target(master_map_file)
-            .with_content(%r{\A\s*/data\s+file,sun:/etc/auto.data\s*$})
+          is_expected.to contain_concat__fragment('autofs::fragment preamble /data file,sun:/etc/auto.data').
+            with_target(master_map_file).
+            with_content(%r{\A\s*/data\s+file,sun:/etc/auto.data\s*$})
         end
       end
 
@@ -298,16 +298,16 @@ describe 'autofs::mount', type: :define do
         let(:params) do
           {
             mapfile: 'yp:mnt.map',
-            mapfile_manage: false,
+            mapfile_manage: false
           }
         end
 
         it do
           is_expected.to compile
           is_expected.to contain_concat(master_map_file)
-          is_expected.to contain_concat__fragment('autofs::fragment preamble /mnt yp:mnt.map')
-            .with_target(master_map_file)
-            .with_content(%r{\A\s*/mnt\s+yp:mnt.map\s*$})
+          is_expected.to contain_concat__fragment('autofs::fragment preamble /mnt yp:mnt.map').
+            with_target(master_map_file).
+            with_content(%r{\A\s*/mnt\s+yp:mnt.map\s*$})
         end
       end
 
@@ -316,11 +316,11 @@ describe 'autofs::mount', type: :define do
         let(:title) { '/data' }
         let(:params) do
           {
-            mapfile: 'etc/auto.data',
+            mapfile: 'etc/auto.data'
           }
         end
 
-        it { is_expected.to compile.and_raise_error(/.*/) }
+        it { is_expected.to compile.and_raise_error(%r{.*}) }
       end
 
       context 'with ensure set to absent' do
