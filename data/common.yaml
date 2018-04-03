@@ -1,6 +1,5 @@
 ---
 autofs::mounts: {}
-autofs::maps: {}
 autofs::package_ensure: installed
 autofs::package_name: autofs
 autofs::package_source: null

@@ -8,16 +8,19 @@ describe 'autofs::mount indirect tests' do
         autofs::mount { 'foo':
           mount       => '/foo',
           mapfile     => '/etc/auto.foo',
-          mapcontents => ['FOO -o rw /mnt/test_FOO'],
           options     => '--timeout=120',
+        }
+        autofs::mapfile { '/etc/auto.foo':
+          mappings => [ { 'key' => 'FOO', 'options' => 'rw', 'fs' => 'remote.org:/export/FOO' } ]
         }
         autofs::mount { 'bar':
           mount       => '/bar',
           mapfile     => '/etc/auto.bar',
-          mapcontents => ['BAR -o rw /mnt/test_BAR'],
           options     => '--timeout=240',
         }
-
+        autofs::mapfile { '/etc/auto.bar':
+          mappings => [ { 'key' => 'BAR', 'options' => 'rw', 'fs' => 'remote.org:/export/BAR' } ]
+        }
       EOS
 
       apply_manifest(pp, catch_failures: true)
@@ -29,27 +32,29 @@ describe 'autofs::mount indirect tests' do
         is_expected.to exist
         is_expected.to be_owned_by 'root'
         is_expected.to be_grouped_into 'root'
-        is_expected.to contain '/foo /etc/auto.foo --timeout=120'
-        is_expected.to contain '/bar /etc/auto.bar --timeout=240'
+      end
+      its(:content) do
+        is_expected.to match %r{^\s*/foo\s+/etc/auto.foo\s+--timeout=120\s*$}
+        is_expected.to match %r{^\s*/bar\s+/etc/auto.bar\s+--timeout=240\s*$}
       end
     end
 
     describe file('/etc/auto.foo') do
-      it 'exists and have content' do
+      it 'exists and is owned by root' do
         is_expected.to exist
         is_expected.to be_owned_by 'root'
         is_expected.to be_grouped_into 'root'
-        is_expected.to contain 'FOO -o rw /mnt/test_FOO'
       end
+      its(:content) { is_expected.to match %r{^\s*FOO\s+-rw\s+remote.org:/export/FOO\s*$} }
     end
 
     describe file('/etc/auto.bar') do
-      it 'exists and have content' do
+      it 'exists and is owned by root' do
         is_expected.to exist
         is_expected.to be_owned_by 'root'
         is_expected.to be_grouped_into 'root'
-        is_expected.to contain 'BAR -o rw /mnt/test_BAR'
       end
+      its(:content) { is_expected.to match %r{^\s*BAR\s+-rw\s+remote.org:/export/BAR\s*$} }
     end
 
     describe package('autofs') do

@@ -8,9 +8,14 @@ describe 'autofs::mount direct tests' do
         autofs::mount { 'direct':
           mount       => '/-',
           mapfile     => '/etc/auto.direct',
-          mapcontents => ['/home/test_home -o rw /mnt/test_home', '/tmp/test_tmp -o rw /mnt/test_tmp'],
           options     => '--timeout=120',
           order       => 01
+        }
+        autofs::mapfile { '/etc/auto.direct':
+          mappings => [
+            { 'key' => '/home/test_home', 'options' => 'rw', 'fs' => 'remote.com:/export/home' },
+            { 'key' => '/tmp/test_tmp', 'options' => ['rw'], 'fs' => 'remote.com:/export/tmp' },
+          ]
         }
       EOS
 
@@ -19,24 +24,23 @@ describe 'autofs::mount direct tests' do
     end
 
     describe file('/etc/auto.master') do
-      it 'exists and have content' do
+      it 'exists and is has correct ownership' do
         is_expected.to exist
         is_expected.to be_owned_by 'root'
         is_expected.to be_grouped_into 'root'
-        shell('cat /etc/auto.master') do |s|
-          expect(s.stdout).to match(%r{/- /etc/auto.direct --timeout=120})
-        end
       end
+      its(:content) { is_expected.to match(%r{^/-\s+/etc/auto.direct\s+--timeout=120\s*$}) }
     end
 
     describe file('/etc/auto.direct') do
-      it 'exists and have content' do
+      it 'exists and has correct ownership' do
         is_expected.to exist
         is_expected.to be_owned_by 'root'
         is_expected.to be_grouped_into 'root'
-        shell('cat /etc/auto.direct') do |s|
-          expect(s.stdout).to match(%r{(/home/test_home -o rw /mnt/test_home|/tmp/test_tmp -o rw /mnt/test_tmp)})
-        end
+      end
+      its(:content) do
+        is_expected.to match(%r{^\s*/home/test_home\s+-rw\s+remote.com:/export/home\s*$})
+        is_expected.to match(%r{^\s*/tmp/test_tmp\s+-rw\s+remote.com:/export/tmp\s*$})
       end
     end
 

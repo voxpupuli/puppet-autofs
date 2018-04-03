@@ -1,7 +1,6 @@
 # Define: autofs::mount
 #
-# Defined type to generate autofs mount point
-# configuration files.
+# Defined type to manage mount point definitions in the Autofs master map.
 #
 # @see https://voxpupuli.org/puppet-autofs Home
 # @see https://voxpupuli.org/puppet-autofs/puppet_classes/autofs.html puppet_classes::autofs
@@ -11,85 +10,102 @@
 # @author Vox Pupuli <voxpupuli@groups.io>
 # @author David Hollinger III <david.hollinger@moduletux.com>
 #
-# @example Using the autofs::mount defined type to setup automount for user home directories.
+# @example Declaring an autofs mount point for automounting user home directories.  (The
+#     corresponding map file needs to be managed separately.)
 #   autofs::mount { 'home':
 #     mount          => '/home',
 #     mapfile        => '/etc/auto.home',
-#     mapcontents    => ['* -user,rw,soft,intr,rsize=32768,wsize=32768,tcp,nfsvers=3,noacl server.example.com:/path/to/home/shares'],
 #     options        => '--timeout=120',
-#     order          => 01
 #   }
 #
-# @example Using autofs::mount defined type to create an enty for an existing auto.smb file.
+# @example Declaring a mount point with an executable map (to be managed
+#     separately, if needed).
 #   autofs::mount { 'smb':
 #     mount          => '/smb',
 #     mapfile        => 'program:/etc/auto.smb',
-#     mapfile_manage => false,
 #     options        => '--timeout=120',
 #   }
 #
-# @example Remove an autofs::mount
+# @example Remove an entry from the master map (the map file is unaffected)
 #   autofs::mount { '/smb':
 #     ensure  => 'absent',
 #     mapfile => 'program:/etc/auto.smb',
 #   }
 #
-# @param ensure Whether the mount should exist or not.
-# @param mount Location where you will mount the remote NFS Share.
-# @param mapfile Name of the "auto." configuration file that will be generated.
-#   can be a filepath or maptype and path.
-# @param mapcontents The mount point options and parameters.
-#   Example: '* -user,rw,soft server.example.com:/path/to/home/shares'
-# @param master Full path, including filename, to the autofs master file.
+# @param ensure Whether a definition of this mount point should be present in the
+#   master map.  (default: 'present')
+# @param mount The absolute path of the Autofs mount point being managed.  For
+#   a direct map, this should be '/-'.  Otherwise, it designates the parent
+#   directory of the filesystem mount points managed by the map assigned to this
+#   Autofs mount point.  (default: the title of this resource)
+# @param mapfile a designation for the Autofs map associated with this mount
+#   point.  Typically, this is an absolute path to a map file, whose base name
+#   conventionally begins with "auto.", but Autofs recognizes other alternatives,
+#   too, that can be specified via this parameter.
+# @param mapcontents Deprecated.  Accepts map file content as a string or array
+#   of strings to be copied into the map.  DO NOT USE.  Instead, manage mapfile
+#   content via autofs::mapfile and, optionally, autofs::mapping resources.
+# @param master Full path, including filename, to the autofs master map.
+#   Usually the correct master map will be chosen automatically, and you will
+#   not need to specify this.
 # @param map_dir Full path, including directory name, to the autofs master
-#   configuration directory. Only required if use_dir is set to true.
-# @param use_dir If true, autofs will look for master configuration in the map_dir
-#   path using filenames ending in the ".autofs" extension.
-# @param options Options for the autofs mount point within in the auto.master.
-# @param order Order in which entries will appear in the autofs master file.
-# @param direct Boolean to allow for indirect map. Defaults to true to be
-#   backwards compatible.
-# @param execute If true, it will make the $mapfile an executable script,
-#   otherwise the file is a standard "auto." configuration file.
-# @param mapfile_manage Boolean will manaage the map file specifed in mapfile
-#   paramter.
-# @param replace Set to false if you only want to place the file if it is missing.
+#   map's drop-in directory.  Relevant only when $use_dir is true.  (default:
+#   '/etc/auto.master.d').
+# @param use_dir If true, autofs will manage this mount via a file in the
+#   master map's drop-in directory instead of directly in the master map.
+#   The master map will still be managed, however, to ensure at least that
+#   it enables the (correct) drop-in directory.
+# @param options Options to be specified for the autofs mount point within
+#   the master map.
+# @param order The relative order in which entries will appear in the master
+#   map.  Irrelevant when $use_dir is true.
+# @param direct Deprecated.  Has no effect.  A direct map is naturally
+#   obtained by specifying $mount as '/-'.
+# @param execute Deprecated.  Has no effect.  For an executable map file,
+#   manage the target file via a File or similar resource.
+# @param mapfile_manage Deprecated.  Has no effect.  This resource no longer
+#   manages map files under any circumstances.
+# @param replace Deprecated.  Has no effect.  Map files should be managed
+#   via autofs::mapfile resources.
 #
 define autofs::mount (
   Enum['present', 'absent'] $ensure       = 'present',
   Stdlib::Absolutepath $mount             = $title,
   Integer $order                          = 1,
-  Optional[Variant[Stdlib::Absolutepath,Autofs::Mapentry]] $mapfile = undef,
-  Optional[String] $options               = '',
+  Variant[Stdlib::Absolutepath,Autofs::Mapentry] $mapfile,
+  Optional[String] $options               = undef,
   Stdlib::Absolutepath $master            = $autofs::auto_master_map,
   Stdlib::Absolutepath $map_dir           = '/etc/auto.master.d',
   Boolean $use_dir                        = false,
-  Boolean $direct                         = true,
-  Boolean $execute                        = false,
-  Boolean $mapfile_manage                 = true,
-  Variant[Array, String] $mapcontents     = [],
-  Boolean $replace                        = true
+  Optional[Boolean] $direct               = undef,        # deprecated, no effect
+  Optional[Boolean] $execute              = undef,        # deprecated, no effect
+  Optional[Boolean] $mapfile_manage       = undef,        # deprecated, no effect
+  Optional[Variant[Array, String]] $mapcontents = undef,  # deprecated, no effect
+  Optional[Boolean] $replace              = undef         # deprecated, no effect
 ) {
   include '::autofs'
 
-  if $mapfile.is_a(Autofs::Mapentry) and $mapfile_manage {
-    fail("Parameter 'mapfile_manage' must be false for complicated 'mapfile' ${mapfile}")
+  if $direct =~ NotUndef {
+    deprecation('autofs::mount::direct', 'Parameter $autofs::mount::direct is deprecated and has no effect.  Whether a map is direct is determined (by Autofs itself) by the mount point: specify $mount as \'/-\' for a direct map.')
   }
 
-  if $mapfile {
-    $contents = "${mount} ${mapfile} ${options}\n"
-  } else {
-    $contents = "${mount} ${options}\n"
+  if $execute =~ NotUndef {
+    deprecation('autofs::mount::execute', 'Parameter $autofs::mount::execute is deprecated and has no effect.  For a map implemented as an executable program, manage the map file via a File or similar resource.')
   }
 
-  if $execute {
-    $mapperms = '0755'
-    $maptempl = 'autofs/auto.map.exec.erb'
+  if $mapfile_manage =~ NotUndef {
+    deprecation('autofs::mount::mapfile_manage', 'Parameter $autofs::mount::mapfile_manage is deprecated and has no effect.  autofs::mount resources now manage only the master map, not map files')
   }
-  else {
-    $mapperms = '0644'
-    $maptempl = 'autofs/auto.map.erb'
+
+  if $mapcontents =~ NotUndef {
+    deprecation('autofs::mount::mapcontents', 'Parameter $autofs::mount::mapcontents is deprecated and has no effect.  Manage map contents via autofs::mapfile and autofs::mapping resources.')
   }
+
+  if $replace =~ NotUndef {
+    deprecation('autofs::mount::replace', 'Parameter $autofs::mount::replace is deprecated and has no effect.  Use autofs::mapfile and autofs::mapping resources, or other resources of your choice, to manage map files')
+  }
+
+  $contents = "${mount} ${mapfile} ${options}\n"
 
   unless $::autofs::package_ensure == 'absent' {
     if $autofs::reload_command {
@@ -104,23 +120,29 @@ define autofs::mount (
     }
   }
 
-  if !defined(Concat[$master]) {
-    concat { $master:
-      owner          => $autofs::map_file_owner,
-      group          => $autofs::map_file_group,
-      mode           => '0644',
-      ensure_newline => true,
-    }
-  }
-
   if $use_dir == false {
     if $ensure == 'present' {
+      # We define Concat[$master] only when ensuring a mount present; else
+      # ensuring a mount absent may result in clearing the whole file.
+      if !defined(Concat[$master]) {
+        concat { $master:
+          owner          => $autofs::map_file_owner,
+          group          => $autofs::map_file_group,
+          mode           => '0644',
+          ensure_newline => true,
+        }
+      }
+
       concat::fragment { "autofs::fragment preamble ${mount} ${mapfile}":
         target  => $master,
         content => $contents,
         order   => $order,
       }
     } else {
+      # If the master map is being managed via other autofs::mount resources,
+      # too, at least one of which is ensured present, then this File_line is
+      # unnecessary.  Otherwise, however, it is required for ensuring this
+      # mount absent to be effective.
       file_line { "remove_contents_${mount}_${mapfile}":
         ensure            => absent,
         path              => $master,
@@ -129,7 +151,7 @@ define autofs::mount (
         notify            => Service['autofs'],
       }
     }
-  } else {
+  } else {  # $use_dir == true
     ensure_resource('file', $map_dir, {
       'ensure'  => directory,
       'owner'   => $autofs::map_file_owner,
@@ -154,17 +176,6 @@ define autofs::mount (
       mode    => '0644',
       content => $contents,
       require => File[$map_dir],
-    }
-  }
-
-  if $mapfile and $mapfile_manage {
-    autofs::map { $title:
-      ensure      => $ensure,
-      mapfile     => $mapfile,
-      mapcontents => $mapcontents,
-      replace     => $replace,
-      template    => $maptempl,
-      mapmode     => $mapperms,
     }
   }
 }
