@@ -644,6 +644,9 @@ Limitations
 Directly calling the `autofs::package` and `autofs::service` classes is disabled in 3.0.0.
 These are now private classes.
 
+The `autofs::map` defined type is no longer documented or supported, and it will be removed
+from a future version.
+
 #### Puppet platforms
 Compatible with Puppet 4 or greater only. Puppet 4.6.0 or greater
 (including Puppet 5) will provide best results.
