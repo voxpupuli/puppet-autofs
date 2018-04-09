@@ -52,7 +52,7 @@ describe 'autofs', type: :class do
       end
       let(:params) do
         {
-          package_ensure: 'absent'
+          package_ensure: 'absent',
         }
       end
 
@@ -71,13 +71,13 @@ describe 'autofs', type: :class do
         'mapfile'     => '/etc/auto.home',
         'mapcontents' => %w[test foo bar],
         'options'     => '--timeout=120',
-        'order'       => 1
+        'order'       => 1,
       )
     end
-    it 'is expected to have auto.home hiera values' do
+    it 'is expected to have auto.home hiera values 2' do
       expect(maps).to include(
         'mapfile'     => '/etc/auto.home',
-        'mapcontents' => '/home /another'
+        'mapcontents' => '/home /another',
       )
     end
   end
@@ -92,7 +92,7 @@ describe 'autofs', type: :class do
         'mapfile'     => '/etc/auto.home',
         'mapcontents' => %w[/home\ /test /home\ /foo /home\ /bar],
         'options'     => '--timeout=120',
-        'order'       => 1
+        'order'       => 1,
       )
     end
   end
@@ -108,7 +108,7 @@ describe 'autofs', type: :class do
         'mapcontents' => %w[*\ -user,rw,soft,intr,rsize=32768,wsize=32768,tcp,nfsvers=3,noacl\ server.example.com:/path/to/home/shares],
         'options'     => '--timeout=120',
         'order'       => 1,
-        'use_dir'     => true
+        'use_dir'     => true,
       )
     end
   end
@@ -120,7 +120,7 @@ describe 'autofs', type: :class do
     it 'is expected to remove the mount' do
       expect(mounts).to include(
         'ensure'  => 'absent',
-        'mapfile' => '/etc/auto.home'
+        'mapfile' => '/etc/auto.home',
       )
     end
   end

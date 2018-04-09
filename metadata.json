@@ -7,10 +7,15 @@
   "source": "https://github.com/voxpupuli/puppet-autofs.git",
   "project_page": "https://voxpupuli.org/puppet-autofs",
   "issues_url": "https://github.com/voxpupuli/puppet-autofs/issues",
-  "tags": [
-    "autofs",
-    "automount",
-    "mount"
+  "dependencies": [
+    {
+      "name": "puppetlabs/stdlib",
+      "version_requirement": ">= 4.13.1 < 5.0.0"
+    },
+    {
+      "name": "puppetlabs/concat",
+      "version_requirement": ">= 2.2.1 < 5.0.0"
+    }
   ],
   "operatingsystem_support": [
     {
@@ -98,14 +103,12 @@
       "version_requirement": ">= 4.10.10 < 6.0.0"
     }
   ],
-  "dependencies": [
-    {
-      "name": "puppetlabs/stdlib",
-      "version_requirement": ">= 4.13.1 < 5.0.0"
-    },
-    {
-      "name": "puppetlabs/concat",
-      "version_requirement": ">= 2.2.1 < 5.0.0"
-    }
-  ]
+  "tags": [
+    "autofs",
+    "automount",
+    "mount"
+  ],
+  "pdk-version": "1.4.1",
+  "template-url": "https://github.com/dhollinger/pdk-templates",
+  "template-ref": "heads/master-0-gf611ef6"
 }

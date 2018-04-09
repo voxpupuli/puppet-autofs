@@ -18,3 +18,8 @@ Puppetfile.lock
 *.iml
 .*.sw?
 .yardoc/
+<% if ! @configs['paths'].nil? -%>
+<% @configs['paths'].each do |path| -%>
+<%= path %>
+<% end -%>
+<% end -%>

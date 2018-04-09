@@ -18,7 +18,7 @@ describe 'autofs::map', type: :define do
       let(:params) do
         {
           mapfile: '/etc/auto.data',
-          mapcontents: ['test foo bar']
+          mapcontents: ['test foo bar'],
         }
       end
 
@@ -28,10 +28,10 @@ describe 'autofs::map', type: :define do
             'ensure' => 'present',
             'owner'  => 'root',
             'group'  => group,
-            'mode'   => '0644'
+            'mode'   => '0644',
           )
           is_expected.to contain_concat__fragment('/etc/auto.data_data_entries').with(
-            'target' => '/etc/auto.data'
+            'target' => '/etc/auto.data',
           )
         end
       end
@@ -40,7 +40,7 @@ describe 'autofs::map', type: :define do
         let(:params) do
           {
             mapfile: '/etc/auto.data',
-            mapcontents: 'test foo bar'
+            mapcontents: 'test foo bar',
           }
         end
 

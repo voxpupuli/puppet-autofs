@@ -29,7 +29,7 @@ describe 'autofs::mount', type: :define do
           mapcontents: %w[test foo bar],
           options: '--timeout=120',
           order: 1,
-          master: '/etc/auto.master'
+          master: '/etc/auto.master',
         }
       end
 
@@ -44,10 +44,10 @@ describe 'autofs::mount', type: :define do
             'ensure' => 'present',
             'owner'  => 'root',
             'group'  => group,
-            'mode'   => '0644'
+            'mode'   => '0644',
           )
           is_expected.to contain_concat__fragment('/etc/auto.home_auto.home_entries').with(
-            'target' => '/etc/auto.home'
+            'target' => '/etc/auto.home',
           )
           is_expected.to contain_autofs__map('auto.home')
         end
@@ -61,7 +61,7 @@ describe 'autofs::mount', type: :define do
             mapfile_manage: false,
             options: '--timeout=120',
             order: 2,
-            direct: false
+            direct: false,
           }
         end
 
@@ -79,7 +79,7 @@ describe 'autofs::mount', type: :define do
             mapfile_manage: false,
             options: '--timeout=120',
             order: 2,
-            direct: false
+            direct: false,
           }
         end
 
@@ -97,7 +97,7 @@ describe 'autofs::mount', type: :define do
             mapfile_manage: true,
             options: '--timeout=120',
             order: 2,
-            direct: false
+            direct: false,
           }
         end
 
@@ -114,7 +114,7 @@ describe 'autofs::mount', type: :define do
             mapcontents: %w[test foo bar],
             options: '--timeout=120',
             order: 1,
-            direct: false
+            direct: false,
           }
         end
 
@@ -131,7 +131,7 @@ describe 'autofs::mount', type: :define do
             mapcontents: ['/home /test', '/home /foo', '/home /bar'],
             options: '--timeout=120',
             order: 1,
-            direct: true
+            direct: true,
           }
         end
 
@@ -148,7 +148,7 @@ describe 'autofs::mount', type: :define do
             mapcontents: %w[test foo bar],
             options: '--timeout=120',
             order: 1,
-            execute: true
+            execute: true,
           }
         end
 
@@ -169,7 +169,7 @@ describe 'autofs::mount', type: :define do
               order: 1,
               map_dir: '/etc/auto.master.d',
               use_dir: true,
-              execute: execute
+              execute: execute,
             }
           end
 
@@ -182,21 +182,21 @@ describe 'autofs::mount', type: :define do
               'ensure' => 'directory',
               'owner'  => 'root',
               'group'  => group,
-              'mode'   => '0755'
+              'mode'   => '0755',
             )
 
             is_expected.to contain_file('/etc/auto.master.d/home.autofs').with(
               'ensure' => 'present',
               'owner'  => 'root',
               'group'  => group,
-              'mode'   => '0644'
+              'mode'   => '0644',
             )
 
             is_expected.to contain_concat('/etc/auto.home').with(
               'ensure' => 'present',
               'owner'  => 'root',
               'group'  => group,
-              'mode'   => execute ? '0755' : '0644'
+              'mode'   => execute ? '0755' : '0644',
             )
           end
         end
@@ -208,14 +208,14 @@ describe 'autofs::mount', type: :define do
             mount: '/net',
             options: '-host',
             use_dir: false,
-            order: 1
+            order: 1,
           }
         end
 
         it do
           is_expected.not_to contain_concat('/etc/auto.-host')
           is_expected.to contain_concat__fragment('autofs::fragment preamble /net ').with_content(
-            %r{/net -host\n}
+            %r{/net -host\n},
           )
         end
       end
@@ -227,7 +227,7 @@ describe 'autofs::mount', type: :define do
             mapcontents: %w[test foo bar],
             options: '--timeout=120',
             order: 1,
-            direct: false
+            direct: false,
           }
         end
 
@@ -244,7 +244,7 @@ describe 'autofs::mount', type: :define do
             mapcontents: %w[dataA dataB dataC],
             options: '--timeout=360',
             order: 1,
-            direct: false
+            direct: false,
           }
         end
 
@@ -264,7 +264,7 @@ describe 'autofs::mount', type: :define do
           {
             mount: '/net',
             mapfile_manage: false,
-            mapfile: '-hosts'
+            mapfile: '-hosts',
           }
         end
 
@@ -279,16 +279,16 @@ describe 'autofs::mount', type: :define do
         let(:params) do
           {
             mapfile: 'file,sun:/etc/auto.data',
-            mapfile_manage: false
+            mapfile_manage: false,
           }
         end
 
         it do
           is_expected.to compile
           is_expected.to contain_concat(master_map_file)
-          is_expected.to contain_concat__fragment('autofs::fragment preamble /data file,sun:/etc/auto.data').
-            with_target(master_map_file).
-            with_content(%r{\A\s*/data\s+file,sun:/etc/auto.data\s*$})
+          is_expected.to contain_concat__fragment('autofs::fragment preamble /data file,sun:/etc/auto.data')
+            .with_target(master_map_file)
+            .with_content(%r{\A\s*/data\s+file,sun:/etc/auto.data\s*$})
         end
       end
 
@@ -298,16 +298,16 @@ describe 'autofs::mount', type: :define do
         let(:params) do
           {
             mapfile: 'yp:mnt.map',
-            mapfile_manage: false
+            mapfile_manage: false,
           }
         end
 
         it do
           is_expected.to compile
           is_expected.to contain_concat(master_map_file)
-          is_expected.to contain_concat__fragment('autofs::fragment preamble /mnt yp:mnt.map').
-            with_target(master_map_file).
-            with_content(%r{\A\s*/mnt\s+yp:mnt.map\s*$})
+          is_expected.to contain_concat__fragment('autofs::fragment preamble /mnt yp:mnt.map')
+            .with_target(master_map_file)
+            .with_content(%r{\A\s*/mnt\s+yp:mnt.map\s*$})
         end
       end
 
@@ -316,7 +316,7 @@ describe 'autofs::mount', type: :define do
         let(:title) { '/data' }
         let(:params) do
           {
-            mapfile: 'etc/auto.data'
+            mapfile: 'etc/auto.data',
           }
         end
 
@@ -328,7 +328,7 @@ describe 'autofs::mount', type: :define do
         let(:params) do
           {
             ensure: 'absent',
-            mapfile: '/etc/auto.data'
+            mapfile: '/etc/auto.data',
           }
         end
 
@@ -336,7 +336,7 @@ describe 'autofs::mount', type: :define do
           is_expected.to contain_file_line('remove_contents_/data_/etc/auto.data').with(
             ensure: 'absent',
             path: master_map_file,
-            match: "^/data /etc/auto.data \n"
+            match: "^/data /etc/auto.data \n",
           )
           is_expected.not_to contain_concat__fragment('autofs::fragment preamble /data /etc/auto.data')
           is_expected.to contain_concat('/etc/auto.data').with_ensure('absent')
