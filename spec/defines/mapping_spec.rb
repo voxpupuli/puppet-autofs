@@ -129,7 +129,7 @@ describe 'autofs::mapping', type: :define do
           {
             mapfile: '/mnt/auto.data',
             key: 'data',
-            options: %w{rw sync nosuid},
+            options: %w[rw sync nosuid],
             fs: 'storage.host.net:/exports/data'
           }
         end

@@ -3,16 +3,16 @@ describe 'autofs::mount', type: :define do
   on_supported_os.each do |os, facts|
     let(:pre_condition) { 'include autofs' }
 
-    case facts[:os]['family']
+    master_map_file = case facts[:os]['family']
     when 'AIX'
       # group = 'system'
-      master_map_file = '/etc/auto_master'
+      '/etc/auto_master'
     when 'Solaris'
       # group = 'root'
-      master_map_file = '/etc/auto_master'
+      '/etc/auto_master'
     else
       # group = 'root'
-      master_map_file = '/etc/auto.master'
+      '/etc/auto.master'
     end
 
     context "on #{os}" do

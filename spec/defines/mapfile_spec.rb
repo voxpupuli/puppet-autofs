@@ -61,7 +61,7 @@ describe 'autofs::mapfile', type: :define do
             mappings: [
               { key: 'example1', fs: 'data.com:/export/example1' },
               { key: 'example2', options: 'rw', fs: 'data.com:/export/example2' },
-              { key: 'example3', options: %w{rw noexec}, fs: 'data.com:/export/example3' }
+              { key: 'example3', options: %w[rw noexec], fs: 'data.com:/export/example3' }
             ]
           }
         end
@@ -77,7 +77,7 @@ describe 'autofs::mapfile', type: :define do
           is_expected.to contain_autofs__mapping('/etc/auto.data:example2').
             with(mapfile: '/etc/auto.data', key: 'example2', options: 'rw', fs: 'data.com:/export/example2')
           is_expected.to contain_autofs__mapping('/etc/auto.data:example3').
-            with(mapfile: '/etc/auto.data', key: 'example3', options: %w{rw noexec}, fs: 'data.com:/export/example3')
+            with(mapfile: '/etc/auto.data', key: 'example3', options: %w[rw noexec], fs: 'data.com:/export/example3')
         end
       end
     end
