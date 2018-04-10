@@ -3,21 +3,20 @@ describe 'autofs::mount', type: :define do
   on_supported_os.each do |os, facts|
     let(:pre_condition) { 'include autofs' }
 
-    master_map_file = case facts[:os]['family']
+    case facts[:os]['family']
     when 'AIX'
-      # group = 'system'
-      '/etc/auto_master'
+      group = 'system'
+      master_map_file = '/etc/auto_master'
     when 'Solaris'
-      # group = 'root'
-      '/etc/auto_master'
+      group = 'root'
+      master_map_file = '/etc/auto_master'
     else
-      # group = 'root'
-      '/etc/auto.master'
+      group = 'root'
+      master_map_file = '/etc/auto.master'
     end
 
     context "on #{os}" do
       let(:title) { 'auto.home' }
-
       let(:facts) do
         facts.merge(concat_basedir: '/etc')
       end
@@ -35,7 +34,8 @@ describe 'autofs::mount', type: :define do
 
         it do
           is_expected.not_to contain_file('/home')
-          is_expected.to contain_concat('/etc/auto.master')
+          is_expected.to contain_concat('/etc/auto.master').
+            with(group: group)
           is_expected.to contain_concat__fragment('autofs::fragment preamble /home /etc/auto.home').with('target' => '/etc/auto.master')
           is_expected.to have_concat_resource_count(1)
           is_expected.to have_autofs__map_resource_count(0)
@@ -113,9 +113,12 @@ describe 'autofs::mount', type: :define do
 
         it do
           is_expected.to have_autofs__map_resource_count(0)
-          is_expected.to contain_concat(master_map_file)
-          is_expected.to contain_concat__fragment('autofs::fragment preamble /data /etc/auto.data').with_target(master_map_file)
-          is_expected.not_to contain_concat('/etc/auto.data')
+          is_expected.to contain_concat(master_map_file).
+            with(group: group)
+          is_expected.to contain_concat__fragment('autofs::fragment preamble /data /etc/auto.data').
+            with_target(master_map_file)
+          is_expected.not_to contain_concat('/etc/auto.data').
+            with(group: group)
           is_expected.not_to contain_file('/data')
         end
       end
@@ -130,8 +133,10 @@ describe 'autofs::mount', type: :define do
         end
 
         it do
-          is_expected.to contain_concat(master_map_file)
-          is_expected.to contain_concat__fragment('autofs::fragment preamble /net -hosts').with_target(master_map_file)
+          is_expected.to contain_concat(master_map_file).
+            with(group: group)
+          is_expected.to contain_concat__fragment('autofs::fragment preamble /net -hosts').
+            with_target(master_map_file)
         end
       end
 
@@ -145,7 +150,8 @@ describe 'autofs::mount', type: :define do
 
         it do
           is_expected.to compile
-          is_expected.to contain_concat(master_map_file)
+          is_expected.to contain_concat(master_map_file).
+            with(group: group)
           is_expected.to contain_concat__fragment('autofs::fragment preamble /data file,sun:/etc/auto.data').
             with_target(master_map_file).
             with_content(%r{\A\s*/data\s+file,sun:/etc/auto.data\s*$})
@@ -163,7 +169,8 @@ describe 'autofs::mount', type: :define do
 
         it do
           is_expected.to compile
-          is_expected.to contain_concat(master_map_file)
+          is_expected.to contain_concat(master_map_file).
+            with(group: group)
           is_expected.to contain_concat__fragment('autofs::fragment preamble /mnt yp:mnt.map').
             with_target(master_map_file).
             with_content(%r{\A\s*/mnt\s+yp:mnt.map\s*$})
@@ -197,7 +204,8 @@ describe 'autofs::mount', type: :define do
             path: master_map_file,
             match: '^\\s*/data\\s+/etc/auto.data\\s'
           )
-          is_expected.to contain_concat(master_map_file)
+          is_expected.to contain_concat(master_map_file).
+            with(group: group)
           is_expected.to have_concat__fragment_resource_count(0)
           is_expected.to have_autofs__map_resource_count(0)
         end
