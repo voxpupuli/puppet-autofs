@@ -50,7 +50,7 @@ describe 'autofs' do
           is_expected.to be_grouped_into 'root'
         end
         its(:content) do
-            is_expected.to match(%r{^\s*test_home\s+-rw\s+remote.org:/export/home\s*$})
+          is_expected.to match(%r{^\s*test_home\s+-rw\s+remote.org:/export/home\s*$})
         end
       end
 

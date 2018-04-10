@@ -45,7 +45,7 @@ define autofs::mapfile (
     mode    => '0644',
     replace => $replace,
     require => Class['autofs::package'],
-    warn    => template('autofs/mapfile.banner.erb')
+    warn    => template('autofs/mapfile.banner.erb'),
   }
 
   if $ensure == 'present' {

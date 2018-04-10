@@ -83,18 +83,18 @@
 # @param reload_command In lieu of a service reload capability in Puppet, exec this command to reload automount without restarting it.
 #
 class autofs (
-  Hash[String, Hash] $mounts,
-  Optional[Hash[String, Hash]] $mapfiles = undef,
-  Optional[Hash[String, Hash]] $maps = undef,  # deprecated
   String $package_ensure,
+  Hash[String, Hash] $mounts,
   Variant[String, Array[String]] $package_name,
-  Optional[String] $package_source = undef,
   Enum[ 'stopped', 'running' ] $service_ensure,
   Boolean $service_enable,
   String $service_name,
   String $auto_master_map,
   String $map_file_owner,
   String $map_file_group,
+  Optional[Hash[String, Hash]] $mapfiles = undef,
+  Optional[Hash[String, Hash]] $maps = undef,  # deprecated
+  Optional[String] $package_source = undef,
   Optional[String] $reload_command = undef,
 ) {
   contain '::autofs::package'

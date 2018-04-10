@@ -5,13 +5,13 @@ describe 'autofs::mount', type: :define do
 
     case facts[:os]['family']
     when 'AIX'
-      group = 'system'
+      # group = 'system'
       master_map_file = '/etc/auto_master'
     when 'Solaris'
-      group = 'root'
+      # group = 'root'
       master_map_file = '/etc/auto_master'
     else
-      group = 'root'
+      # group = 'root'
       master_map_file = '/etc/auto.master'
     end
 
@@ -49,7 +49,7 @@ describe 'autofs::mount', type: :define do
             mount: '/smb',
             mapfile: 'program:/etc/auto.smb',
             options: '--timeout=120',
-            order: 2,
+            order: 2
           }
         end
 
@@ -65,7 +65,7 @@ describe 'autofs::mount', type: :define do
             mount: '/-',
             mapfile: '/etc/auto.home',
             options: '--timeout=120',
-            order: 1,
+            order: 1
           }
         end
 
@@ -92,7 +92,7 @@ describe 'autofs::mount', type: :define do
           {
             mapfile: '/etc/auto.home',
             options: '--timeout=120',
-            order: 1,
+            order: 1
           }
         end
 
@@ -107,7 +107,7 @@ describe 'autofs::mount', type: :define do
           {
             mapfile: '/etc/auto.data',
             options: '--timeout=360',
-            order: 1,
+            order: 1
           }
         end
 
@@ -139,7 +139,7 @@ describe 'autofs::mount', type: :define do
         let(:title) { '/data' }
         let(:params) do
           {
-            mapfile: 'file,sun:/etc/auto.data',
+            mapfile: 'file,sun:/etc/auto.data'
           }
         end
 
@@ -157,7 +157,7 @@ describe 'autofs::mount', type: :define do
         let(:title) { '/mnt' }
         let(:params) do
           {
-            mapfile: 'yp:mnt.map',
+            mapfile: 'yp:mnt.map'
           }
         end
 

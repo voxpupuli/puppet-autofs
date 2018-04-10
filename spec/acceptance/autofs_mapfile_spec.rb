@@ -22,12 +22,12 @@ describe 'autofs::mapfile used standalone' do
         is_expected.to be_owned_by 'root'
         is_expected.to be_grouped_into 'root'
       end
-      its(:content) {
+      its(:content) do
         is_expected.to match %r{^\s*dataA\s+-ro\s+fs.net:/export/dataA\s*$}
         is_expected.to match %r{^\s*dataB\s+-rw,noexec\s+fs.net:/export/dataB\s*$}
         is_expected.to match %r{\A##}
         is_expected.not_to match %r{^\s*data.*\n#}
-      }
+      end
     end
   end
 
@@ -110,11 +110,11 @@ describe 'autofs::mapfile used standalone' do
         is_expected.to be_owned_by 'root'
         is_expected.to be_grouped_into 'root'
       end
-      its(:content) {
+      its(:content) do
         is_expected.to match %r{^\s*dataQ\s+-ro\s+fs.net:/export/dataQ\s*$}
         is_expected.to match %r{^\s*dataZ\s+-rw\s+fs.net:/export/dataZ\s*$}
         is_expected.not_to match %r{data[^QZ]}
-      }
+      end
     end
   end
 

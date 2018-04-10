@@ -4,7 +4,7 @@ require 'spec_helper_acceptance'
 describe 'autofs::mount tests' do
   context 'basic mount test' do
     before(:context) do
-      pp = %q{file { '/etc/auto.data': ensure => 'absent' }}
+      pp = "file { '/etc/auto.data': ensure => 'absent' }"
       apply_manifest(pp, catch_failures: true)
     end
 
@@ -46,8 +46,8 @@ describe 'autofs::mount tests' do
 
   context 'remove mountpoint test' do
     before(:context) do
-      apply_manifest(%q{file { '/etc/auto.data': ensure => 'file', content => 'TEST CONTENT' }},
-          catch_failures: true)
+      apply_manifest("file { '/etc/auto.data': ensure => 'file', content => 'TEST CONTENT' }",
+                     catch_failures: true)
     end
 
     it 'applies' do

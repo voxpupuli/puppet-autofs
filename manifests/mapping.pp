@@ -60,10 +60,10 @@
 #  }
 #
 define autofs::mapping (
-  Enum['present', 'absent'] $ensure  = 'present',
   Stdlib::Absolutepath $mapfile,
   Pattern[/\A\S+\z/] $key,
   Pattern[/\S/] $fs,
+  Enum['present', 'absent'] $ensure  = 'present',
   Optional[Autofs::Options] $options = undef,
   Integer $order                     = 10,
 ) {

@@ -69,10 +69,10 @@
 #   via autofs::mapfile resources.
 #
 define autofs::mount (
+  Variant[Stdlib::Absolutepath,Autofs::Mapentry] $mapfile,
   Enum['present', 'absent'] $ensure       = 'present',
   Stdlib::Absolutepath $mount             = $title,
   Integer $order                          = 1,
-  Variant[Stdlib::Absolutepath,Autofs::Mapentry] $mapfile,
   Optional[String] $options               = undef,
   Stdlib::Absolutepath $master            = $autofs::auto_master_map,
   Stdlib::Absolutepath $map_dir           = '/etc/auto.master.d',

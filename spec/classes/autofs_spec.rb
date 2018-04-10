@@ -4,7 +4,7 @@ require 'hiera'
 describe 'autofs', type: :class do
   let(:hiera_config) { 'spec/fixtures/hiera/hiera.yaml' }
 
-  hiera = Hiera.new(config: 'spec/fixtures/hiera/hiera.yaml')
+  # hiera = Hiera.new(config: 'spec/fixtures/hiera/hiera.yaml')
 
   on_supported_os.each do |os, facts|
     case facts[:os]['family']
@@ -60,14 +60,16 @@ describe 'autofs', type: :class do
     end
 
     context 'should declare mount points' do
-      let(:params) { {
-        mounts: {
-          'home'        => { mount: '/home', mapfile: '/etc/auto.home', options: '--timeout=120', order: 1 },
-          '/mnt/other'  => { mapfile: '/etc/auto.other' },
-          'direct'      => { mount: '/-', mapfile: '/etc/auto.direct' },
-          'remove this' => { mount: '/unwanted', mapfile: '/etc/auto.unwanted', ensure: 'absent' }
+      let(:params) do
+        {
+          mounts: {
+            'home'        => { mount: '/home', mapfile: '/etc/auto.home', options: '--timeout=120', order: 1 },
+            '/mnt/other'  => { mapfile: '/etc/auto.other' },
+            'direct'      => { mount: '/-', mapfile: '/etc/auto.direct' },
+            'remove this' => { mount: '/unwanted', mapfile: '/etc/auto.unwanted', ensure: 'absent' }
+          }
         }
-      } }
+      end
 
       it do
         is_expected.to compile.with_all_deps
@@ -90,15 +92,17 @@ describe 'autofs', type: :class do
       home_mappings = [
         { 'key' => 'user1', 'options' => 'rw,exec', 'fs' => 'users.com:/x/user1' }
       ]
-      let(:params) { {
-        mounts: {},
-        mapfiles: {
-          'home' => { path: '/etc/auto.home', mappings: home_mappings },
-          '/mnt/defaults' => { },
-          'unwanted' => { path: '/etc/auto.evil', ensure: 'absent' }
-        },
-        maps: :undef
-      } }
+      let(:params) do
+        {
+          mounts: {},
+          mapfiles: {
+            'home' => { path: '/etc/auto.home', mappings: home_mappings },
+            '/mnt/defaults' => {},
+            'unwanted' => { path: '/etc/auto.evil', ensure: 'absent' }
+          },
+          maps: :undef
+        }
+      end
 
       it do
         is_expected.to compile.with_all_deps
