@@ -1,4 +1,6 @@
+<% if @execute -%>
 #!/bin/bash
+<% end -%>
 <% if @replace == true or @replace == 'yes' -%>
 ###############################################################
 #                                                             #
@@ -13,8 +15,4 @@
 #    CUSTOM / TEMPORARY MOUNT POINTS CONFIGURATIONS.          #
 #                                                             #
 ###############################################################
-<% end -%>
-
-<% [@mapcontents].flatten.each do |content| -%>
-<%= content %>
 <% end -%>

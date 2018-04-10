@@ -67,6 +67,7 @@ describe 'autofs::mount', type: :define do
 
         it do
           is_expected.not_to contain_file('/etc/auto.smb')
+          is_expected.not_to contain_concat('/etc/auto.smb')
           is_expected.to contain_concat__fragment('autofs::fragment preamble /smb /etc/auto.smb')
         end
       end
@@ -86,6 +87,7 @@ describe 'autofs::mount', type: :define do
         it do
           is_expected.to contain_concat__fragment('autofs::fragment preamble /smb program:/etc/auto.smb')
           is_expected.not_to contain_file('/etc/auto.smb')
+          is_expected.not_to contain_concat('/etc/auto.smb')
         end
       end
 
@@ -136,7 +138,50 @@ describe 'autofs::mount', type: :define do
         end
 
         it do
+          is_expected.to contain_concat('/etc/auto.home')
           is_expected.to contain_concat__fragment('autofs::fragment preamble /- /etc/auto.home')
+        end
+      end
+
+      context 'with EL7 directory' do
+        let(:params) do
+          {
+            name: 'home',
+            mount: '/home',
+            mapfile: '/etc/auto.home',
+            mapcontents: %w[test foo bar],
+            options: '--timeout=120',
+            order: 1,
+            map_dir: '/etc/auto.master.d',
+            use_dir: true
+          }
+        end
+
+        it do
+          is_expected.to contain_concat__fragment('autofs::fragment preamble map directory')
+        end
+
+        it do
+          is_expected.to contain_file('/etc/auto.master.d').with(
+            'ensure' => 'directory',
+            'owner'  => 'root',
+            'group'  => group,
+            'mode'   => '0755'
+          )
+
+          is_expected.to contain_file('/etc/auto.master.d/home.autofs').with(
+            'ensure' => 'present',
+            'owner'  => 'root',
+            'group'  => group,
+            'mode'   => '0644'
+          )
+
+          is_expected.to contain_concat('/etc/auto.home').with(
+            'ensure' => 'present',
+            'owner'  => 'root',
+            'group'  => group,
+            'mode'   => '0644'
+          )
         end
       end
 
@@ -157,48 +202,43 @@ describe 'autofs::mount', type: :define do
         end
       end
 
-      [true, false].each do |execute|
-        context "with EL7 directory and #{execute ? '' : 'non-'}executable map" do
-          let(:params) do
-            {
-              name: 'home',
-              mount: '/home',
-              mapfile: '/etc/auto.home',
-              mapcontents: %w[test foo bar],
-              options: '--timeout=120',
-              order: 1,
-              map_dir: '/etc/auto.master.d',
-              use_dir: true,
-              execute: execute
-            }
-          end
+      context 'with EL7 directory and executable map' do
+        let(:params) do
+          {
+            name: 'home',
+            mount: '/home',
+            mapfile: '/etc/auto.home',
+            execute: true,
+            map_dir: '/etc/auto.master.d',
+            use_dir: true
+          }
+        end
 
-          it do
-            is_expected.to contain_concat__fragment('autofs::fragment preamble map directory')
-          end
+        it do
+          is_expected.to contain_concat__fragment('autofs::fragment preamble map directory')
+        end
 
-          it do
-            is_expected.to contain_file('/etc/auto.master.d').with(
-              'ensure' => 'directory',
-              'owner'  => 'root',
-              'group'  => group,
-              'mode'   => '0755'
-            )
+        it do
+          is_expected.to contain_file('/etc/auto.master.d').with(
+            'ensure' => 'directory',
+            'owner'  => 'root',
+            'group'  => group,
+            'mode'   => '0755'
+          )
 
-            is_expected.to contain_file('/etc/auto.master.d/home.autofs').with(
-              'ensure' => 'present',
-              'owner'  => 'root',
-              'group'  => group,
-              'mode'   => '0644'
-            )
+          is_expected.to contain_file('/etc/auto.master.d/home.autofs').with(
+            'ensure' => 'present',
+            'owner'  => 'root',
+            'group'  => group,
+            'mode'   => '0644'
+          )
 
-            is_expected.to contain_concat('/etc/auto.home').with(
-              'ensure' => 'present',
-              'owner'  => 'root',
-              'group'  => group,
-              'mode'   => execute ? '0755' : '0644'
-            )
-          end
+          is_expected.to contain_concat('/etc/auto.home').with(
+            'ensure' => 'present',
+            'owner'  => 'root',
+            'group'  => group,
+            'mode'   => '0755'
+          )
         end
       end
 
@@ -341,6 +381,50 @@ describe 'autofs::mount', type: :define do
           is_expected.not_to contain_concat__fragment('autofs::fragment preamble /data /etc/auto.data')
           is_expected.to contain_concat('/etc/auto.data').with_ensure('absent')
           is_expected.not_to contain_concat__fragment('/etc/auto.data_/data_entries')
+        end
+      end
+
+      context 'with master_manage false' do
+        let(:title) { 'data' }
+        let(:params) do
+          {
+            mount: '/data',
+            mapfile: '/etc/auto.data',
+            mapcontents: %w[dataA dataB dataC],
+            master_manage: false,
+            use_dir: true
+          }
+        end
+
+        it do
+          is_expected.to compile
+          is_expected.not_to contain_concat(master_map_file)
+          is_expected.to contain_concat('/etc/auto.data').with_ensure('present')
+          is_expected.not_to contain_file('/etc/auto.master.d')
+          is_expected.not_to contain_file('/etc/auto.master.d/data.autofs')
+        end
+      end
+
+      context 'with master_manage false and ensure absent' do
+        let(:title) { 'data' }
+        let(:params) do
+          {
+            ensure: 'absent',
+            mount: '/data',
+            mapfile: '/etc/auto.data',
+            mapcontents: %w[dataA dataB dataC],
+            master_manage: false,
+            use_dir: true
+          }
+        end
+
+        it do
+          is_expected.to compile
+          is_expected.not_to contain_concat(master_map_file)
+          is_expected.to have_file_line_resource_count(0)
+          is_expected.to contain_concat('/etc/auto.data').with_ensure('absent')
+          is_expected.not_to contain_file('/etc/auto.master.d')
+          is_expected.not_to contain_file('/etc/auto.master.d/data.autofs')
         end
       end
     end
