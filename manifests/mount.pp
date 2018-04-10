@@ -121,13 +121,17 @@ define autofs::mount (
     fail("Parameter 'mapfile_manage' must be false for complicated 'mapfile' ${mapfile}")
   }
 
-  if $execute =~ NotUndef {
+  if $direct =~ NotUndef {
     deprecation('autofs::mount::direct',
         'Resource parameter $::autofs::mount::direct is deprecated and has no effect')
   }
 
   if !($master_manage or $mapfile_manage) {
     warn("Autofs::Mount[${title}] does not manage anything")
+  }
+
+  if (length($mapcontents) > 0) and !$mapfile_manage {
+    warn("Map file contents specified for autofs::mount[$title], but no map file is being managed")
   }
 
   if $mapfile {
@@ -188,7 +192,7 @@ define autofs::mount (
       }
     } else {
       ensure_resource('file', $map_dir, {
-        'ensure'  => directory,
+        'ensure'  => 'directory',
         'owner'   => $autofs::map_file_owner,
         'group'   => $autofs::map_file_group,
         'mode'    => '0755',
