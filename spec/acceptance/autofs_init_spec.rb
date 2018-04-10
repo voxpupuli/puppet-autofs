@@ -39,7 +39,7 @@ describe 'autofs' do
           is_expected.to be_grouped_into 'root'
         end
         its(:content) do
-          is_expected.to match(%r{^\s*/home\s+/etc/auto.home\s+--timeout=120\s*$})
+          is_expected.to match %r{^\s*/home\s+/etc/auto.home\s+--timeout=120\s*$}
         end
       end
 
@@ -50,7 +50,7 @@ describe 'autofs' do
           is_expected.to be_grouped_into 'root'
         end
         its(:content) do
-          is_expected.to match(%r{^\s*test_home\s+-rw\s+remote.org:/export/home\s*$})
+          is_expected.to match %r{^\s*test_home\s+-rw\s+remote.org:/export/home\s*$}
         end
       end
 
@@ -147,7 +147,7 @@ describe 'autofs' do
           is_expected.to be_grouped_into 'root'
         end
 
-        its(:content) { is_expected.not_to contain(%r{^\s*/home\s}) }
+        its(:content) { is_expected.not_to match %r{^\s*/home\s} }
       end
     end
 
@@ -172,13 +172,14 @@ describe 'autofs' do
       end
 
       describe file('/etc/auto.master') do
-        it 'exists and have content' do
+        it 'exists and belongs to root' do
           is_expected.to exist
           is_expected.to be_owned_by 'root'
           is_expected.to be_grouped_into 'root'
         end
         its(:content) do
-          is_expected.to match(%r{^\s*\+dir:/etc/auto.master.d\s*$})
+          is_expected.to match %r{^\s*\+dir:/etc/auto.master.d\s*$}
+          is_expected.not_to match %r{^\s*/mnt/confdir\s}
         end
       end
 
@@ -197,8 +198,8 @@ describe 'autofs' do
           is_expected.to be_grouped_into 'root'
         end
         its(:content) do
-          is_expected.to match(%r{^\s*/mnt/confdir\s+/etc/auto.confdir\s+--timeout=120\s*$})
-          is_expected.not_to match(%r{\n.})
+          is_expected.to match %r{^\s*/mnt/confdir\s+/etc/auto.confdir\s+--timeout=120\s*$}
+          is_expected.not_to match %r{\n.}
         end
       end
     end

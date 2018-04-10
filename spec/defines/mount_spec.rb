@@ -192,12 +192,12 @@ describe 'autofs::mount', type: :define do
         end
 
         it do
-          is_expected.to contain_file_line('remove_contents_/data_/etc/auto.data').with(
+          is_expected.to contain_file_line("#{master_map_file}::/data_/etc/auto.data").with(
             ensure: 'absent',
             path: master_map_file,
-            match: "^/data /etc/auto.data \n"
+            match: '^\\s*/data\\s+/etc/auto.data\\s'
           )
-          is_expected.to have_concat_resource_count(0)
+          is_expected.to contain_concat(master_map_file)
           is_expected.to have_concat__fragment_resource_count(0)
           is_expected.to have_autofs__map_resource_count(0)
         end

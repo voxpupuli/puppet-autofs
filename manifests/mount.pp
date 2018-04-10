@@ -105,8 +105,6 @@ define autofs::mount (
     deprecation('autofs::mount::replace', 'Parameter $autofs::mount::replace is deprecated and has no effect.  Use autofs::mapfile and autofs::mapping resources, or other resources of your choice, to manage map files')
   }
 
-  $contents = "${mount} ${mapfile} ${options}\n"
-
   unless $::autofs::package_ensure == 'absent' {
     if $autofs::reload_command {
       Concat {
@@ -120,22 +118,22 @@ define autofs::mount (
     }
   }
 
+  if !defined(Concat[$master]) {
+    concat { $master:
+      owner          => $autofs::map_file_owner,
+      group          => $autofs::map_file_group,
+      mode           => '0644',
+      ensure_newline => true,
+    }
+  }
+
+  $contents = "${mount} ${mapfile} ${options}"
+
   if $use_dir == false {
     if $ensure == 'present' {
-      # We define Concat[$master] only when ensuring a mount present; else
-      # ensuring a mount absent may result in clearing the whole file.
-      if !defined(Concat[$master]) {
-        concat { $master:
-          owner          => $autofs::map_file_owner,
-          group          => $autofs::map_file_group,
-          mode           => '0644',
-          ensure_newline => true,
-        }
-      }
-
       concat::fragment { "autofs::fragment preamble ${mount} ${mapfile}":
         target  => $master,
-        content => $contents,
+        content => "${contents}\n",
         order   => $order,
       }
     } else {
@@ -143,11 +141,12 @@ define autofs::mount (
       # too, at least one of which is ensured present, then this File_line is
       # unnecessary.  Otherwise, however, it is required for ensuring this
       # mount absent to be effective.
-      file_line { "remove_contents_${mount}_${mapfile}":
-        ensure            => absent,
+      file_line { "${master}::${mount}_${mapfile}":
+        ensure            => 'absent',
         path              => $master,
-        match             => "^${contents}",
+        match             => "^\\s*${mount}\\s+${mapfile}\\s",
         match_for_absence => true,
+        multiple          => true,
         notify            => Service['autofs'],
       }
     }
@@ -174,7 +173,7 @@ define autofs::mount (
       owner   => $autofs::map_file_owner,
       group   => $autofs::map_file_group,
       mode    => '0644',
-      content => $contents,
+      content => "${contents}\n",
       require => File[$map_dir],
     }
   }
