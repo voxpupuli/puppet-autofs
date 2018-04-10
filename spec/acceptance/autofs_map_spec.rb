@@ -29,7 +29,7 @@ describe 'autofs::map tests' do
       end
       its(:content) do
         is_expected.to start_with('##')
-        is_expected.not_to match(/^(?m)data.*\n#/)
+        is_expected.not_to match %r{^(?m)data.*\n#}
       end
     end
 
@@ -75,7 +75,7 @@ describe 'autofs::map tests' do
       end
       its(:content) do
         is_expected.to start_with('##')
-        is_expected.not_to match(/^(?m)data.*\n#/)
+        is_expected.not_to match %r{^(?m)data.*\n#}
       end
     end
   end
@@ -109,7 +109,7 @@ describe 'autofs::map tests' do
       # The content should start with the warning banner
       its(:content) { is_expected.to start_with '##' }
       # After the first map line, the banner should not be repeated
-      its(:content) { is_expected.not_to match /^(?m)data.*\n#/ }
+      its(:content) { is_expected.not_to match %r{^(?m)data.*\n#} }
     end
   end
 end

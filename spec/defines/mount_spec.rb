@@ -343,7 +343,7 @@ describe 'autofs::mount', type: :define do
             mapfile: '/etc/auto.data',
             mapcontents: %w[dataA dataB dataC],
             master_manage: false,
-            use_dir: true,
+            use_dir: true
           }
         end
 
@@ -365,7 +365,7 @@ describe 'autofs::mount', type: :define do
             mapfile: '/etc/auto.data',
             mapcontents: %w[dataA dataB dataC],
             master_manage: false,
-            use_dir: true,
+            use_dir: true
           }
         end
 

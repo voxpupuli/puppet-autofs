@@ -131,7 +131,7 @@ define autofs::mount (
   }
 
   if (length($mapcontents) > 0) and !$mapfile_manage {
-    warn("Map file contents specified for autofs::mount[$title], but no map file is being managed")
+    warn("Map file contents specified for autofs::mount[${title}], but no map file is being managed")
   }
 
   if $mapfile {
@@ -220,11 +220,12 @@ define autofs::mount (
   }
 
   if $mapfile and $mapfile_manage {
+    $mapmode = $execute ? { true => '0755', default => '0644' }
     concat { $mapfile:
       ensure  => $ensure,
       owner   => $autofs::map_file_owner,
       group   => $autofs::map_file_group,
-      mode    => $execute ? { true => '0755', default => '0644' },
+      mode    => $mapmode,
       replace => $replace,
       force   => true,
       warn    => template('autofs/map.banner.erb'),

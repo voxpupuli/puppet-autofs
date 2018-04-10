@@ -34,7 +34,7 @@ describe 'autofs::mount tests' do
       end
       its(:content) do
         is_expected.to start_with('##')
-        is_expected.not_to match(/^\s*[^#\n]/)
+        is_expected.not_to match %r{^\s*[^#\n]}
       end
     end
 

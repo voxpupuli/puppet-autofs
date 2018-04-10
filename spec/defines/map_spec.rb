@@ -4,12 +4,6 @@ describe 'autofs::map', type: :define do
   on_supported_os.each do |os, facts|
     let(:pre_condition) { 'include autofs' }
 
-    group = if facts[:os]['family'] == 'AIX'
-              'system'
-            else
-              'root'
-            end
-
     context "on #{os}" do
       let(:title) { 'data' }
       let(:facts) do
