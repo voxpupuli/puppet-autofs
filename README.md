@@ -647,6 +647,10 @@ These are now private classes.
 The `autofs::map` defined type is no longer documented or supported, and it will be removed
 from a future version.
 
+The `direct`, `executable`, `mapcontents`, `mapfile_manage`, and `replace` parameters of
+`autofs::mount` are removed in 5.0.0, the first having already been ineffective in 4.3.0,
+and the others no longer being relevant starting in 5.0.0.
+
 #### Puppet platforms
 Compatible with Puppet 4 or greater only. Puppet 4.6.0 or greater
 (including Puppet 5) will provide best results.

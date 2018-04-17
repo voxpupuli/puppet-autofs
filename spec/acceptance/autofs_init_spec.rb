@@ -75,7 +75,6 @@ describe 'autofs' do
           autofs::mount { 'home':
             mount       => '/home',
             mapfile     => '/etc/auto.home',
-            mapcontents => ['test_home -o rw /mnt/test_home'],
             options     => '--timeout=120',
             order       => 01
           }

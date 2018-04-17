@@ -1,42 +1,9 @@
 ---
-homedir:
-    mount: '/home'
-    mapfile: '/etc/auto.home'
-    mapcontents:
-      - 'test'
-      - 'foo'
-      - 'bar'
-    options: '--timeout=120'
-    order: 01
-homedir_maps:
-    mapfile: '/etc/auto.home'
-    mapcontents: '/home /another'
-direct:
-    mount: '/-'
-    mapfile: '/etc/auto.home'
-    mapcontents:
-      - '/home /test'
-      - '/home /foo'
-      - '/home /bar'
-    options: '--timeout=120'
-    order: 01
-confdir:
-    mount: '/home'
-    mapfile: '/etc/auto.home'
-    mapcontents:
-      - '* -user,rw,soft,intr,rsize=32768,wsize=32768,tcp,nfsvers=3,noacl server.example.com:/path/to/home/shares'
-    options: '--timeout=120'
-    order: 01
-    use_dir: true
 autofs::mounts:
   confdir:
     mount: '/home'
     mapfile: '/etc/auto.home'
-    mapcontents:
-      - '* -user,rw,soft,intr,rsize=32768,wsize=32768,tcp,nfsvers=3,noacl server.example.com:/path/to/home/shares'
     options: '--timeout=120'
     order: 01
     use_dir: true
-rmdir:
-    ensure: 'absent'
-    mapfile: '/etc/auto.home'
+

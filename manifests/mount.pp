@@ -42,9 +42,6 @@
 #   point.  Typically, this is an absolute path to a map file, whose base name
 #   conventionally begins with "auto.", but Autofs recognizes other alternatives,
 #   too, that can be specified via this parameter.
-# @param mapcontents Deprecated.  Accepts map file content as a string or array
-#   of strings to be copied into the map.  DO NOT USE.  Instead, manage mapfile
-#   content via autofs::mapfile and, optionally, autofs::mapping resources.
 # @param master Full path, including filename, to the autofs master map.
 #   Usually the correct master map will be chosen automatically, and you will
 #   not need to specify this.
@@ -59,14 +56,6 @@
 #   the master map.
 # @param order The relative order in which entries will appear in the master
 #   map.  Irrelevant when $use_dir is true.
-# @param direct Deprecated.  Has no effect.  A direct map is naturally
-#   obtained by specifying $mount as '/-'.
-# @param execute Deprecated.  Has no effect.  For an executable map file,
-#   manage the target file via a File or similar resource.
-# @param mapfile_manage Deprecated.  Has no effect.  This resource no longer
-#   manages map files under any circumstances.
-# @param replace Deprecated.  Has no effect.  Map files should be managed
-#   via autofs::mapfile resources.
 #
 define autofs::mount (
   Variant[Stdlib::Absolutepath,Autofs::Mapentry] $mapfile,
@@ -77,33 +66,8 @@ define autofs::mount (
   Stdlib::Absolutepath $master            = $autofs::auto_master_map,
   Stdlib::Absolutepath $map_dir           = '/etc/auto.master.d',
   Boolean $use_dir                        = false,
-  Optional[Boolean] $direct               = undef,        # deprecated, no effect
-  Optional[Boolean] $execute              = undef,        # deprecated, no effect
-  Optional[Boolean] $mapfile_manage       = undef,        # deprecated, no effect
-  Optional[Variant[Array, String]] $mapcontents = undef,  # deprecated, no effect
-  Optional[Boolean] $replace              = undef         # deprecated, no effect
 ) {
   include '::autofs'
-
-  if $direct =~ NotUndef {
-    deprecation('autofs::mount::direct', 'Parameter $autofs::mount::direct is deprecated and has no effect.  Whether a map is direct is determined (by Autofs itself) by the mount point: specify $mount as \'/-\' for a direct map.')
-  }
-
-  if $execute =~ NotUndef {
-    deprecation('autofs::mount::execute', 'Parameter $autofs::mount::execute is deprecated and has no effect.  For a map implemented as an executable program, manage the map file via a File or similar resource.')
-  }
-
-  if $mapfile_manage =~ NotUndef {
-    deprecation('autofs::mount::mapfile_manage', 'Parameter $autofs::mount::mapfile_manage is deprecated and has no effect.  autofs::mount resources now manage only the master map, not map files')
-  }
-
-  if $mapcontents =~ NotUndef {
-    deprecation('autofs::mount::mapcontents', 'Parameter $autofs::mount::mapcontents is deprecated and has no effect.  Manage map contents via autofs::mapfile and autofs::mapping resources.')
-  }
-
-  if $replace =~ NotUndef {
-    deprecation('autofs::mount::replace', 'Parameter $autofs::mount::replace is deprecated and has no effect.  Use autofs::mapfile and autofs::mapping resources, or other resources of your choice, to manage map files')
-  }
 
   unless $::autofs::package_ensure == 'absent' {
     if $autofs::reload_command {
