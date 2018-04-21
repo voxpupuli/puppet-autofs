@@ -1,5 +1,4 @@
-#!/bin/bash
-<% if @replace == true or @replace == 'yes' -%>
+<% if @replace -%>
 ###############################################################
 #                                                             #
 # THIS FILE IS MANAGED BY PUPPET. ANY CHANGES MADE TO THIS    #
@@ -13,8 +12,5 @@
 #    CUSTOM / TEMPORARY MOUNT POINTS CONFIGURATIONS.          #
 #                                                             #
 ###############################################################
-<% end -%>
+<% end %>
 
-<% [@mapcontents].flatten.each do |content| -%>
-<%= content %>
-<% end -%>

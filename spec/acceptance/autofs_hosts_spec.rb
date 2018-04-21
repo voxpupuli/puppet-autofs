@@ -7,7 +7,6 @@ describe 'autofs::mount -hosts test' do
         class { 'autofs': }
         autofs::mount { 'auto.net':
           mount          => '/net',
-          mapfile_manage => false,
           mapfile        => '-hosts',
         }
       MANIFEST
@@ -23,7 +22,7 @@ describe 'autofs::mount -hosts test' do
         is_expected.to be_grouped_into 'root'
       end
 
-      its(:content) { is_expected.to contain('/net -hosts') }
+      its(:content) { is_expected.to match(%r{^\s*/net\s+-hosts\s*$}) }
     end
   end
 end

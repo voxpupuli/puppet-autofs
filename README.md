@@ -47,9 +47,10 @@ The module provides one class:
 include autofs
 ```
 
-By default, this installs, enables, and starts the autofs service with the module's default master
-map.  If desired, the required state of the autofs package and / or service can instead be specified explicitly
-via class parameters.  For example,
+With all default parameter values, this installs, enables, and starts the
+autofs service, configuring it to rely on the default location for the
+master map.  If desired, the required state of the autofs package and / or
+service can instead be specified explicitly via class parameters.  For example,
 
 To ensure the package is absent:
 ```puppet
@@ -66,45 +67,58 @@ class { 'autofs':
 }
 ```
 
-### Map Files
+### Master Map
 
-This module provides several ways to manage Autofs map files.  In the first place, there is a defined type serving this purpose:
+The module provides two compatible, built-in mechanisms for managing the
+content of the master map: by setting the `mounts` parameter of the `autofs`
+class, and by declaration of `autofs::mount` resources.  Using these is not
+obligatory -- one could instead use a `File` resource, for instance, but
+using the built-in mechanisms automatically provides for the autofs service
+to be notified of any changes to the master map.
+
+Note well, however, that managing the master map via this module's built-in
+mechanisms is an all-or-nothing affair.  If any autofs mount points are managed
+via either of those mechanisms, then *only* mount points managed via those
+mechanisms will appear in the master map.
+
+##### example
+
+The declaration
+
 ```puppet
 autofs::mount { 'home':
   mount       => '/home',
   mapfile     => '/etc/auto.home',
-  mapcontents => ['* -user,rw,soft,intr,rsize=32768,wsize=32768,tcp,nfsvers=3,noacl server.example.com:/path/to/home/shares'],
-  options     => '--timeout=120',
-  order       => 01
+  options     => '--timeout=120'
 }
 ```
-This example will generate content in both the auto.master file and the auto.home map
-file:
 
-##### auto.master
+, or the equivalent element of the value of class parameter
+`$autofs::mounts`, will result in the following entry in the master
+map"
+
 ```
 /home /etc/auto.home --timeout=120
 ```
 
-##### auto.home
-```
-* -user,rw,soft,intr,rsize=32768,wsize=32768,tcp,nfsvers=3,noacl server.example.com:/path/to/home/shares
+The target map file, `/etc/auto.home`, is not affected by this.
+
+Alternatively, this can be expressed directly in the declaration of
+class `autofs`:
+
+```puppet
+class { 'autofs':
+  mounts => {
+    'home' => {
+      'mount'   => '/home',
+      'mapfile' => '/etc/auto.home',
+      'options' => '--timeout=120'
+    }
+  }
+}
 ```
 
-The same configuration can be achieved by specifying the same details in external data, as one element of a hash of hashes with key `autofs::mounts`. For example:
-```yaml
-autofs::mounts:
-  home:
-    mount: '/home'
-    mapfile: '/etc/auto.home'
-    mapcontents:
-      - '* -user,rw,soft,intr,rsize=32768,wsize=32768,tcp,nfsvers=3,noacl server.example.com:/path/to/home/shares'
-    options: '--timeout=120'
-    order: 01
-```
-
-If `autofs::mounts` data from multiple files or hierarchy levels need to be combined, then hash-merge behavior for this key
-should be specified via the `lookup_options` key:
+or in YAML form in external Hiera data:
 
 ```yaml
 lookup_options:
@@ -114,10 +128,7 @@ autofs::mounts:
   home:
     mount: '/home'
     mapfile: '/etc/auto.home'
-    mapcontents:
-      - '* -user,rw,soft,intr,rsize=32768,wsize=32768,tcp,nfsvers=3,noacl server.example.com:/path/to/home/shares'
     options: '--timeout=120'
-    order: 01
 ```
 
 For more information about merge behavior see the doc for:
@@ -125,22 +136,23 @@ For more information about merge behavior see the doc for:
 * [Lookup docs](https://docs.puppet.com/puppet/4.7/lookup_quick.html#puppet-lookup:-quick-reference-for-hiera-users) 
 * [Hiera 5 docs](https://docs.puppet.com/puppet/5.1/hiera_merging.html) if using Puppet >= 4.9
 
-##### Direct Map `/-` arugment
 
-The autofs module supports Autofs direct maps naturally.  For a direct map, simply specify the `mount` parameter as `/-`,
-just as is used for the purpose in the `auto.master` file.  When this option is exercised, Autofs requires the keys in the
-corresponding map file to be absolute paths of mountpoint directories; this module does *not* validate that constraint.
+#### Direct Map `/-` argument
 
-###### Examples:
+The autofs module supports Autofs direct maps naturally.  For a direct map,
+simply specify the `mount` parameter as `/-`, just as is used for the purpose
+in the `auto.master` file.  When this option is exercised, Autofs requires
+the keys in the corresponding map file to be absolute paths of mountpoint
+directories; this module does *not* validate that constraint.
+
+##### example
 
 Define:
 ``` puppet
 autofs::mount { 'foo':
   mount       => '/-',
   mapfile     => '/etc/auto.foo',
-  mapcontents => ['/foo -o options /bar'],
   options     => '--timeout=120',
-  order       => 01
 }
 ```
 
@@ -150,30 +162,28 @@ autofs::mounts:
   foo:
     mount: '/-'
     mapfile: '/etc/auto.foo'
-    mapcontents:
-      - '/foo -o options /bar'
     options: '--timeout=120'
-    order: 01
 ```
 
-##### Autofs `+dir:` options
+#### `+dir:` drop-in directories
 
-The autofs module supports the use of Autofs's `+dir:` option (Autofs 5.0.5 or later) in the `auto.master` file to
-incorporate the contents of all files from a specified directory into the master map's own logical content.  When a
-`mount`'s `use_dir` parameter is `true` (default is `false`), the corresponding `auto.master` content is created as a
-separate file in the appropriate directory instead of being written directly into `auto.master`.  `auto.master` is,
-however, ensured to contain an appropriate `+dir:` entry designating the chosen fragment directory.
+The autofs module supports the use of Autofs's `+dir:` option (Autofs 5.0.5
+or later) to record master map content in drop-in files in a specified
+directory instead of directly int rhe master map.  When a `mount`'s `use_dir`
+parameter is `true` (default is `false`), the corresponding master map entry
+is created as a separate file in the appropriate directory instead of being
+written directly into the master map.  The master map is still, however,
+ensured to contain an appropriate `+dir:` entry designating the chosen
+drop-in directory.
 
-###### Usage
+##### example
 
 Define:
 ```puppet
 autofs::mount { 'home':
   mount       => '/home',
   mapfile     => '/etc/auto.home',
-  mapcontents => ['* -user,rw,soft,intr,rsize=32768,wsize=32768,tcp,nfsvers=3,noacl server.example.com:/path/to/home/shares'],
   options     => '--timeout=120',
-  order       => 01,
   use_dir     => true
 }
 ```
@@ -184,85 +194,137 @@ autofs::mounts:
   home:
     mount: '/home'
     mapfile: '/etc/auto.home'
-    mapcontents:
-      - '* -user,rw,soft,intr,rsize=32768,wsize=32768,tcp,nfsvers=3,noacl server.example.com:/path/to/home/shares'
     options: '--timeout=120'
-    order: 01
     use_dir: true
 ```
 
-#### Map Entries
-As an alternative to adding map entries via the `mapcontents` parameter of an `autofs::mount`, there is an `autofs::map`
-type that serves the purpose as well.
+#### Removing mount points
 
-##### Usage
+Unwanted mount points can be ensured `absent` to force their removal.  This
+will remove them from the master map even if the master map is not otherwise
+managed (and in that specific case, without otherwise managing that file),
+either directly in the file or in the drop-in directory (but not both).  If
+at least one mount point is managed `present` in the master map then it may
+also be sufficient to simply omit unwanted mount points.
+
+##### example
 
 Define:
 ```puppet
-autofs::map{'data':
-  mapfile     => '/etc/auto.data',
-  mapcontents => 'data -user,rw,soft server.example.com:/path/to/data,
+autofs::mount { 'home':
+  ensure      => 'absent',
+  mount       => '/home',
+  mapfile     => '/etc/auto.home',
 }
 ```
 
 Hiera:
 ```yaml
-autofs::maps:
-  data:
-    mapfile: '/etc/auto.data'
-    mapcontent: 'data -user,rw server.example.com:/path/to/data'
+autofs::mounts:
+  home:
+    ensure: 'absent'
+    mount: '/home'
+    mapfile: '/etc/auto.home'
 ```
 
-It is assumed in this case that the map file itself is managed separately, such as via an `autofs::mount` resource.
+### Map Files
+
+The module also provides two compatible, built-in mechanisms for managing
+Autofs map files: by setting the `mapfiles` parameter of the `autofs`
+class, and by declaration of `autofs::mapfile` resources.  As with entries
+in the master map, using these is not obligatory.  In fact, they are
+applicable only to map files written in the default (sun) map format;
+some other mechanism must be chosen if map files in some other format are
+to be managed.
+
+As with the master map, managing map files via this module's built-in
+mechanisms is an all-or-nothing affair.  If a map file is managed via these
+mechanisms then only mappings declared via these mechanisms will be included.
+
+Note that map file management is wholly independent of master map management.
+Just as managing mount points in the master map does not affect corresponding
+map files, managing map files does not affect the master map.
+
+For example,
 
 ```puppet
-autofs::mount{'auto.data':
-  mapfile => '/etc/auto.data',
-  mount   => '/big',
+autofs::mapfile { 'home':
+  path     => '/etc/auto.home',
+  mappings => [
+    { 'key' => '*', 'options' => 'rw,soft,intr', 'fs' => 'server.example.com:/path/to/home/shares' }
+  ]
 }
 ```
 
-##### Removing Entries
+The standard external-data representation again is associated with the module
+via a parameter of class `autofs`:
 
-To remove entries from a `mapfile` simply remove the element from the `mapcontents` array in your manifest or external data.
+```yaml
+autofs::mapfiles:
+  home:
+    path: '/etc/auto.home'
+    mappings:
+      key: '*'
+      options: 'rw,soft,intr'
+      fs: 'server.example.com:/path/to/home/shares'
+```
+
+Whichever form is used, the resulting mapping in file `/etc/auto.home` is
+
+```
+*	-rw,soft,intr	server.example.com:/path/to/home/shares
+```
+
+#### Multiple mappings in the same file
+
+Multiple mappings may be declared for the same map file, either in the same
+`autofs::mapfile` resource (or an entry in the `$::autofs::mappings` class
+parameter or corresponding external data), or in one or more separate
+`autofs::mapping` resources:
+
+```puppet
+autofs::mapfile { '/mnt/data':
+}
+
+autofs::mapping { '/mnt/data_dataA':
+  mapfile => '/mnt/data',
+  key     => 'dataA',
+  options => 'ro',
+  fs      => 'remote.com:/exports/dataA'
+}
+
+autofs::mapping { '/mnt/data_dataB':
+  mapfile => '/mnt/data',
+  key     => 'dataB',
+  options => 'rw,noexec',
+  fs      => 'remote.com:/exports/dataB'
+}
+```
+
+The resulting content of file `/mnt/data` would be
+
+```
+dataA	-ro	remote.com:/exports/dataA
+dataB	-rw,noexec	remote.com:/exports/dataB
+```
+
+#### Removing Entries
+
+To remove entries from a managed `mapfile` simply remove the element
+from the `mappings` array in your manifest or external data.  If the
+mapping is expressed via a separate `autofs::mapping` declaration, then
+either omit that resource or ensure it `absent`:
 
 Example:
 
 ```puppet
-autofs::map {'data':
+autofs::mapping { 'data':
+  ensure      => 'absent',
   mapfile     => '/etc/auto.data',
-  mapcontents => [ 'dataA -o rw /mnt/dataA', 'dataB -o rw /mnt/dataB' ]
+  key         => 'dataA'
+  fs          => 'example.com:/exports/dataA'
 }
 ```
-
-```yaml
-autofs::maps:
-  data:
-    mapfile: '/etc/auto.data'
-    mapcontents:
-      - 'dataA -o rw /mnt/dataA'
-      - 'dataB -o rw /mnt/dataB'
-```
-
-To remove the `dataA` entry from the `/etc/auto.data`, simply remove that array element:
-
-```puppet
-autofs::map {'data':
-  mapfile     => '/etc/auto.data',
-  mapcontents => [ 'dataB -o rw /mnt/dataB' ]
-}
-```
-
-```yaml
-autofs::maps:
-  data:
-    mapfile: '/etc/auto.data'
-    mapcontents:
-      - 'dataB -o rw /mnt/dataB'
-```
-
-**NOTE: Do NOT set `ensure => 'absent'` unless your intent is to remove the entire `mapfile`!**
-
 
 ## Reference
 
@@ -285,8 +347,27 @@ Optional.
 
 Data type: Hash
 
-A hash of options that describe contents of the master map, and possibly of individual map files.  Each entry is equivalent
-to the title and a hash of the parameters of one `autofs::mount` resource.
+A hash of options that describe Autofs mount points for which entries
+should appear in the master map.  Each entry is equivalent to the title and
+a hash of the parameters of one `autofs::mount` resource.
+
+#### `mapfiles`
+
+Optional.
+
+Data type: Hash
+
+A hash of options that describe Autofs map files that should be managed.
+Each entry is equivalent to the title and a hash of the parameters of one
+`autofs::mapfile` resource.
+
+#### `package_name`
+
+Data type: String or Array[String]
+
+The name of the Autofs package(s).  System-appropriate values for a variety
+of target environments are included with the module, so this parameter
+does not usually need to be specified explicitly.
 
 #### `package_ensure`
 
@@ -296,6 +377,15 @@ Determines the required state of the autofs package. Can be set to: `installed`,
 version string.
 
 Default: 'installed'
+
+#### `service_name`
+
+Data type: String
+
+The name of the Autofs service, as appropriate for use with the target
+environment's tools.  System-appropriate values for a variety of
+target environments are included with the module, so this parameter
+does not usually need to be specified explicitly.
 
 #### `service_ensure`
 
@@ -313,13 +403,52 @@ Determines whether the autofs service should start at system boot.
 
 Default: `true`
 
+#### `reload_command`
+
+Optional.
+
+Data type: String
+
+If specified, a command to execute in the target environment to reload
+Autofs configuration without restarting the service.
+
+#### `auto_master_map`
+
+Data type: String
+
+The absolute path to the Autofs master map.  The standard paths used on
+a variety of supported environments are included with the module, so this
+parameter does not usually need to be specified explicitly.
+
+#### `map_file_owner`
+
+Data type: String
+
+The system user who should own the master map and any managed map files.
+May be expressed either as a name or as a uid (in string form).  The
+module defaults to 'root' for most environments and provides alternative
+defaults for supported target environments that ordinarily differ in this
+regard, so it is rarely necessary to specify this parameter explicitly
+unless a non-standard value is desired.
+
+#### `map_file_group`
+
+Data type: String
+
+The system group to which the master map and any managed map files should
+be assigned.  May be expressed either as a name or as a gid (in string
+form).  The module defaults to 'root' for most environments and provides
+alternative defaults for supported target environments that ordinarily
+differ in this regard, so it is rarely necessary to specify this
+parameter explicitly unless a non-standard value is desired.
+
 ### Defines
 
 #### Public Defines
 
-* `autofs::mount`: Describes an entry in the master map, and, optionally, some of or all of the contents of the corresponding
-  map file.
-* `autofs::map`: Describes a map file and some or all of its contents.
+* `autofs::mount`: Describes an entry in the master map.
+* `autofs::mapfile`: Describes a (sun-format) map file and, optionally, some or all of its contents.
+* `autofs::mapping`: Describes one (sun-format) filesystem mapping in a specific map file.
 
 ### Parameters for autofs::mount
 
@@ -327,10 +456,9 @@ Default: `true`
 
 Data type: String
 
-The desired state of the mount definition in the master map.  If set to `absent`, the resulting master map will not
-contain a mountpoint definition corresponding to this resource, nor will it cause a map file or any map file content
-to be managed (but such content could still be created and managed via `autofs::map` resources or *other*
-`autofs::mount` resources). Defaults to `present`.
+The desired state of the mount definition in the master map.  If set to
+`absent`, the resulting master map will not contain a mountpoint definition
+corresponding to this resource. Defaults to `present`.
 
 #### `mount`
 
@@ -343,35 +471,10 @@ described by the corresponding map file.   Defaults to the `title` of this `auto
 
 #### `mapfile`
 
-Optional.
-
 Data type: Stdlib::Absolutepath or Autofs::MapEntry
 
 This parameter designates the automount map serving this mount.  Autofs supports a variety of options
 here, but most commonly this is either an absolute path to a map file or the special string `-hosts`.
-If its value is anything other than a plain absolute path, then the `mapfile_manage` parameter must take the
-value `false`, and the specified mapfile must be managed separately.
-
-This parameter corresponds to content in the master map.  If `mapfile_manage` is `true` (its default), then
-the presence of this parameter also causes the corresponding map file to be created and managed.
-
-#### `mapfile_manage`
-
-Data type: Boolean
-
-If true the the mapfile file will be created and maintained. Set this to `false` when the map file is maintained
-some other way, e.g. `auto.smb` from the autofs package.
-
-Default: true
-
-#### `mapcontents`
-
-Data type: Array or String
-
-This string or each element of this array describes one filesystem to be configured for automounting.  It contributes to
-map file content.  See the documentation of `$autofs::map::mapcontents` for more details.
-
-Default: []
 
 #### `options`
 
@@ -379,34 +482,34 @@ Optional.
 
 Data type: String
 
-This Mapping describes the auto.master options to use (if any)
-when mounting the automounts.
-
-Default: ''
+This parameter provides Autofs and/or mount options to be specified for this
+mount point in the master map.
 
 #### `order` 
 
 Data type: Integer
 
-This Mapping describes where in the auto.master file the entry will
-be placed. Order CANNOT be duplicated.
+This parameter specifies the relative order of this mount point in the master map.
 
-Default: `undef`
+Default: 1
 
 #### `master`
 
 Data type: Stdlib::Absolutepath
 
-This Parameter sets the path to the auto.master file.
+This parameter specifies the path to the master map.  It's system-dependent
+default value is usually the right choice.
 
-Default: '/etc/auto.master'
+Default: (system-dependent)
 
 #### `map_dir`
 
 Data type: Stdlib::Absolutepath
 
-This Parameter sets the path to the Autofs configuration directory
-for map files. Applies only to autofs 5.0.5 or later. 
+This parameter specifies the path to the Autofs master map drop-in directory
+in which this mount's definition should reside.  This may differ from mount
+to mount. Applies only to autofs 5.0.5 or later, and only when the `use_dir`
+parameter is set to `true`.
 
 Default: '/etc/auto.master.d'
 
@@ -414,67 +517,124 @@ Default: '/etc/auto.master.d'
 
 Data type: Boolean
 
-This Parameter tells the module if it is going to use $map_dir.
+This parameter specifies whether to manage this mount point via its own file
+in a drop-in directory, as opposed to recording it directly in the master
+map.  Relevant only for autofs 5.0.5 or later.
 
 Default: `false`
 
-#### `direct`
-
-Deprecated.
-
-Data type: Boolean
-
-Retained for backwards compatibility, but has no effect.
-
-Default: `true`
-
-#### `execute`
-
-Data type: Boolean
-
-Whether the mapfile should be an executable shell script.
-
-Default: `false`
-
-#### `replace`
-
-Data type: Boolean
-
-Whether to replace the mapfile if it already exists.
-
-Default: `true`
-
-### Parameters for autofs::map
+### Parameters for autofs::mapfile
 
 #### `ensure`
 
 Data type: String
 
-Ensures the state of the `mapfile`. Setting to `absent` **WILL REMOVE THE MAPFILE**. If you just
-to remove an entry in the `mapfile`, remove the `mapcontents` string or array element you want to remove.
+This parameter specifies the target state of this map file, either `present` or `absent`.
+
+Default: 'present'
+
+#### `path`
+
+Data type: Stdlib::Absolutepath
+
+The absolute path to the map file managed by this resource. e.g '/etc/auto.data'.
+
+Default: the `title` of this resource.
+
+#### `mappings`
+
+Data type: Array of Autofs::Fs_mapping
+
+Each element corresponds to one (sun-format) mapping in the file, with a key,
+usually some mount options, and a specification of the filesystem(s) to
+mount.  The filesystem specification format is extremely loose, accommodating
+not only the typical case of a single remote filesystem spec, but also the
+wide variety of Autofs-recognized alternatives such as shared mounts,
+multi-mounts, and replicated mounts.
+
+Example:
+```puppet
+[
+  { 'key' => 'dataA', 'options' => 'rw,noexec', 'fs' => 'remote.net:/exports/dataA' }
+]
+```
+
+Default: []
+
+#### `replace`
+
+Data type: Boolean
+
+This parameter specifies whether this map file's contents should be managed
+in the event that the file already exists at the start of the Puppet run.
+It affects not only mappings specified directly in this resource, but also
+any that are specified for this map file via separate `autofs::mapping`
+resources.
+
+Default: `true`
+
+### Parameters for autofs::mapping
+
+#### `ensure`
+
+Data type: String
+
+This parameter specifies whether the mapping it describes should be
+present in the target map file, provided that that map file is managed
+via an `autofs::mapfile` resource or the equivalent data among the
+parameters of class `autofs`.  Setting the value `absent` is
+substantially equivalent to altogether omitting any declaration of this
+resource.
 
 Default: 'present'
 
 #### `mapfile`
 
-Data type: Stdlib::Absolutepath
+The absolute path to the target map file hosting this mapping.
 
-The autofs map file managed to which this resource provides contents. e.g '/etc/auto.data'.
+#### `key`
 
-#### `mapcontents`
+Data type: String matching /\A\S+\z/
 
-Data type: String or Array
+The autofs key for this mapping.
 
-Each string corresponds to one line of the map file.
+#### `fs`
 
-For non-executable map files, such a line should describe one filesystem mapping, in automount format.  There
-are three whitespace-delimited fields: an identifying "key", which automount combines with the base path for
-this map to form the mount path; the mount options as a comma-delimited string; and the remote or local filesystem
-to be mounted.
+Data type: String matching /\S/
 
-Used in mapfile generation. Example: 'data -rw nfs.example.org:/data/big'
+The filesystem specification for this mapping.  The Sun map format
+permits a number of alternatives beyond simple, single mappings, and
+this module opts to allow wide latitude in filesystem specification
+instead of trying to codify all the alternatives.
 
-Default: []
+Simple example: 'remote.net:/exports/data'
+
+#### `options`
+
+Optional.
+
+Data type: String matching /A\S+\z/, or an Array of such Strings
+
+Autofs and mount options specific to this mapping.  If given as and array
+then elements are joined with commas (,) to form a single option string.
+Options _should not_ be prefixed with a hyphen (-) unless that is part of
+the option itself.  Options whose names do begin with a hyphen must not
+be first.
+
+example: 'rw,noexec,nodev'
+
+example: \[ 'rw', 'noexec', 'nodev' \]
+
+#### `order`
+
+Data type: Integer
+
+The relative order of this mapping in the target map file.  Does not
+ordinarily need to be specified, because the map file order will be stable
+either way, and the order matters only if the map contains more than one
+mapping for the same key.
+
+Default: 10
 
 
 Limitations
@@ -484,8 +644,16 @@ Limitations
 Directly calling the `autofs::package` and `autofs::service` classes is disabled in 3.0.0.
 These are now private classes.
 
+The `autofs::map` defined type is no longer documented or supported, and it will be removed
+from a future version.
+
+The `direct`, `executable`, `mapcontents`, `mapfile_manage`, and `replace` parameters of
+`autofs::mount` are removed in 5.0.0, the first having already been ineffective in 4.3.0,
+and the others no longer being relevant starting in 5.0.0.
+
 #### Puppet platforms
-Compatible with Puppet 4 only. Puppet 4.6.0 will provide best results.
+Compatible with Puppet 4 or greater only. Puppet 4.6.0 or greater
+(including Puppet 5) will provide best results.
 
 #### Operating Systems
 

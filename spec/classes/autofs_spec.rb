@@ -4,7 +4,7 @@ require 'hiera'
 describe 'autofs', type: :class do
   let(:hiera_config) { 'spec/fixtures/hiera/hiera.yaml' }
 
-  hiera = Hiera.new(config: 'spec/fixtures/hiera/hiera.yaml')
+  # hiera = Hiera.new(config: 'spec/fixtures/hiera/hiera.yaml')
 
   on_supported_os.each do |os, facts|
     case facts[:os]['family']
@@ -58,79 +58,71 @@ describe 'autofs', type: :class do
 
       it { is_expected.to contain_package(package).with_ensure('absent') }
     end
-  end
 
-  context 'it should create auto.home' do
-    mounts = hiera.lookup('homedir', nil, nil)
-    maps = hiera.lookup('homedir_maps', nil, nil)
-    let(:params) { { mounts: mounts } }
+    context 'should declare mount points' do
+      let(:params) do
+        {
+          mounts: {
+            'home'        => { mount: '/home', mapfile: '/etc/auto.home', options: '--timeout=120', order: 1 },
+            '/mnt/other'  => { mapfile: '/etc/auto.other' },
+            'direct'      => { mount: '/-', mapfile: '/etc/auto.direct' },
+            'remove this' => { mount: '/unwanted', mapfile: '/etc/auto.unwanted', ensure: 'absent' }
+          }
+        }
+      end
 
-    it 'is expected to have auto.home hiera values' do
-      expect(mounts).to include(
-        'mount'       => '/home',
-        'mapfile'     => '/etc/auto.home',
-        'mapcontents' => %w[test foo bar],
-        'options'     => '--timeout=120',
-        'order'       => 1
-      )
+      it do
+        is_expected.to compile.with_all_deps
+        is_expected.to have_autofs__mount_resource_count(4)
+        is_expected.to contain_autofs__mount('home').
+          with(mount: '/home', mapfile: '/etc/auto.home', options: '--timeout=120', order: 1)
+        is_expected.to contain_autofs__mount('/mnt/other').
+          with(mapfile: '/etc/auto.other')
+        is_expected.to contain_autofs__mount('direct').
+          with(mount: '/-', mapfile: '/etc/auto.direct')
+        is_expected.to contain_autofs__mount('remove this').
+          with(mount: '/unwanted', ensure: 'absent')
+        is_expected.to have_autofs__map_resource_count(0)
+        is_expected.to have_autofs__mapfile_resource_count(0)
+        is_expected.to have_autofs__mapping_resource_count(0)
+      end
     end
-    it 'is expected to have auto.home hiera values' do
-      expect(maps).to include(
-        'mapfile'     => '/etc/auto.home',
-        'mapcontents' => '/home /another'
-      )
+
+    context 'should declare map files' do
+      home_mappings = [
+        { 'key' => 'user1', 'options' => 'rw,exec', 'fs' => 'users.com:/x/user1' }
+      ]
+      let(:params) do
+        {
+          mounts: {},
+          mapfiles: {
+            'home' => { path: '/etc/auto.home', mappings: home_mappings },
+            '/mnt/defaults' => {},
+            'unwanted' => { path: '/etc/auto.evil', ensure: 'absent' }
+          },
+          maps: :undef
+        }
+      end
+
+      it do
+        is_expected.to compile.with_all_deps
+        is_expected.to contain_autofs__mapfile('home').
+          with(path: '/etc/auto.home', mappings: home_mappings)
+        is_expected.to contain_autofs__mapfile('/mnt/defaults')
+        is_expected.to contain_autofs__mapfile('unwanted').
+          with(path: '/etc/auto.evil', ensure: 'absent')
+        is_expected.to have_autofs__mapfile_resource_count(3)
+        is_expected.to have_autofs__mount_resource_count(0)
+        is_expected.to have_autofs__map_resource_count(0)
+      end
     end
-  end
 
-  context 'it should create home direct mount' do
-    mounts = hiera.lookup('direct', nil, nil)
-    let(:params) { { mounts: mounts } }
+    context 'with $mounts not a hash' do
+      let(:params) { { mounts: 'string' } }
 
-    it 'is expected to have direct mount hiera values' do
-      expect(mounts).to include(
-        'mount'       => '/-',
-        'mapfile'     => '/etc/auto.home',
-        'mapcontents' => %w[/home\ /test /home\ /foo /home\ /bar],
-        'options'     => '--timeout=120',
-        'order'       => 1
-      )
-    end
-  end
-
-  context 'hiera_confdir_test' do
-    mounts = hiera.lookup('confdir', nil, nil)
-    let(:params) { { mounts: mounts } }
-
-    it 'is expected to have auto.master.d hiera values' do
-      expect(mounts).to include(
-        'mount'       => '/home',
-        'mapfile'     => '/etc/auto.home',
-        'mapcontents' => %w[*\ -user,rw,soft,intr,rsize=32768,wsize=32768,tcp,nfsvers=3,noacl\ server.example.com:/path/to/home/shares],
-        'options'     => '--timeout=120',
-        'order'       => 1,
-        'use_dir'     => true
-      )
-    end
-  end
-
-  context 'should remove the mount' do
-    mounts = hiera.lookup('rmdir', nil, nil)
-    let(:params) { { mounts: mounts } }
-
-    it 'is expected to remove the mount' do
-      expect(mounts).to include(
-        'ensure'  => 'absent',
-        'mapfile' => '/etc/auto.home'
-      )
-    end
-  end
-
-  context 'Parameter is not a hash' do
-    mounts = 'string'
-    let(:params) { { mounts: mounts } }
-
-    it 'is expected to fail' do
-      is_expected.to compile.and_raise_error(%r{parameter 'mounts' expects a Hash value})
+      it 'is expected to fail' do
+        is_expected.to compile.and_raise_error(%r{parameter 'mounts' expects a Hash value})
+      end
     end
   end
 end
