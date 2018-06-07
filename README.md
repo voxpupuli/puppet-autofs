@@ -677,9 +677,9 @@ Compatible with Puppet 4 or greater only. Puppet 4.6.0 or greater
     * Fedora 24, 25
     * SLES 10
     * CentOS/RHEL/Scientific/Oracle Linux 5.x
+    * Mac OS X
 * Unsupported
     * Windows (Autofs not available)
-    * Mac OS X
 
 Development
 -------------

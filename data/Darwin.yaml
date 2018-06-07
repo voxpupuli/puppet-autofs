@@ -1,0 +1,8 @@
+---
+autofs::package_name: []
+autofs::service_name:
+  - com.apple.autofsd
+  - com.apple.automountd
+autofs::auto_master_map: /etc/auto_master
+autofs::map_file_group: wheel
+autofs::reload_command: /usr/sbin/automount -vc

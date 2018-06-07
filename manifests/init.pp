@@ -76,7 +76,7 @@
 # @param service_enable Determines if the service should start with the system boot. true
 #   will start the autofs service on boot. false will not start the autofs service
 #   on boot.
-# @param service_name Determine the name of the service for cross platform compatibility
+# @param service_name Determine the name of the service(s) for cross platform compatibility
 # @param auto_master_map Filename of the auto.master map for cross platform compatiblity
 # @param map_file_owner owner of the automount map files for cross platform compatiblity
 # @param map_file_group group of the automount map files for cross platform compatiblity
@@ -88,7 +88,7 @@ class autofs (
   Variant[String, Array[String]] $package_name,
   Enum[ 'stopped', 'running' ] $service_ensure,
   Boolean $service_enable,
-  String $service_name,
+  Variant[String, Array[String]] $service_name,
   String $auto_master_map,
   String $map_file_owner,
   String $map_file_group,

@@ -18,6 +18,9 @@ describe 'autofs', type: :class do
                   'SUNWatfsu' # and SUNWatfsr, but close enough
                 end
       service = 'autofs'
+    when 'Darwin'
+      service = ['com.apple.automountd', 'com.apple.autofsd']
+      package = []
     else
       package = 'autofs'
       service = 'autofs'
@@ -123,6 +126,13 @@ describe 'autofs', type: :class do
       it 'is expected to fail' do
         is_expected.to compile.and_raise_error(%r{parameter 'mounts' expects a Hash value})
       end
+    end
+
+    context 'parameter $service_name works with arrays' do
+      let(:params) { { service_name: ['com.apple.autofsd', 'com.apple.automountd'] } }
+
+      it { is_expected.to contain_service('com.apple.autofsd').with_ensure('running') }
+      it { is_expected.to contain_service('com.apple.automountd').with_ensure('running') }
     end
   end
 end

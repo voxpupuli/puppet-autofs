@@ -80,6 +80,15 @@
         "7.1",
         "7.2"
       ]
+    },
+    {
+      "operatingsystem": "Darwin",
+      "operatingsystemrelease": [
+        "10.9",
+        "10.10",
+        "10.11",
+        "10.12"
+      ]
     }
   ],
   "requirements": [
