@@ -133,7 +133,7 @@ autofs::mounts:
 
 For more information about merge behavior see the doc for:
 
-* [Lookup docs](https://docs.puppet.com/puppet/4.7/lookup_quick.html#puppet-lookup:-quick-reference-for-hiera-users) 
+* [Lookup docs](https://docs.puppet.com/puppet/4.7/lookup_quick.html#puppet-lookup:-quick-reference-for-hiera-users)
 * [Hiera 5 docs](https://docs.puppet.com/puppet/5.1/hiera_merging.html) if using Puppet >= 4.9
 
 
@@ -485,7 +485,7 @@ Data type: String
 This parameter provides Autofs and/or mount options to be specified for this
 mount point in the master map.
 
-#### `order` 
+#### `order`
 
 Data type: Integer
 
@@ -661,6 +661,7 @@ Compatible with Puppet 4 or greater only. Puppet 4.6.0 or greater
     * Ubuntu
       * 14.04
       * 16.04
+      * 18.04
     * CentOS/RHEL/Scientific/Oracle Linux
       * 6.x
       * 7.x
