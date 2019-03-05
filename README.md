@@ -275,6 +275,18 @@ Whichever form is used, the resulting mapping in file `/etc/auto.home` is
 *	-rw,soft,intr	server.example.com:/path/to/home/shares
 ```
 
+#### Executable map files
+
+By default, map files are marked as `0644`. If a map file must be executable, 
+you can set the `execute` parameter to enforce `0755`.
+
+```puppet
+autofs::mapfile { 'home':
+  path    => '/etc/auto.data',
+  execute => true
+}
+```
+
 #### Multiple mappings in the same file
 
 Multiple mappings may be declared for the same map file, either in the same
@@ -572,6 +584,14 @@ any that are specified for this map file via separate `autofs::mapping`
 resources.
 
 Default: `true`
+
+#### `execute`
+
+Data type: Boolean
+
+This parameter specifies whether this map file should be executable.
+
+Default: `false`
 
 ### Parameters for autofs::mapping
 
