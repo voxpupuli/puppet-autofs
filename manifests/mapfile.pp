@@ -16,6 +16,7 @@
 #     mappings can be specified for this mapfile via autofs::mapping resources
 # @param replace Whether to replace the contents of any an existing file
 #     at the specified path
+# @param execute Whether to make the mapfile executable or not
 #
 define autofs::mapfile (
   Enum['present', 'absent'] $ensure   = 'present',
