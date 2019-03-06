@@ -9,7 +9,7 @@ describe 'autofs::mapfile', type: :define do
         let(:title) { '/etc/auto.data' }
 
         it do
-          is_expected.to compile
+          is_expected.to compile.with_all_deps
           is_expected.to contain_class('autofs')
           is_expected.to contain_concat('/etc/auto.data').
             with(ensure: 'present', replace: true, mode: '0644')
@@ -23,7 +23,7 @@ describe 'autofs::mapfile', type: :define do
         end
 
         it do
-          is_expected.to compile
+          is_expected.to compile.with_all_deps
           is_expected.to contain_class('autofs')
           is_expected.to contain_concat('/etc/autofs/data').
             with(ensure: 'present', replace: true)
@@ -35,7 +35,7 @@ describe 'autofs::mapfile', type: :define do
         let(:params) { { replace: false } }
 
         it do
-          is_expected.to compile
+          is_expected.to compile.with_all_deps
           is_expected.to contain_class('autofs')
           is_expected.to contain_concat('/etc/auto.data').
             with(ensure: 'present', replace: false)
@@ -47,7 +47,7 @@ describe 'autofs::mapfile', type: :define do
         let(:params) { { execute: true } }
 
         it do
-          is_expected.to compile
+          is_expected.to compile.with_all_deps
           is_expected.to contain_class('autofs')
           is_expected.to contain_concat('/etc/auto.data').
             with(ensure: 'present', mode: '0755')
@@ -59,7 +59,7 @@ describe 'autofs::mapfile', type: :define do
         let(:params) { { ensure: 'absent' } }
 
         it do
-          is_expected.to compile
+          is_expected.to compile.with_all_deps
           is_expected.to contain_class('autofs')
           is_expected.to contain_concat('/etc/auto.data').
             with(ensure: 'absent')
@@ -79,7 +79,7 @@ describe 'autofs::mapfile', type: :define do
         end
 
         it do
-          is_expected.to compile
+          is_expected.to compile.with_all_deps
           is_expected.to contain_class('autofs')
           is_expected.to contain_concat('/etc/auto.data').
             with(ensure: 'present')
