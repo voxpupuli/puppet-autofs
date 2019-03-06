@@ -12,7 +12,7 @@ describe 'autofs::mapfile', type: :define do
           is_expected.to compile
           is_expected.to contain_class('autofs')
           is_expected.to contain_concat('/etc/auto.data').
-            with(ensure: 'present', replace: true)
+            with(ensure: 'present', replace: true, mode: '0644')
         end
       end
 
@@ -39,6 +39,18 @@ describe 'autofs::mapfile', type: :define do
           is_expected.to contain_class('autofs')
           is_expected.to contain_concat('/etc/auto.data').
             with(ensure: 'present', replace: false)
+        end
+      end
+
+      context 'with execute' do
+        let(:title) { '/etc/auto.data' }
+        let(:params) { { execute: true } }
+
+        it do
+          is_expected.to compile
+          is_expected.to contain_class('autofs')
+          is_expected.to contain_concat('/etc/auto.data').
+            with(ensure: 'present', mode: '0755')
         end
       end
 

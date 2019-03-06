@@ -16,12 +16,14 @@
 #     mappings can be specified for this mapfile via autofs::mapping resources
 # @param replace Whether to replace the contents of any an existing file
 #     at the specified path
+# @param execute Whether to make the mapfile executable or not
 #
 define autofs::mapfile (
   Enum['present', 'absent'] $ensure   = 'present',
   Stdlib::Absolutepath $path          = $title,
   Array[Autofs::Fs_mapping] $mappings = [],
   Boolean $replace                    = true,
+  Boolean $execute                    = false,
 ) {
   include '::autofs'
 
@@ -38,11 +40,16 @@ define autofs::mapfile (
     }
   }
 
+  $mapfile_mode = $execute ? {
+    true => '0755',
+    false => '0644'
+  }
+
   concat { $path:
     ensure  => $ensure,
     owner   => $autofs::map_file_owner,
     group   => $autofs::map_file_group,
-    mode    => '0644',
+    mode    => $mapfile_mode,
     replace => $replace,
     require => Class['autofs::package'],
     warn    => template('autofs/mapfile.banner.erb'),
