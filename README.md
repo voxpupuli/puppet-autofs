@@ -264,9 +264,9 @@ autofs::mapfiles:
   home:
     path: '/etc/auto.home'
     mappings:
-      key: '*'
-      options: 'rw,soft,intr'
-      fs: 'server.example.com:/path/to/home/shares'
+      - key: '*'
+        options: 'rw,soft,intr'
+        fs: 'server.example.com:/path/to/home/shares'
 ```
 
 Whichever form is used, the resulting mapping in file `/etc/auto.home` is
