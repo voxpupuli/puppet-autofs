@@ -25,7 +25,7 @@ define autofs::mapfile (
   Boolean $replace                    = true,
   Boolean $execute                    = false,
 ) {
-  include '::autofs'
+  include 'autofs'
 
   unless $::autofs::package_ensure == 'absent' {
     if $autofs::reload_command {
