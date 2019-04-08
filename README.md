@@ -277,7 +277,7 @@ Whichever form is used, the resulting mapping in file `/etc/auto.home` is
 
 #### Executable map files
 
-By default, map files are marked as `0644`. If a map file must be executable, 
+By default, map files are marked as `0644`. If a map file must be executable,
 you can set the `execute` parameter to enforce `0755`.
 
 ```puppet

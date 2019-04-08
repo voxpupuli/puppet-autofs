@@ -36,7 +36,7 @@ define autofs::map (
   Integer $order                                                    = 1,
   Variant[Array, String] $mapcontents                               = [],
 ) {
-  include '::autofs'
+  include 'autofs'
 
   unless $::autofs::package_ensure == 'absent' {
     if $autofs::reload_command {

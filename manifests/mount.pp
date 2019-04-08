@@ -67,7 +67,7 @@ define autofs::mount (
   Stdlib::Absolutepath $map_dir           = '/etc/auto.master.d',
   Boolean $use_dir                        = false,
 ) {
-  include '::autofs'
+  include 'autofs'
 
   unless $::autofs::package_ensure == 'absent' {
     if $autofs::reload_command {

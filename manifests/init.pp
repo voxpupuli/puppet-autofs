@@ -97,9 +97,9 @@ class autofs (
   Optional[String] $package_source = undef,
   Optional[String] $reload_command = undef,
 ) {
-  contain '::autofs::package'
+  contain 'autofs::package'
   unless $package_ensure == 'absent' {
-    contain '::autofs::service'
+    contain 'autofs::service'
   }
 
   $mounts.each |String $mount, Hash $attributes| {
