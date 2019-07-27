@@ -38,7 +38,7 @@ define autofs::map (
 ) {
   include 'autofs'
 
-  unless $::autofs::package_ensure == 'absent' {
+  unless $autofs::package_ensure == 'absent' {
     if $autofs::reload_command {
       Concat {
         before => Service[$autofs::service_name],
