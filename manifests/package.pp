@@ -26,7 +26,7 @@ class autofs::package {
 
   if $autofs::package_name {
     package { $autofs::package_name:
-      ensure => $::autofs::package_ensure,
+      ensure => $autofs::package_ensure,
       source => $autofs::package_source,
     }
   }
