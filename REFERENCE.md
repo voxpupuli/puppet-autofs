@@ -21,6 +21,12 @@ _Private Classes_
 * [`autofs::mapping`](#autofsmapping): Define autofs::mapping  Defined type to manage a single filesystem mapping in a single map file. When ensured 'present', a autofs::mapfile re
 * [`autofs::mount`](#autofsmount): Define: autofs::mount  Defined type to manage mount point definitions in the Autofs master map.    autofs::mount { 'home':     mount         
 
+**Data types**
+
+* [`Autofs::Fs_mapping`](#autofsfs_mapping): A type representing a single filesystem mapping, relative to the context provided by an (unspecified) autofs map.  "Single" refers to a singl
+* [`Autofs::Mapentry`](#autofsmapentry): 
+* [`Autofs::Options`](#autofsoptions): A type representing an autofs options list, represented either as a single non-empty string or an array of such strings
+
 ## Classes
 
 ### autofs
@@ -353,6 +359,14 @@ at the specified path
 
 Default value: `true`
 
+##### `execute`
+
+Data type: `Boolean`
+
+Whether to make the mapfile executable or not
+
+Default value: `false`
+
 ### autofs::mapping
 
 Define autofs::mapping
@@ -603,4 +617,62 @@ The relative order in which entries will appear in the master
 map.  Irrelevant when $use_dir is true.
 
 Default value: 1
+
+## Data types
+
+### Autofs::Fs_mapping
+
+A type representing a single filesystem mapping, relative to the
+context provided by an (unspecified) autofs map.  "Single" refers to
+a single _key_, but not necessarily a single mounted filesystem. Autofs
+has the concept of a multi-mount, where the map specifies multiple
+filesystems to mount via a single key, and the concept of shared mounts,
+where multiple keys reference subdirectories of a single (auto-)mounted
+file system.  This type simply provides for a generic representation of
+all those alternatives via the 'fs' member.
+
+{ 'key' => 'data', 'options' => 'rw,sync', 'fs' => 'fs.host.com:/path/to/data' }
+
+{ 'key' => '/path/to/mnt', fs => 'remote.org:/exported/path' }
+
+{ 'key' => 'other', 'options' => [ 'ro', 'noexec' ], 'fs' => 'external.net:/the/exported/fs' }
+
+#### Examples
+
+##### Typical mapping for an indirect map
+
+```puppet
+
+```
+
+##### Mapping for a direct map, demonstrating also that the options may be omitted
+
+```puppet
+
+```
+
+##### Demonstrating specifying an array of options
+
+```puppet
+
+```
+
+Alias of `Struct[{
+  key        => Pattern[/\A\S+\z/],
+  options    => Optional[Autofs::Options],
+  fs         => Pattern[/\S/]  # contains at least one non-whitespace character
+}]`
+
+### Autofs::Mapentry
+
+The Autofs::Mapentry data type.
+
+Alias of `Pattern[/\A([a-z]+(,[a-z]+)?:\S+|-hosts)\z/]`
+
+### Autofs::Options
+
+A type representing an autofs options list, represented either as a single
+non-empty string or an array of such strings
+
+Alias of `Variant[Pattern[/\A\S+\z/], Array[Pattern[/\A\S+\z/]]]`
 
