@@ -111,7 +111,7 @@ define autofs::mount (
         match             => "^\\s*${mount}\\s+${mapfile}\\s",
         match_for_absence => true,
         multiple          => true,
-        notify            => Service['autofs'],
+        notify            => Service[$autofs::service_name],
       }
     }
   } else {  # $use_dir == true
