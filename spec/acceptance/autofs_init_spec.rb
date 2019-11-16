@@ -249,10 +249,8 @@ describe 'autofs' do
         it { is_expected.not_to be_running }
       end
 
-      unless default[:platform] =~ %r{ubuntu-14.04-amd64}
-        describe service('autofs') do
-          it { is_expected.not_to be_enabled }
-        end
+      describe service('autofs') do
+        it { is_expected.not_to be_enabled }
       end
     end
   end

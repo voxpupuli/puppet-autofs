@@ -679,7 +679,6 @@ Compatible with Puppet 4 or greater only. Puppet 4.6.0 or greater
 
 * Supported
     * Ubuntu
-      * 14.04
       * 16.04
       * 18.04
     * CentOS/RHEL/Scientific/Oracle Linux

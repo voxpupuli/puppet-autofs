@@ -32,7 +32,7 @@ Next, run the more thorough acceptance tests.
 By default, the test will run against a CentOS 7 Vagrant image - other available hosts can be found in `spec/acceptance/nodesets`.
 For example, to run the acceptance tests against Ubuntu 14.04, run the following:
 
-    BEAKER_set=ubuntu-1404-x64 rake acceptance
+    BEAKER_set=ubuntu-1804-x64 rake acceptance
 
 The final output line will tell you which, if any, tests failed.
 
