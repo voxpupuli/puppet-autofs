@@ -1,7 +1,5 @@
-# Class: autofs
-#
-# Manages the autofs facility, optionally including configuring
-# mount points and maps.
+# @summary Manages the autofs facility, optionally including configuring mount
+#   points and maps.
 #
 # Autofs mount points and their corresponding maps can also be
 # managed via separate autofs::mount, autofs::mapfile, and
@@ -21,30 +19,30 @@
 # The module now supports the ability to not only enable autofs,
 # but to also disable or uninstall it completely.
 # @example Removing the package
-#    class { 'autofs':
-#      package_ensure => 'absent',
-#    }
+#   class { 'autofs':
+#     package_ensure => 'absent',
+#   }
 #
 # @example Disable the autofs service
-#    class { 'autofs':
-#      service_ensure => 'stopped',
-#      service_enable => false,
-#    }
+#   class { 'autofs':
+#     service_ensure => 'stopped',
+#     service_enable => false,
+#   }
 #
 # @example using hiera with automatic lookup
-#    ---
-#    autofs::mounts:
-#      home:
-#        mount: '/home'
-#        mapfile: '/etc/auto.home'
-#        options: '--timeout=120'
-#        order: 01
-#    autofs::mapfiles:
-#      '/etc/auto.home':
-#        'mappings':
-#          - key: '*'
-#            options: 'user,rw,soft,intr,rsize=32768,wsize=32768,tcp,nfsvers=3,noacl'
-#            fs: 'server.example.com:/path/to/home/shares'
+#   ---
+#   autofs::mounts:
+#     home:
+#       mount: '/home'
+#       mapfile: '/etc/auto.home'
+#       options: '--timeout=120'
+#       order: 01
+#   autofs::mapfiles:
+#     '/etc/auto.home':
+#       'mappings':
+#         - key: '*'
+#           options: 'user,rw,soft,intr,rsize=32768,wsize=32768,tcp,nfsvers=3,noacl'
+#           fs: 'server.example.com:/path/to/home/shares'
 #
 # @param mounts the options with which to manage the autofs master map
 # @option mounts [String] :mount The autofs mount point to be managed

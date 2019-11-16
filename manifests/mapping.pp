@@ -1,6 +1,6 @@
-# Define autofs::mapping
+# @summary Defined type to manage a single filesystem mapping in a single map
+#   file.
 #
-# Defined type to manage a single filesystem mapping in a single map file.
 # When ensured 'present', a autofs::mapfile resource managing the overall
 # target map file must also be present in the catalog.  This resource
 # implements Autofs's 'sun' map format, which is the default.
@@ -42,7 +42,7 @@
 #     key     => 'data',
 #     options => 'rw,sync,suid',
 #     fs      => 'storage_host.my.com:/path/to/data'
-#  }
+#   }
 #
 # @example Options given as an array
 #   autofs::mapping{ '/etc/auto.data_data':
@@ -50,14 +50,14 @@
 #     key     => 'data',
 #     options => ['ro', 'noexec', 'nodev'],
 #     fs      => 'storage_host.my.com:/path/to/data'
-#  }
+#   }
 #
 # @example No options
 #   autofs::mapping{ '/etc/auto.data_data':
 #     mapfile => '/etc/auto.data',
 #     key     => 'data',
 #     fs      => 'storage_host.my.com:/path/to/data'
-#  }
+#   }
 #
 define autofs::mapping (
   Stdlib::Absolutepath $mapfile,

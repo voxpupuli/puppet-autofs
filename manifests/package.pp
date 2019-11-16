@@ -1,7 +1,6 @@
 # @api private
-# Class: autofs::package
 #
-# The autofs::package class installs the autofs package.
+# @summary The autofs::package class installs the autofs package.
 #
 # @see https://voxpupuli.org/puppet-autofs Home
 # @see autofs

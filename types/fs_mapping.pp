@@ -8,16 +8,16 @@
 # all those alternatives via the 'fs' member.
 #
 # @example Typical mapping for an indirect map
-# { 'key' => 'data', 'options' => 'rw,sync', 'fs' => 'fs.host.com:/path/to/data' }
+#   { 'key' => 'data', 'options' => 'rw,sync', 'fs' => 'fs.host.com:/path/to/data' }
 #
 # @example Mapping for a direct map, demonstrating also that the options may be omitted
-# { 'key' => '/path/to/mnt', fs => 'remote.org:/exported/path' }
+#   { 'key' => '/path/to/mnt', fs => 'remote.org:/exported/path' }
 #
 # @example Demonstrating specifying an array of options
-# { 'key' => 'other', 'options' => [ 'ro', 'noexec' ], 'fs' => 'external.net:/the/exported/fs' }
+#   { 'key' => 'other', 'options' => [ 'ro', 'noexec' ], 'fs' => 'external.net:/the/exported/fs' }
 #
 type Autofs::Fs_mapping = Struct[{
-  key        => Pattern[/\A\S+\z/],
-  options    => Optional[Autofs::Options],
-  fs         => Pattern[/\S/]  # contains at least one non-whitespace character
+  key     => Pattern[/\A\S+\z/],
+  options => Optional[Autofs::Options],
+  fs      => Pattern[/\S/]  # contains at least one non-whitespace character
 }]
