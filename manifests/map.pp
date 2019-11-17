@@ -1,7 +1,4 @@
-# Define: autofs::map
-#
-# Defined type to generate autofs map entry
-# configuration files.
+# @summary Defined type to generate autofs map entry configuration files.
 #
 # @see https://voxpupuli.org/puppet-autofs Home
 # @see https://voxpupuli.org/puppet-autofs/puppet_classes/autofs.html puppet_classes::autofs

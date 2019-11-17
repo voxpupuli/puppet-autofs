@@ -1,7 +1,7 @@
 # @api private
-# Class: autofs::service
 #
-# The autofs::service class configures the autofs service.
+# @summary The autofs::service class configures the autofs service.
+#
 # This class can be used to disable or limit the autofs service
 # if necessary. Such as allowing the service to run, but not at
 # startup.

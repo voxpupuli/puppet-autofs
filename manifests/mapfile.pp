@@ -1,6 +1,4 @@
-# Define autofs::mapfile
-#
-# Defined type to manage overall autofs map files
+# @summary Defined type to manage overall autofs map files
 #
 # @see https://voxpupuli.org/puppet-autofs Home
 # @see https://voxpupuli.org/puppet-autofs/puppet_classes/autofs.html puppet_classes::autofs

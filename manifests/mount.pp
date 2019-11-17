@@ -1,6 +1,5 @@
-# Define: autofs::mount
-#
-# Defined type to manage mount point definitions in the Autofs master map.
+# @summary Defined type to manage mount point definitions in the Autofs master
+#   map.
 #
 # @see https://voxpupuli.org/puppet-autofs Home
 # @see https://voxpupuli.org/puppet-autofs/puppet_classes/autofs.html puppet_classes::autofs

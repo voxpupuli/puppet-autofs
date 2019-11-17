@@ -5,5 +5,4 @@
 # @example file,sun:/etc/auto.file
 # @example yp:mnt.map
 # @example -hosts
-
 type Autofs::Mapentry = Pattern[/\A([a-z]+(,[a-z]+)?:\S+|-hosts)\z/]

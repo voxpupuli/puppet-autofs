@@ -7,34 +7,32 @@
 
 _Public Classes_
 
-* [`autofs`](#autofs): Class: autofs  Manages the autofs facility, optionally including configuring mount points and maps.  Autofs mount points and their correspond
+* [`autofs`](#autofs): Manages the autofs facility, optionally including configuring mount
+points and maps.
 
 _Private Classes_
 
-* `autofs::package`: Class: autofs::package  The autofs::package class installs the autofs package.  This class will determine if the OS running is a supported Li
-* `autofs::service`: Class: autofs::service  The autofs::service class configures the autofs service. This class can be used to disable or limit the autofs servic
+* `autofs::package`: The autofs::package class installs the autofs package.
+* `autofs::service`: The autofs::service class configures the autofs service.
 
 **Defined types**
 
-* [`autofs::map`](#autofsmap): Define: autofs::map  Defined type to generate autofs map entry configuration files.
-* [`autofs::mapfile`](#autofsmapfile): Define autofs::mapfile  Defined type to manage overall autofs map files
-* [`autofs::mapping`](#autofsmapping): Define autofs::mapping  Defined type to manage a single filesystem mapping in a single map file. When ensured 'present', a autofs::mapfile re
-* [`autofs::mount`](#autofsmount): Define: autofs::mount  Defined type to manage mount point definitions in the Autofs master map.    autofs::mount { 'home':     mount         
+* [`autofs::map`](#autofsmap): Defined type to generate autofs map entry configuration files.
+* [`autofs::mapfile`](#autofsmapfile): Defined type to manage overall autofs map files
+* [`autofs::mapping`](#autofsmapping): Defined type to manage a single filesystem mapping in a single map
+file.
+* [`autofs::mount`](#autofsmount): Defined type to manage mount point definitions in the Autofs master
+map.
 
 **Data types**
 
 * [`Autofs::Fs_mapping`](#autofsfs_mapping): A type representing a single filesystem mapping, relative to the context provided by an (unspecified) autofs map.  "Single" refers to a singl
-* [`Autofs::Mapentry`](#autofsmapentry): 
+* [`Autofs::Mapentry`](#autofsmapentry): This type matches a map specfication with map type and optional format, or the built-in -hosts map.
 * [`Autofs::Options`](#autofsoptions): A type representing an autofs options list, represented either as a single non-empty string or an array of such strings
 
 ## Classes
 
 ### autofs
-
-Class: autofs
-
-Manages the autofs facility, optionally including configuring
-mount points and maps.
 
 Autofs mount points and their corresponding maps can also be
 managed via separate autofs::mount, autofs::mapfile, and
@@ -217,10 +215,7 @@ Default value: `undef`
 
 ### autofs::map
 
-Define: autofs::map
-
-Defined type to generate autofs map entry
-configuration files.
+Defined type to generate autofs map entry configuration files.
 
 * **See also**
 https://voxpupuli.org/puppet-autofs
@@ -307,8 +302,6 @@ Default value: 1
 
 ### autofs::mapfile
 
-Define autofs::mapfile
-
 Defined type to manage overall autofs map files
 
 * **See also**
@@ -369,21 +362,12 @@ Default value: `false`
 
 ### autofs::mapping
 
-Define autofs::mapping
-
-Defined type to manage a single filesystem mapping in a single map file.
 When ensured 'present', a autofs::mapfile resource managing the overall
 target map file must also be present in the catalog.  This resource
 implements Autofs's 'sun' map format, which is the default.
 
 It is not supported to declare multiple autofs::mappings with the
 same key, targetting the same map file, and ensured 'present'.
-
- }
-
- }
-
- }
 
 * **See also**
 https://voxpupuli.org/puppet-autofs
@@ -405,6 +389,7 @@ autofs::mapping{ '/etc/auto.data_data':
   key     => 'data',
   options => 'rw,sync,suid',
   fs      => 'storage_host.my.com:/path/to/data'
+}
 ```
 
 ##### Options given as an array
@@ -415,6 +400,7 @@ autofs::mapping{ '/etc/auto.data_data':
   key     => 'data',
   options => ['ro', 'noexec', 'nodev'],
   fs      => 'storage_host.my.com:/path/to/data'
+}
 ```
 
 ##### No options
@@ -424,6 +410,7 @@ autofs::mapping{ '/etc/auto.data_data':
   mapfile => '/etc/auto.data',
   key     => 'data',
   fs      => 'storage_host.my.com:/path/to/data'
+}
 ```
 
 #### Parameters
@@ -487,11 +474,7 @@ Default value: 10
 
 ### autofs::mount
 
-Define: autofs::mount
-
-Defined type to manage mount point definitions in the Autofs master map.
-
-  autofs::mount { 'home':
+autofs::mount { 'home':
     mount          => '/home',
     mapfile        => '/etc/auto.home',
     options        => '--timeout=120',
@@ -631,41 +614,68 @@ where multiple keys reference subdirectories of a single (auto-)mounted
 file system.  This type simply provides for a generic representation of
 all those alternatives via the 'fs' member.
 
-{ 'key' => 'data', 'options' => 'rw,sync', 'fs' => 'fs.host.com:/path/to/data' }
-
-{ 'key' => '/path/to/mnt', fs => 'remote.org:/exported/path' }
-
-{ 'key' => 'other', 'options' => [ 'ro', 'noexec' ], 'fs' => 'external.net:/the/exported/fs' }
-
 #### Examples
 
 ##### Typical mapping for an indirect map
 
 ```puppet
-
+{ 'key' => 'data', 'options' => 'rw,sync', 'fs' => 'fs.host.com:/path/to/data' }
 ```
 
 ##### Mapping for a direct map, demonstrating also that the options may be omitted
 
 ```puppet
-
+{ 'key' => '/path/to/mnt', fs => 'remote.org:/exported/path' }
 ```
 
 ##### Demonstrating specifying an array of options
 
 ```puppet
-
+{ 'key' => 'other', 'options' => [ 'ro', 'noexec' ], 'fs' => 'external.net:/the/exported/fs' }
 ```
 
 Alias of `Struct[{
-  key        => Pattern[/\A\S+\z/],
-  options    => Optional[Autofs::Options],
-  fs         => Pattern[/\S/]  # contains at least one non-whitespace character
+  key     => Pattern[/\A\S+\z/],
+  options => Optional[Autofs::Options],
+  fs      => Pattern[/\S/]  # contains at least one non-whitespace character
 }]`
 
 ### Autofs::Mapentry
 
-The Autofs::Mapentry data type.
+This type matches a map specfication with map type and optional format,
+or the built-in -hosts map.
+
+#### Examples
+
+##### program:/etc/auto.smb
+
+```puppet
+
+```
+
+##### file:/etc/auto.file
+
+```puppet
+
+```
+
+##### file,sun:/etc/auto.file
+
+```puppet
+
+```
+
+##### yp:mnt.map
+
+```puppet
+
+```
+
+##### -hosts
+
+```puppet
+
+```
 
 Alias of `Pattern[/\A([a-z]+(,[a-z]+)?:\S+|-hosts)\z/]`
 
