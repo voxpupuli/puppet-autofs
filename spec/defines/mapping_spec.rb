@@ -1,9 +1,9 @@
 require 'spec_helper'
 
 describe 'autofs::mapping', type: :define do
-  on_supported_os.each do |os, facts|
+  on_supported_os.each do |os, os_facts|
     context "on #{os}" do
-      let(:facts) { facts }
+      let(:facts) { os_facts }
       let(:title) { 'data' }
 
       context 'with no options' do

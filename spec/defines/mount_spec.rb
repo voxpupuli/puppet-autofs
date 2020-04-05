@@ -1,25 +1,12 @@
 require 'spec_helper'
 describe 'autofs::mount', type: :define do
-  on_supported_os.each do |os, facts|
-    let(:pre_condition) { 'include autofs' }
-
-    case facts[:os]['family']
-    when 'AIX'
-      group = 'system'
-      master_map_file = '/etc/auto_master'
-    when 'Solaris'
-      group = 'root'
-      master_map_file = '/etc/auto_master'
-    else
-      group = 'root'
-      master_map_file = '/etc/auto.master'
-    end
-
+  on_supported_os.each do |os, os_facts|
     context "on #{os}" do
       let(:title) { 'auto.home' }
-      let(:facts) do
-        facts.merge(concat_basedir: '/etc')
-      end
+      let(:pre_condition) { 'include autofs' }
+      let(:group) { facts[:os]['family'] == 'AIX' ? 'system' : 'root' }
+      let(:master_map_file) { %w[AIX Solaris].include?(facts[:os]['family']) ? '/etc/auto_master' : '/etc/auto.master' }
+      let(:facts) { os_facts }
 
       context 'with default parameters' do
         let(:params) do
