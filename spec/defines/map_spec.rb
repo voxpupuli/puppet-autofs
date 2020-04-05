@@ -1,20 +1,12 @@
 require 'spec_helper'
 
 describe 'autofs::map', type: :define do
-  on_supported_os.each do |os, facts|
-    let(:pre_condition) { 'include autofs' }
-
-    group = if facts[:os]['family'] == 'AIX'
-              'system'
-            else
-              'root'
-            end
-
+  on_supported_os.each do |os, os_facts|
     context "on #{os}" do
       let(:title) { 'data' }
-      let(:facts) do
-        facts.merge(concat_basedir: '/etc')
-      end
+      let(:pre_condition) { 'include autofs' }
+      let(:group) { facts[:os]['family'] == 'AIX' ? 'system' : 'root' }
+      let(:facts) { os_facts }
       let(:params) do
         {
           mapfile: '/etc/auto.data',
@@ -37,12 +29,7 @@ describe 'autofs::map', type: :define do
       end
 
       context 'with bare string mapcontents' do
-        let(:params) do
-          {
-            mapfile: '/etc/auto.data',
-            mapcontents: 'test foo bar'
-          }
-        end
+        let(:params) { super().merge(mapcontents: 'test foo bar') }
 
         it { is_expected.to compile }
       end
