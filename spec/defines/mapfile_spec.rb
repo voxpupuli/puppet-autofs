@@ -1,9 +1,9 @@
 require 'spec_helper'
 
 describe 'autofs::mapfile', type: :define do
-  on_supported_os.each do |os, facts|
+  on_supported_os.each do |os, os_facts|
     context "on #{os}" do
-      let(:facts) { facts }
+      let(:facts) { os_facts }
 
       context 'with default parameters' do
         let(:title) { '/etc/auto.data' }
