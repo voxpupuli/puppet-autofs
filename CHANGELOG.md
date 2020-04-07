@@ -4,7 +4,45 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
-## [v5.0.1](https://github.com/voxpupuli/puppet-autofs/tree/v5.0.1) (2018-10-13)
+## [v6.0.0](https://github.com/voxpupuli/puppet-autofs/tree/v6.0.0) (2020-04-07)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-autofs/compare/v5.0.1...v6.0.0)
+
+**Breaking changes:**
+
+- modulesync 2.7.0 and drop puppet 4 [\#146](https://github.com/voxpupuli/puppet-autofs/pull/146) ([bastelfreak](https://github.com/bastelfreak))
+
+**Implemented enhancements:**
+
+- Enable auto-naming of the /etc/auto.\<mount\> file. [\#105](https://github.com/voxpupuli/puppet-autofs/issues/105)
+- Manage autofs main configuration file [\#90](https://github.com/voxpupuli/puppet-autofs/issues/90)
+- autofs::mapfile can be configured to be executable. [\#143](https://github.com/voxpupuli/puppet-autofs/pull/143) ([mdwheele](https://github.com/mdwheele))
+- add Ubuntu 18.04 support [\#140](https://github.com/voxpupuli/puppet-autofs/pull/140) ([bastelfreak](https://github.com/bastelfreak))
+
+**Fixed bugs:**
+
+- parameter 'mappings' expects an Array value, got Struct [\#125](https://github.com/voxpupuli/puppet-autofs/issues/125)
+- Correctly notify the service [\#154](https://github.com/voxpupuli/puppet-autofs/pull/154) ([ekohl](https://github.com/ekohl))
+- Allow puppetlabs/concat 6.x, puppetlabs/stdlib 6.x [\#147](https://github.com/voxpupuli/puppet-autofs/pull/147) ([dhoppe](https://github.com/dhoppe))
+-  Fix mapping snippet \(Puppet expects an Array\) in README.md [\#145](https://github.com/voxpupuli/puppet-autofs/pull/145) ([jaimegdpr](https://github.com/jaimegdpr))
+
+**Closed issues:**
+
+- Feature: Add support for Darwin [\#127](https://github.com/voxpupuli/puppet-autofs/issues/127)
+- Default auto.master [\#18](https://github.com/voxpupuli/puppet-autofs/issues/18)
+
+**Merged pull requests:**
+
+- Remove duplicate CONTRIBUTING.md file [\#155](https://github.com/voxpupuli/puppet-autofs/pull/155) ([dhoppe](https://github.com/dhoppe))
+- Correct docs for puppet-strings syntax [\#153](https://github.com/voxpupuli/puppet-autofs/pull/153) ([ekohl](https://github.com/ekohl))
+- Clean up acceptance spec helper [\#151](https://github.com/voxpupuli/puppet-autofs/pull/151) ([ekohl](https://github.com/ekohl))
+- regenerate REFERENCE.md [\#150](https://github.com/voxpupuli/puppet-autofs/pull/150) ([bastelfreak](https://github.com/bastelfreak))
+- drop EOL Ubuntu 14.04 [\#148](https://github.com/voxpupuli/puppet-autofs/pull/148) ([bastelfreak](https://github.com/bastelfreak))
+- improve unit tests [\#144](https://github.com/voxpupuli/puppet-autofs/pull/144) ([bastelfreak](https://github.com/bastelfreak))
+- fix apache-2 license detection [\#141](https://github.com/voxpupuli/puppet-autofs/pull/141) ([bastelfreak](https://github.com/bastelfreak))
+- add initial REFERENCE.md [\#133](https://github.com/voxpupuli/puppet-autofs/pull/133) ([bastelfreak](https://github.com/bastelfreak))
+
+## [v5.0.1](https://github.com/voxpupuli/puppet-autofs/tree/v5.0.1) (2018-10-14)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-autofs/compare/v5.0.0...v5.0.1)
 
