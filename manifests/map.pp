@@ -16,7 +16,7 @@
 #   }
 #
 # @param ensure Whether to create the mapfile or not.
-# @param mapcontents The mount point options and parameters, 
+# @param mapcontents The mount point options and parameters,
 #   Example: '* -user,rw,soft nfs.example.org:/path/to'
 # @param mapfile Name of the "auto." configuration file that will be generated.
 # @param template Template to use to generate the mapfile.
@@ -48,14 +48,15 @@ define autofs::map (
     }
   }
 
-  ensure_resource(concat,$mapfile,{
+  ensure_resource(concat, $mapfile, {
       ensure  => $ensure,
       owner   => $autofs::map_file_owner,
       group   => $autofs::map_file_group,
       mode    => $mapmode,
       replace => $replace,
       require => Class['autofs::package'],
-  })
+    }
+  )
 
   unless $ensure == 'absent' {
     concat::fragment { "${mapfile}_${name}_entries":

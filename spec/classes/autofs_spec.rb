@@ -34,6 +34,8 @@ describe 'autofs', type: :class do
         it { is_expected.to contain_service(service).that_requires("Package[#{package}]") }
         it { is_expected.to contain_service(service).with_ensure('running') }
         it { is_expected.to contain_service(service).with_enable(true) }
+        it { is_expected.not_to contain_file('autofs_service_config') }
+        it { is_expected.not_to contain_file('autofs_ldap_auth_config') }
       end
 
       context 'disable package' do
@@ -110,6 +112,81 @@ describe 'autofs', type: :class do
         it 'is expected to fail' do
           is_expected.to compile.and_raise_error(%r{parameter 'mounts' expects a Hash value})
         end
+      end
+
+      context 'with $manage_service_config enabled' do
+        let(:params) { { manage_service_config: true } }
+
+        it { is_expected.to compile.with_all_deps }
+
+        it {
+          is_expected.to contain_file('autofs_service_config').with_content(%r{USE_MISC_DEVICE="yes"})
+        }
+      end
+
+      context 'with $manage_service_config enabled with options' do
+        let(:params) do
+          {
+            manage_service_config: true,
+            service_conf_options: {
+              LDAP_URI: 'ldap://ldap.example.org',
+              SEARCH_BASE: 'dc=example,dc=org',
+              MAP_OBJECT_CLASS: 'automountMap',
+              ENTRY_OBJECT_CLASS: 'automount',
+              MAP_ATTRIBUTE: 'ou',
+              ENTRY_ATTRIBUTE: 'cn',
+              VALUE_ATTRIBUTE: 'automountInformation'
+            }
+          }
+        end
+
+        it { is_expected.to compile.with_all_deps }
+
+        it {
+          is_expected.to contain_file('autofs_service_config').
+            with_content(%r{LDAP_URI=ldap:\/\/ldap\.example\.org}).
+            with_content(%r{SEARCH_BASE=dc=example,dc=org}).
+            with_content(%r{MAP_OBJECT_CLASS=automountMap}).
+            with_content(%r{ENTRY_OBJECT_CLASS=automount}).
+            with_content(%r{MAP_ATTRIBUTE=ou}).
+            with_content(%r{ENTRY_ATTRIBUTE=cn}).
+            with_content(%r{VALUE_ATTRIBUTE=automountInformation})
+        }
+      end
+
+      context 'with $manage_ldap_auth_conf enabled' do
+        let(:params) { { manage_ldap_auth_conf: true } }
+
+        it { is_expected.to compile.with_all_deps }
+
+        it {
+          is_expected.to contain_file('autofs_ldap_auth_config').
+            with_content(%r{authrequired="no"}).
+            with_content(%r{tlsrequired="no"}).
+            with_content(%r{usetls="no"})
+        }
+      end
+
+      context 'with $manage_ldap_auth_conf enabled with options' do
+        let(:params) do
+          {
+            manage_ldap_auth_conf: true,
+            ldap_auth_config: {
+              usetls: 'yes',
+              tlsrequired: 'yes',
+              authrequired: 'yes'
+            }
+          }
+        end
+
+        it { is_expected.to compile.with_all_deps }
+
+        it {
+          is_expected.to contain_file('autofs_ldap_auth_config').
+            with_content(%r{authrequired="yes"}).
+            with_content(%r{tlsrequired="yes"}).
+            with_content(%r{usetls="yes"})
+        }
       end
     end
   end

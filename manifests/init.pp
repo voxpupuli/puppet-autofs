@@ -66,6 +66,11 @@
 #   string or array form, and a filesystem specification as expected by the 'mount'
 #   command.
 # @option mapfiles [Boolean] replace: whether to modify the map file if it already exists
+# @option ldap_auth_conf_path The path to the ldap_auth.conf file
+# @option ldap_auth_config The hash to use for the configuration settings in the ldap_auth.conf file
+# @option service_conf_path The path to the service configuration file
+# @option service_options An array of options to add to the OPTIONS variable in the service configuration file
+# @option service_conf_options A hash of environment variables to add to the service configuration file for LDAP configuration
 # @param maps Deprecated.  Use the mapfiles parameter instead.
 # @param package_ensure Determines the state of the package. Can be set to: installed, absent, lastest, or a specific version string.
 # @param package_name Determine the name of the package to install. Should be covered by hieradata.
@@ -78,6 +83,9 @@
 # @param auto_master_map Filename of the auto.master map for cross platform compatiblity
 # @param map_file_owner owner of the automount map files for cross platform compatiblity
 # @param map_file_group group of the automount map files for cross platform compatiblity
+# @param manage_service_config Determines if the service configuration file (in /etc/default or /etc/sysconfig) should be managed
+# @param manage_ldap_auth_conf Determines if the /etc/autofs_ldap_auth.conf file should be managed
+# @param service_use_misc_device Sets the USE_MISC_DEVICE value in the service configuration file
 # @param reload_command In lieu of a service reload capability in Puppet, exec this command to reload automount without restarting it.
 #
 class autofs (
@@ -90,10 +98,18 @@ class autofs (
   String $auto_master_map,
   String $map_file_owner,
   String $map_file_group,
+  Boolean $manage_service_config,
+  Boolean $manage_ldap_auth_conf,
+  Enum['no', 'yes'] $service_use_misc_device,
+  Optional[Stdlib::Absolutepath] $ldap_auth_conf_path,
+  Optional[Hash] $ldap_auth_config,
+  Optional[Stdlib::Absolutepath] $service_conf_path,
   Optional[Hash[String, Hash]] $mapfiles = undef,
   Optional[Hash[String, Hash]] $maps = undef,  # deprecated
   Optional[String] $package_source = undef,
   Optional[String] $reload_command = undef,
+  Optional[Array[String]] $service_options = undef,
+  Optional[Hash] $service_conf_options = undef,
 ) {
   contain 'autofs::package'
   unless $package_ensure == 'absent' {

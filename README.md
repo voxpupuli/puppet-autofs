@@ -1,5 +1,4 @@
-Autofs Puppet Module
-====================
+# Autofs Puppet Module
 
 [![Travis branch](https://img.shields.io/travis/voxpupuli/puppet-autofs/master.svg?style=flat-square)](https://travis-ci.org/voxpupuli/puppet-autofs)
 [![Puppet Forge](https://img.shields.io/puppetforge/v/puppet/autofs.svg?style=flat-square)](https://forge.puppetlabs.com/puppet/autofs)
@@ -7,7 +6,8 @@ Autofs Puppet Module
 [![Puppet Forge](https://img.shields.io/puppetforge/e/puppet/autofs.svg?style=flat-square)](https://forge.puppet.com/puppet/autofs)
 [![Puppet Forge](https://img.shields.io/puppetforge/f/puppet/autofs.svg?style=flat-square)](https://forge.puppet.com/puppet/autofs)
 
-#### Table of Contents
+## Table of Contents
+
 1. [Description - - What the module does and why it is useful](#description)
 2. [Setup - The basics of getting started with Autofs](#setup)
   * [The module manages the following](#the-module-manages-the-following)
@@ -19,16 +19,17 @@ Autofs Puppet Module
 5. [Development - Guide for contributing to the module](#development)
 6. [Support - When you need help with this module](#support)
 
-Description
------------
+### Description
+
 The Autofs module is a Puppet module for managing the configuration of on-demand mounting and
 automatic unmounting of local and remote filesystems via autofs / automount. This is a global
 module designed to be used by any organization.  It enables most details of Autofs
 configuration to be specified via the user's choice of Puppet manifest or external data.
 
-Setup
------
-### The Module manages the following:
+### Setup
+
+The Module manages the following:
+
 * Autofs package
 * Autofs service
 * Autofs master map (/etc/auto.master)
@@ -67,7 +68,7 @@ class { 'autofs':
 }
 ```
 
-### Master Map
+#### Master Map
 
 The module provides two compatible, built-in mechanisms for managing the
 content of the master map: by setting the `mounts` parameter of the `autofs`
@@ -97,7 +98,7 @@ autofs::mount { 'home':
 `$autofs::mounts`, will result in the following entry in the master
 map"
 
-```
+```sh
 /home /etc/auto.home --timeout=120
 ```
 
@@ -136,7 +137,6 @@ For more information about merge behavior see the doc for:
 * [Lookup docs](https://docs.puppet.com/puppet/4.7/lookup_quick.html#puppet-lookup:-quick-reference-for-hiera-users)
 * [Hiera 5 docs](https://docs.puppet.com/puppet/5.1/hiera_merging.html) if using Puppet >= 4.9
 
-
 #### Direct Map `/-` argument
 
 The autofs module supports Autofs direct maps naturally.  For a direct map,
@@ -148,7 +148,8 @@ directories; this module does *not* validate that constraint.
 ##### example
 
 Define:
-``` puppet
+
+```puppet
 autofs::mount { 'foo':
   mount       => '/-',
   mapfile     => '/etc/auto.foo',
@@ -157,7 +158,8 @@ autofs::mount { 'foo':
 ```
 
 Hiera:
-``` yaml
+
+```yaml
 autofs::mounts:
   foo:
     mount: '/-'
@@ -179,6 +181,7 @@ drop-in directory.
 ##### example
 
 Define:
+
 ```puppet
 autofs::mount { 'home':
   mount       => '/home',
@@ -189,6 +192,7 @@ autofs::mount { 'home':
 ```
 
 Hiera:
+
 ```yaml
 autofs::mounts:
   home:
@@ -210,6 +214,7 @@ also be sufficient to simply omit unwanted mount points.
 ##### example
 
 Define:
+
 ```puppet
 autofs::mount { 'home':
   ensure      => 'absent',
@@ -219,6 +224,7 @@ autofs::mount { 'home':
 ```
 
 Hiera:
+
 ```yaml
 autofs::mounts:
   home:
@@ -227,7 +233,7 @@ autofs::mounts:
     mapfile: '/etc/auto.home'
 ```
 
-### Map Files
+#### Map Files
 
 The module also provides two compatible, built-in mechanisms for managing
 Autofs map files: by setting the `mapfiles` parameter of the `autofs`
@@ -271,8 +277,8 @@ autofs::mapfiles:
 
 Whichever form is used, the resulting mapping in file `/etc/auto.home` is
 
-```
-*	-rw,soft,intr	server.example.com:/path/to/home/shares
+```sh
+* -rw,soft,intr server.example.com:/path/to/home/shares
 ```
 
 #### Executable map files
@@ -315,9 +321,9 @@ autofs::mapping { '/mnt/data_dataB':
 
 The resulting content of file `/mnt/data` would be
 
-```
-dataA	-ro	remote.com:/exports/dataA
-dataB	-rw,noexec	remote.com:/exports/dataB
+```sh
+dataA -ro remote.com:/exports/dataA
+dataB -rw,noexec remote.com:/exports/dataB
 ```
 
 #### Removing Entries
@@ -336,6 +342,29 @@ autofs::mapping { 'data':
   key         => 'dataA'
   fs          => 'example.com:/exports/dataA'
 }
+```
+
+#### LDAP configuration
+
+To setup autofs with an LDAP backend, some additional options need to be added to apply LDAP settings to the autofs configuration.  The first involves the `/etc/auth_ldap.conf` configuration file using the `$ldap_auth_config` hash.  The second is configuring the service itself with the service configuration file (in `/etc/default` or `/etc/sysconfig` depending on the operating system) using `$service_conf_options`.  It is also necessary to enable managing of these two files, which are not managed by default, using `$manage_ldap_auth_conf` and `$manage_service_config`.
+
+##### example
+
+```yaml
+autofs::ldap_auth_config:
+  usetls: 'yes'
+  tlsrequired: 'yes'
+  authrequired: 'no'
+autofs::manage_ldap_auth_conf: true
+autofs::manage_service_config: true
+autofs::service_conf_options:
+  ENTRY_ATTRIBUTE: 'cn'
+  ENTRY_OBJECT_CLASS: 'automount'
+  LDAP_URI: 'ldap://ldap.example.org'
+  MAP_ATTRIBUTE: 'ou'
+  MAP_OBJECT_CLASS: 'automountMap'
+  SEARCH_BASE: 'ou=automount,dc=autofs,dc=example,dc=org'
+  VALUE_ATTRIBUTE: 'automountInformation'
 ```
 
 ## Reference
@@ -565,6 +594,7 @@ wide variety of Autofs-recognized alternatives such as shared mounts,
 multi-mounts, and replicated mounts.
 
 Example:
+
 ```puppet
 [
   { 'key' => 'dataA', 'options' => 'rw,noexec', 'fs' => 'remote.net:/exports/dataA' }
@@ -656,11 +686,10 @@ mapping for the same key.
 
 Default: 10
 
+## Limitations
 
-Limitations
-------------
+### Removals
 
-#### Removals
 Directly calling the `autofs::package` and `autofs::service` classes is disabled in 3.0.0.
 These are now private classes.
 
@@ -671,43 +700,42 @@ The `direct`, `executable`, `mapcontents`, `mapfile_manage`, and `replace` param
 `autofs::mount` are removed in 5.0.0, the first having already been ineffective in 4.3.0,
 and the others no longer being relevant starting in 5.0.0.
 
-#### Puppet platforms
+### Puppet platforms
+
 Compatible with Puppet 4 or greater only. Puppet 4.6.0 or greater
 (including Puppet 5) will provide best results.
 
-#### Operating Systems
+### Operating Systems
 
 * Supported
-    * Ubuntu
-      * 16.04
-      * 18.04
-    * CentOS/RHEL/Scientific/Oracle Linux
-      * 6.x
-      * 7.x
-    * SLES
-      * 11 Service Pack 4
-      * 12 Service Pack 1
-    * OpenSUSE 13.1
-    * Debian
-      * 7 "Wheezy"
-      * 8 "Jessie"
+  * Ubuntu
+    * 16.04
+    * 18.04
+  * CentOS/RHEL/Scientific/Oracle Linux
+    * 6.x
+    * 7.x
+  * SLES
+    * 11 Service Pack 4
+    * 12 Service Pack 1
+  * OpenSUSE 13.1
+  * Debian
+    * 7 "Wheezy"
+    * 8 "Jessie"
 * Self Support - should work, support not provided by developer
-    * Solaris 10, 11
-    * AIX 7.1, 7.2
-    * Fedora 24, 25
-    * SLES 10
-    * CentOS/RHEL/Scientific/Oracle Linux 5.x
+  * Solaris 10, 11
+  * AIX 7.1, 7.2
+  * Fedora 24, 25
+  * SLES 10
+  * CentOS/RHEL/Scientific/Oracle Linux 5.x
 * Unsupported
-    * Windows (Autofs not available)
-    * Mac OS X
+  * Windows (Autofs not available)
+  * Mac OS X
 
-Development
--------------
+## Development
 
 Please see the [CONTRIBUTING.md](CONTRIBUTING.md) file for instructions regarding development environments and testing.
 
-Authors
--------
+## Authors
 
 * Vox Pupuli: [voxpupuli@groups.io](mailto:voxpupuli@groups.io)
 * David Hollinger: [david.hollinger@moduletux.com](mailto:david.hollinger@moduletux.com)
