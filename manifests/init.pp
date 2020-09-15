@@ -84,7 +84,7 @@ class autofs (
   String $package_ensure,
   Hash[String, Hash] $mounts,
   Variant[String, Array[String]] $package_name,
-  Enum[ 'stopped', 'running' ] $service_ensure,
+  Enum['stopped', 'running'] $service_ensure,
   Boolean $service_enable,
   String $service_name,
   String $auto_master_map,
