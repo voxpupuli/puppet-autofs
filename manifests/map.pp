@@ -49,12 +49,12 @@ define autofs::map (
   }
 
   ensure_resource(concat,$mapfile,{
-    ensure  => $ensure,
-    owner   => $autofs::map_file_owner,
-    group   => $autofs::map_file_group,
-    mode    => $mapmode,
-    replace => $replace,
-    require => Class['autofs::package'],
+      ensure  => $ensure,
+      owner   => $autofs::map_file_owner,
+      group   => $autofs::map_file_group,
+      mode    => $mapmode,
+      replace => $replace,
+      require => Class['autofs::package'],
   })
 
   unless $ensure == 'absent' {
@@ -64,5 +64,4 @@ define autofs::map (
       order   => $order,
     }
   }
-
 }

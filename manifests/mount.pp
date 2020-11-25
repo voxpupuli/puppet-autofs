@@ -113,13 +113,13 @@ define autofs::mount (
         notify            => Service[$autofs::service_name],
       }
     }
-  } else {  # $use_dir == true
+  } else { # $use_dir == true
     ensure_resource('file', $map_dir, {
-      'ensure'  => directory,
-      'owner'   => $autofs::map_file_owner,
-      'group'   => $autofs::map_file_group,
-      'mode'    => '0755',
-      'require' => Class['autofs::package'],
+        'ensure'  => directory,
+        'owner'   => $autofs::map_file_owner,
+        'group'   => $autofs::map_file_group,
+        'mode'    => '0755',
+        'require' => Class['autofs::package'],
     })
 
     if !defined(Concat::Fragment['autofs::fragment preamble map directory']) and $ensure == 'present' {
