@@ -21,6 +21,9 @@ _Private Classes_
 * [`autofs::mapfile`](#autofsmapfile): Defined type to manage overall autofs map files
 * [`autofs::mapping`](#autofsmapping): Defined type to manage a single filesystem mapping in a single map
 file.
+* [`autofs::multi_mapfile`](#autofsmapfile): Defined type to manage overall autofs map files with multi-mounts
+* [`autofs::multi_mapping`](#autofsmapping): Defined type to manage a single filesystem mapping in a multi-mount map
+file.
 * [`autofs::mount`](#autofsmount): Defined type to manage mount point definitions in the Autofs master
 map.
 
@@ -686,3 +689,6 @@ non-empty string or an array of such strings
 
 Alias of `Variant[Pattern[/\A\S+\z/], Array[Pattern[/\A\S+\z/]]]`
 
+<!--stackedit_data:
+eyJoaXN0b3J5IjpbLTE5MDI5ODczMTldfQ==
+-->

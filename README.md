@@ -227,11 +227,11 @@ autofs::mounts:
     mapfile: '/etc/auto.home'
 ```
 
-### Map Files
+### Map Files and Multi-mount Map Files
 
 The module also provides two compatible, built-in mechanisms for managing
 Autofs map files: by setting the `mapfiles` parameter of the `autofs`
-class, and by declaration of `autofs::mapfile` resources.  As with entries
+class, and by declaration of `autofs::mapfile` or `autofs::multi-mapfile`resources.  As with entries
 in the master map, using these is not obligatory.  In fact, they are
 applicable only to map files written in the default (sun) map format;
 some other mechanism must be chosen if map files in some other format are
@@ -318,6 +318,41 @@ The resulting content of file `/mnt/data` would be
 ```
 dataA	-ro	remote.com:/exports/dataA
 dataB	-rw,noexec	remote.com:/exports/dataB
+```
+#### Multi-mount mapping
+The `autofs::multi_mapfile` and `autofs::multi_mapping` resouces are declared simlarily to a standard mapping.  Ordering defaults to a numeric 10 instead of alpha-numeric ordering.   Ordering 0 and 999999 are reserved for the root path and last line of the mapfile.  
+
+The root_path mount should always be order > 0 and less than all other mount points.
+
+Only one multi-mount is supported per mapfile.
+
+```puppet
+autofs::multi_mapfile [ '/mnt/data':
+	root_path => '/data'
+}
+
+autofs::multi_mapping { '/mnt/dataRoot':
+  mapfile => '/mnt/data',
+  key     => '/',
+  options => 'ro',
+  fs      => 'remote.com:/exports/dataRoot',
+  order   => '1'
+}
+
+autofs::multi_mapping { '/mnt/dataB':
+  mapfile => '/mnt/data',
+  key     => '/dataB',
+  options => 'rw',
+  fs      => 'remote.com:/exports/dataB'
+}
+```
+The resulting content of file `/mnt/data` would be
+
+```
+/data \
+  /      -ro	remote.com:/exports/dataRoot \
+  /dataB -rw	remote.com:/exports/dataB \
+  
 ```
 
 #### Removing Entries
@@ -485,8 +520,7 @@ described by the corresponding map file.   Defaults to the `title` of this `auto
 
 Data type: Stdlib::Absolutepath or Autofs::MapEntry
 
-This parameter designates the automount map serving this mount.  Autofs supports a variety of options
-here, but most commonly this is either an absolute path to a map file or the special string `-hosts`.
+This parameter designates the automount map serving this mount.  Autofs supports a variety of options here, but most commonly this is either an absolute path to a map file or the special string `-hosts`.
 
 #### `options`
 
@@ -711,3 +745,7 @@ Authors
 
 * Vox Pupuli: [voxpupuli@groups.io](mailto:voxpupuli@groups.io)
 * David Hollinger: [david.hollinger@moduletux.com](mailto:david.hollinger@moduletux.com)
+<!--stackedit_data:
+eyJoaXN0b3J5IjpbMTc1MTIxNDA2NCwtMTA3MDA1MzU4MCw1MD
+g3NTE3MTQsMTEyOTIwODYyNywxMDI5MjkwNDQyXX0=
+-->
