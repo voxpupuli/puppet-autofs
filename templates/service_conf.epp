@@ -1,0 +1,34 @@
+<%- | Optional[Hash] $service_conf_options,
+      Optional[Array[String]] $service_options,
+      Enum['no', 'yes'] $service_use_misc_device,
+| -%>
+#
+###############################################################
+#                                                             #
+# THIS FILE IS MANAGED BY PUPPET. ANY CHANGES MADE TO THIS    #
+#   FILE WILL BE REVERTED BACK ON THE NEXT PUPPET RUN.        #
+#                                                             #
+###############################################################
+#
+# Init system options
+#
+# If the kernel supports using the autofs miscellanous device
+# and you wish to use it you must set this configuration option
+# to "yes" otherwise it will not be used.
+#
+USE_MISC_DEVICE="<%= $service_use_misc_device %>"
+#
+# Use OPTIONS to add automount(8) command line options that
+# will be used when the daemon is started.
+#
+<% if ($service_options and $service_options =~ Array) { -%>
+OPTIONS="<% $service_options.each |$opt| { %><%= $opt %> <% } -%>"
+<% } else { -%>
+#OPTIONS=""
+<% } -%>
+#
+<% if ($service_conf_options and $service_conf_options =~ Hash) { -%>
+<% $service_conf_options.keys.sort.each |$key| { -%>
+<%= $key %>=<%= $service_conf_options[$key] %>
+<% } -%>
+<% } -%>

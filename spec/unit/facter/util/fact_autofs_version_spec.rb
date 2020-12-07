@@ -17,7 +17,7 @@ describe Facter::Util::Fact do
     context 'autofs' do
       before do
         allow(Facter::Util::Resolution).to receive(:which).with('automount').and_return(true)
-        allow(Facter::Core::Execution).to receive(:execute).with('automount -V 2>&1').and_return('Linux automount version 5.1.1')
+        allow(Facter::Util::Resolution).to receive(:exec).with('automount -V 2>&1').and_return('Linux automount version 5.1.1')
       end
       it { expect(Facter.fact(:autofs_version).value).to eq('5.1.1') }
     end

@@ -10,3 +10,14 @@ autofs::auto_master_map: /etc/auto.master
 autofs::map_file_owner: root
 autofs::map_file_group: root
 autofs::reload_command: null
+autofs::manage_service_config: false
+autofs::manage_ldap_auth_conf: false
+autofs::service_use_misc_device: 'yes'
+autofs::service_options: ~
+autofs::service_conf_options: ~
+autofs::service_conf_path: '/etc/sysconfig/autofs'
+autofs::ldap_auth_conf_path: /etc/autofs_ldap_auth.conf
+autofs::ldap_auth_config:
+  usetls: 'no'
+  tlsrequired: 'no'
+  authrequired: 'no'
