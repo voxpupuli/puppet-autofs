@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper_acceptance'
 
 describe 'autofs' do
@@ -34,10 +36,11 @@ describe 'autofs' do
     shared_examples 'basic tests' do
       describe file('/etc/auto.master') do
         it 'exists and have content' do
-          is_expected.to exist
-          is_expected.to be_owned_by 'root'
-          is_expected.to be_grouped_into 'root'
+          expect(subject).to exist
+          expect(subject).to be_owned_by 'root'
+          expect(subject).to be_grouped_into 'root'
         end
+
         its(:content) do
           is_expected.to match %r{^\s*/home\s+/etc/auto.home\s+--timeout=120\s*$}
         end
@@ -45,10 +48,11 @@ describe 'autofs' do
 
       describe file('/etc/auto.home') do
         it 'exists and is owned by root' do
-          is_expected.to exist
-          is_expected.to be_owned_by 'root'
-          is_expected.to be_grouped_into 'root'
+          expect(subject).to exist
+          expect(subject).to be_owned_by 'root'
+          expect(subject).to be_grouped_into 'root'
         end
+
         its(:content) do
           is_expected.to match %r{^\s*test_home\s+-rw\s+remote.org:/export/home\s*$}
         end
@@ -140,10 +144,10 @@ describe 'autofs' do
 
       describe file('/etc/auto.master') do
         it do
-          is_expected.to exist
-          is_expected.to be_file
-          is_expected.to be_owned_by 'root'
-          is_expected.to be_grouped_into 'root'
+          expect(subject).to exist
+          expect(subject).to be_file
+          expect(subject).to be_owned_by 'root'
+          expect(subject).to be_grouped_into 'root'
         end
 
         its(:content) { is_expected.not_to match %r{^\s*/home\s} }
@@ -172,10 +176,11 @@ describe 'autofs' do
 
       describe file('/etc/auto.master') do
         it 'exists and belongs to root' do
-          is_expected.to exist
-          is_expected.to be_owned_by 'root'
-          is_expected.to be_grouped_into 'root'
+          expect(subject).to exist
+          expect(subject).to be_owned_by 'root'
+          expect(subject).to be_grouped_into 'root'
         end
+
         its(:content) do
           is_expected.to match %r{^\s*\+dir:/etc/auto.master.d\s*$}
           is_expected.not_to match %r{^\s*/mnt/confdir\s}
@@ -184,18 +189,19 @@ describe 'autofs' do
 
       describe file('/etc/auto.master.d') do
         it 'is a directory owned by root' do
-          is_expected.to be_directory
-          is_expected.to be_owned_by 'root'
-          is_expected.to be_grouped_into 'root'
+          expect(subject).to be_directory
+          expect(subject).to be_owned_by 'root'
+          expect(subject).to be_grouped_into 'root'
         end
       end
 
       describe file('/etc/auto.master.d/confdir.autofs') do
         it 'exists and is owned by root' do
-          is_expected.to exist
-          is_expected.to be_owned_by 'root'
-          is_expected.to be_grouped_into 'root'
+          expect(subject).to exist
+          expect(subject).to be_owned_by 'root'
+          expect(subject).to be_grouped_into 'root'
         end
+
         its(:content) do
           is_expected.to match %r{^\s*/mnt/confdir\s+/etc/auto.confdir\s+--timeout=120\s*$}
           is_expected.not_to match %r{\n.}
@@ -247,9 +253,6 @@ describe 'autofs' do
 
       describe service('autofs') do
         it { is_expected.not_to be_running }
-      end
-
-      describe service('autofs') do
         it { is_expected.not_to be_enabled }
       end
     end

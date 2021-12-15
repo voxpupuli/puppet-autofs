@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Facter::Util::Fact do
@@ -11,6 +13,7 @@ describe Facter::Util::Fact do
       before do
         allow(Facter::Util::Resolution).to receive(:which).with('automount').and_return(false)
       end
+
       it { expect(Facter.fact(:autofs_version).value).to eq(nil) }
     end
 
@@ -19,6 +22,7 @@ describe Facter::Util::Fact do
         allow(Facter::Util::Resolution).to receive(:which).with('automount').and_return(true)
         allow(Facter::Util::Resolution).to receive(:exec).with('automount -V 2>&1').and_return('Linux automount version 5.1.1')
       end
+
       it { expect(Facter.fact(:autofs_version).value).to eq('5.1.1') }
     end
   end

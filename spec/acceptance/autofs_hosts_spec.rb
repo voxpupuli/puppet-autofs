@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper_acceptance'
 
 describe 'autofs::mount -hosts test' do
@@ -17,9 +19,9 @@ describe 'autofs::mount -hosts test' do
 
     describe file('/etc/auto.master') do
       it 'exists and has content' do
-        is_expected.to exist
-        is_expected.to be_owned_by 'root'
-        is_expected.to be_grouped_into 'root'
+        expect(subject).to exist
+        expect(subject).to be_owned_by 'root'
+        expect(subject).to be_grouped_into 'root'
       end
 
       its(:content) { is_expected.to match(%r{^\s*/net\s+-hosts\s*$}) }

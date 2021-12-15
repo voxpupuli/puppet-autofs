@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 describe 'autofs::mount', type: :define do
   on_supported_os.each do |os, os_facts|
@@ -8,6 +10,7 @@ describe 'autofs::mount', type: :define do
       let(:master_map_file) { %w[AIX Solaris].include?(facts[:os]['family']) ? '/etc/auto_master' : '/etc/auto.master' }
       let(:facts) { os_facts }
 
+      # rubocop:disable RSpec/MultipleMemoizedHelpers
       context 'with default parameters' do
         let(:params) do
           {
@@ -20,12 +23,12 @@ describe 'autofs::mount', type: :define do
         end
 
         it do
-          is_expected.not_to contain_file('/home')
-          is_expected.to contain_concat('/etc/auto.master').
+          expect(subject).not_to contain_file('/home')
+          expect(subject).to contain_concat('/etc/auto.master').
             with(group: group)
-          is_expected.to contain_concat__fragment('autofs::fragment preamble /home /etc/auto.home').with('target' => '/etc/auto.master')
-          is_expected.to have_concat_resource_count(1)
-          is_expected.to have_autofs__map_resource_count(0)
+          expect(subject).to contain_concat__fragment('autofs::fragment preamble /home /etc/auto.home').with('target' => '/etc/auto.master')
+          expect(subject).to have_concat_resource_count(1)
+          expect(subject).to have_autofs__map_resource_count(0)
         end
       end
 
@@ -41,8 +44,8 @@ describe 'autofs::mount', type: :define do
         end
 
         it do
-          is_expected.to contain_concat__fragment('autofs::fragment preamble /smb program:/etc/auto.smb')
-          is_expected.not_to contain_file('/etc/auto.smb')
+          expect(subject).to contain_concat__fragment('autofs::fragment preamble /smb program:/etc/auto.smb')
+          expect(subject).not_to contain_file('/etc/auto.smb')
         end
       end
 
@@ -57,7 +60,7 @@ describe 'autofs::mount', type: :define do
         end
 
         it do
-          is_expected.to contain_concat__fragment('autofs::fragment preamble /- /etc/auto.home')
+          expect(subject).to contain_concat__fragment('autofs::fragment preamble /- /etc/auto.home')
         end
       end
 
@@ -84,7 +87,7 @@ describe 'autofs::mount', type: :define do
         end
 
         it 'is expected to fail' do
-          is_expected.to compile.and_raise_error(%r{parameter 'mount' expects a Stdlib::Absolutepath|parameter 'mount' expects a match for})
+          expect(subject).to compile.and_raise_error(%r{parameter 'mount' expects a Stdlib::Absolutepath|parameter 'mount' expects a match for})
         end
       end
 
@@ -99,14 +102,14 @@ describe 'autofs::mount', type: :define do
         end
 
         it do
-          is_expected.to have_autofs__map_resource_count(0)
-          is_expected.to contain_concat(master_map_file).
+          expect(subject).to have_autofs__map_resource_count(0)
+          expect(subject).to contain_concat(master_map_file).
             with(group: group)
-          is_expected.to contain_concat__fragment('autofs::fragment preamble /data /etc/auto.data').
+          expect(subject).to contain_concat__fragment('autofs::fragment preamble /data /etc/auto.data').
             with_target(master_map_file)
-          is_expected.not_to contain_concat('/etc/auto.data').
+          expect(subject).not_to contain_concat('/etc/auto.data').
             with(group: group)
-          is_expected.not_to contain_file('/data')
+          expect(subject).not_to contain_file('/data')
         end
       end
 
@@ -120,9 +123,9 @@ describe 'autofs::mount', type: :define do
         end
 
         it do
-          is_expected.to contain_concat(master_map_file).
+          expect(subject).to contain_concat(master_map_file).
             with(group: group)
-          is_expected.to contain_concat__fragment('autofs::fragment preamble /net -hosts').
+          expect(subject).to contain_concat__fragment('autofs::fragment preamble /net -hosts').
             with_target(master_map_file)
         end
       end
@@ -136,10 +139,10 @@ describe 'autofs::mount', type: :define do
         end
 
         it do
-          is_expected.to compile
-          is_expected.to contain_concat(master_map_file).
+          expect(subject).to compile
+          expect(subject).to contain_concat(master_map_file).
             with(group: group)
-          is_expected.to contain_concat__fragment('autofs::fragment preamble /data file,sun:/etc/auto.data').
+          expect(subject).to contain_concat__fragment('autofs::fragment preamble /data file,sun:/etc/auto.data').
             with_target(master_map_file).
             with_content(%r{\A\s*/data\s+file,sun:/etc/auto.data\s*$})
         end
@@ -155,10 +158,10 @@ describe 'autofs::mount', type: :define do
         end
 
         it do
-          is_expected.to compile
-          is_expected.to contain_concat(master_map_file).
+          expect(subject).to compile
+          expect(subject).to contain_concat(master_map_file).
             with(group: group)
-          is_expected.to contain_concat__fragment('autofs::fragment preamble /mnt yp:mnt.map').
+          expect(subject).to contain_concat__fragment('autofs::fragment preamble /mnt yp:mnt.map').
             with_target(master_map_file).
             with_content(%r{\A\s*/mnt\s+yp:mnt.map\s*$})
         end
@@ -177,6 +180,7 @@ describe 'autofs::mount', type: :define do
       end
 
       context 'with ensure set to absent' do
+        # rubocop:enable RSpec/MultipleMemoizedHelpers
         let(:title) { '/data' }
         let(:params) do
           {
@@ -186,15 +190,15 @@ describe 'autofs::mount', type: :define do
         end
 
         it do
-          is_expected.to contain_file_line("#{master_map_file}::/data_/etc/auto.data").with(
+          expect(subject).to contain_file_line("#{master_map_file}::/data_/etc/auto.data").with(
             ensure: 'absent',
             path: master_map_file,
             match: '^\\s*/data\\s+/etc/auto.data\\s'
           )
-          is_expected.to contain_concat(master_map_file).
+          expect(subject).to contain_concat(master_map_file).
             with(group: group)
-          is_expected.to have_concat__fragment_resource_count(0)
-          is_expected.to have_autofs__map_resource_count(0)
+          expect(subject).to have_concat__fragment_resource_count(0)
+          expect(subject).to have_autofs__map_resource_count(0)
         end
       end
     end
