@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe 'autofs::mapfile', type: :define do
@@ -9,9 +11,9 @@ describe 'autofs::mapfile', type: :define do
         let(:title) { '/etc/auto.data' }
 
         it do
-          is_expected.to compile.with_all_deps
-          is_expected.to contain_class('autofs')
-          is_expected.to contain_concat('/etc/auto.data').
+          expect(subject).to compile.with_all_deps
+          expect(subject).to contain_class('autofs')
+          expect(subject).to contain_concat('/etc/auto.data').
             with(ensure: 'present', replace: true, mode: '0644')
         end
       end
@@ -23,9 +25,9 @@ describe 'autofs::mapfile', type: :define do
         end
 
         it do
-          is_expected.to compile.with_all_deps
-          is_expected.to contain_class('autofs')
-          is_expected.to contain_concat('/etc/autofs/data').
+          expect(subject).to compile.with_all_deps
+          expect(subject).to contain_class('autofs')
+          expect(subject).to contain_concat('/etc/autofs/data').
             with(ensure: 'present', replace: true)
         end
       end
@@ -35,9 +37,9 @@ describe 'autofs::mapfile', type: :define do
         let(:params) { { replace: false } }
 
         it do
-          is_expected.to compile.with_all_deps
-          is_expected.to contain_class('autofs')
-          is_expected.to contain_concat('/etc/auto.data').
+          expect(subject).to compile.with_all_deps
+          expect(subject).to contain_class('autofs')
+          expect(subject).to contain_concat('/etc/auto.data').
             with(ensure: 'present', replace: false)
         end
       end
@@ -47,9 +49,9 @@ describe 'autofs::mapfile', type: :define do
         let(:params) { { execute: true } }
 
         it do
-          is_expected.to compile.with_all_deps
-          is_expected.to contain_class('autofs')
-          is_expected.to contain_concat('/etc/auto.data').
+          expect(subject).to compile.with_all_deps
+          expect(subject).to contain_class('autofs')
+          expect(subject).to contain_concat('/etc/auto.data').
             with(ensure: 'present', mode: '0755')
         end
       end
@@ -59,9 +61,9 @@ describe 'autofs::mapfile', type: :define do
         let(:params) { { ensure: 'absent' } }
 
         it do
-          is_expected.to compile.with_all_deps
-          is_expected.to contain_class('autofs')
-          is_expected.to contain_concat('/etc/auto.data').
+          expect(subject).to compile.with_all_deps
+          expect(subject).to contain_class('autofs')
+          expect(subject).to contain_concat('/etc/auto.data').
             with(ensure: 'absent')
         end
       end
@@ -79,16 +81,16 @@ describe 'autofs::mapfile', type: :define do
         end
 
         it do
-          is_expected.to compile.with_all_deps
-          is_expected.to contain_class('autofs')
-          is_expected.to contain_concat('/etc/auto.data').
+          expect(subject).to compile.with_all_deps
+          expect(subject).to contain_class('autofs')
+          expect(subject).to contain_concat('/etc/auto.data').
             with(ensure: 'present')
-          is_expected.to have_autofs__mapping_resource_count(3)
-          is_expected.to contain_autofs__mapping('/etc/auto.data:example1').
+          expect(subject).to have_autofs__mapping_resource_count(3)
+          expect(subject).to contain_autofs__mapping('/etc/auto.data:example1').
             with(mapfile: '/etc/auto.data', key: 'example1', fs: 'data.com:/export/example1')
-          is_expected.to contain_autofs__mapping('/etc/auto.data:example2').
+          expect(subject).to contain_autofs__mapping('/etc/auto.data:example2').
             with(mapfile: '/etc/auto.data', key: 'example2', options: 'rw', fs: 'data.com:/export/example2')
-          is_expected.to contain_autofs__mapping('/etc/auto.data:example3').
+          expect(subject).to contain_autofs__mapping('/etc/auto.data:example3').
             with(mapfile: '/etc/auto.data', key: 'example3', options: %w[rw noexec], fs: 'data.com:/export/example3')
         end
       end

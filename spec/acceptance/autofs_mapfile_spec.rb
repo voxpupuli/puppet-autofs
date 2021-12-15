@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper_acceptance'
 
 describe 'autofs::mapfile used standalone' do
@@ -18,10 +20,11 @@ describe 'autofs::mapfile used standalone' do
 
     describe file('/etc/auto.data') do
       it 'exists and belongs to root' do
-        is_expected.to exist
-        is_expected.to be_owned_by 'root'
-        is_expected.to be_grouped_into 'root'
+        expect(subject).to exist
+        expect(subject).to be_owned_by 'root'
+        expect(subject).to be_grouped_into 'root'
       end
+
       its(:content) do
         is_expected.to match %r{^\s*dataA\s+-ro\s+fs.net:/export/dataA\s*$}
         is_expected.to match %r{^\s*dataB\s+-rw,noexec\s+fs.net:/export/dataB\s*$}
@@ -54,10 +57,11 @@ describe 'autofs::mapfile used standalone' do
 
     describe file('/etc/auto.data') do
       it 'exists and belongs to root' do
-        is_expected.to exist
-        is_expected.to be_owned_by 'root'
-        is_expected.to be_grouped_into 'root'
+        expect(subject).to exist
+        expect(subject).to be_owned_by 'root'
+        expect(subject).to be_grouped_into 'root'
       end
+
       its(:content) do
         is_expected.to match %r{^\s*dataA\s+-ro\s+fs.net:/export/dataA\s*$}
         is_expected.to match %r{^\s*dataB\s+-rw,noexec\s+fs.net:/export/dataB\s*$}
@@ -76,12 +80,14 @@ describe 'autofs::mapfile used standalone' do
       apply_manifest(pp, catch_failures: true)
       apply_manifest(pp, catch_changes: true)
     end
+
     describe file('/etc/auto.data') do
       it 'exists and belongs to root' do
-        is_expected.to exist
-        is_expected.to be_owned_by 'root'
-        is_expected.to be_grouped_into 'root'
+        expect(subject).to exist
+        expect(subject).to be_owned_by 'root'
+        expect(subject).to be_grouped_into 'root'
       end
+
       its(:content) do
         is_expected.not_to match %r{^\s*\S(?<!#)}
       end
@@ -106,10 +112,11 @@ describe 'autofs::mapfile used standalone' do
 
     describe file('/etc/auto.data') do
       it 'exists and belongs to root' do
-        is_expected.to exist
-        is_expected.to be_owned_by 'root'
-        is_expected.to be_grouped_into 'root'
+        expect(subject).to exist
+        expect(subject).to be_owned_by 'root'
+        expect(subject).to be_grouped_into 'root'
       end
+
       its(:content) do
         is_expected.to match %r{^\s*dataQ\s+-ro\s+fs.net:/export/dataQ\s*$}
         is_expected.to match %r{^\s*dataZ\s+-rw\s+fs.net:/export/dataZ\s*$}
@@ -132,7 +139,7 @@ describe 'autofs::mapfile used standalone' do
 
     describe file('/etc/auto.data') do
       it 'does not exist' do
-        is_expected.not_to exist
+        expect(subject).not_to exist
       end
     end
   end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper_acceptance'
 
 describe 'autofs::mount indirect tests' do
@@ -29,10 +31,11 @@ describe 'autofs::mount indirect tests' do
 
     describe file('/etc/auto.master') do
       it 'exists and have content' do
-        is_expected.to exist
-        is_expected.to be_owned_by 'root'
-        is_expected.to be_grouped_into 'root'
+        expect(subject).to exist
+        expect(subject).to be_owned_by 'root'
+        expect(subject).to be_grouped_into 'root'
       end
+
       its(:content) do
         is_expected.to match %r{^\s*/foo\s+/etc/auto.foo\s+--timeout=120\s*$}
         is_expected.to match %r{^\s*/bar\s+/etc/auto.bar\s+--timeout=240\s*$}
@@ -41,19 +44,21 @@ describe 'autofs::mount indirect tests' do
 
     describe file('/etc/auto.foo') do
       it 'exists and is owned by root' do
-        is_expected.to exist
-        is_expected.to be_owned_by 'root'
-        is_expected.to be_grouped_into 'root'
+        expect(subject).to exist
+        expect(subject).to be_owned_by 'root'
+        expect(subject).to be_grouped_into 'root'
       end
+
       its(:content) { is_expected.to match %r{^\s*FOO\s+-rw\s+remote.org:/export/FOO\s*$} }
     end
 
     describe file('/etc/auto.bar') do
       it 'exists and is owned by root' do
-        is_expected.to exist
-        is_expected.to be_owned_by 'root'
-        is_expected.to be_grouped_into 'root'
+        expect(subject).to exist
+        expect(subject).to be_owned_by 'root'
+        expect(subject).to be_grouped_into 'root'
       end
+
       its(:content) { is_expected.to match %r{^\s*BAR\s+-rw\s+remote.org:/export/BAR\s*$} }
     end
 

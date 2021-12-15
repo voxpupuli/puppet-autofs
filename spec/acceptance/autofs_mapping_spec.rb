@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper_acceptance'
 
 describe 'autofs::mapping tests' do
@@ -20,10 +22,11 @@ describe 'autofs::mapping tests' do
 
     describe file('/etc/auto.data') do
       it 'exists and belongs to root' do
-        is_expected.to exist
-        is_expected.to be_owned_by 'root'
-        is_expected.to be_grouped_into 'root'
+        expect(subject).to exist
+        expect(subject).to be_owned_by 'root'
+        expect(subject).to be_grouped_into 'root'
       end
+
       its(:content) do
         is_expected.to match %r{^\s*dataA\s+-ro\s+fs.net:/export/dataA\s*$}
       end
@@ -53,10 +56,11 @@ describe 'autofs::mapping tests' do
 
     describe file('/etc/auto.data') do
       it 'exists and belongs to root' do
-        is_expected.to exist
-        is_expected.to be_owned_by 'root'
-        is_expected.to be_grouped_into 'root'
+        expect(subject).to exist
+        expect(subject).to be_owned_by 'root'
+        expect(subject).to be_grouped_into 'root'
       end
+
       its(:content) do
         is_expected.to match %r{^\s*dataA\s+-ro\s+fs.net:/export/dataA\s*\n\s*dataB\s+-rw,noexec\s+fs.net:/export/dataB\s*$}
       end

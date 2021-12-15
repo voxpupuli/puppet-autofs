@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe 'autofs::mapping', type: :define do
@@ -16,11 +18,11 @@ describe 'autofs::mapping', type: :define do
         end
 
         it do
-          is_expected.to compile
-          is_expected.not_to contain_class('autofs')
-          is_expected.to have_concat_resource_count(0)
-          is_expected.to have_concat__fragment_resource_count(1)
-          is_expected.to contain_concat__fragment('autofs::mapping/data').
+          expect(subject).to compile
+          expect(subject).not_to contain_class('autofs')
+          expect(subject).to have_concat_resource_count(0)
+          expect(subject).to have_concat__fragment_resource_count(1)
+          expect(subject).to contain_concat__fragment('autofs::mapping/data').
             with(target: '/mnt/auto.data', content: "data		storage.host.net:/exports/data\n")
         end
       end
@@ -37,11 +39,11 @@ describe 'autofs::mapping', type: :define do
         end
 
         it do
-          is_expected.to compile
-          is_expected.not_to contain_class('autofs')
-          is_expected.to have_concat_resource_count(0)
-          is_expected.to have_concat__fragment_resource_count(1)
-          is_expected.to contain_concat__fragment('autofs::mapping/data').
+          expect(subject).to compile
+          expect(subject).not_to contain_class('autofs')
+          expect(subject).to have_concat_resource_count(0)
+          expect(subject).to have_concat__fragment_resource_count(1)
+          expect(subject).to contain_concat__fragment('autofs::mapping/data').
             with(target: '/mnt/auto.data', order: 20)
         end
       end
@@ -57,11 +59,11 @@ describe 'autofs::mapping', type: :define do
         end
 
         it do
-          is_expected.to compile
-          is_expected.not_to contain_class('autofs')
-          is_expected.to have_concat_resource_count(0)
-          is_expected.to have_concat__fragment_resource_count(1)
-          is_expected.to contain_concat__fragment('autofs::mapping/data').
+          expect(subject).to compile
+          expect(subject).not_to contain_class('autofs')
+          expect(subject).to have_concat_resource_count(0)
+          expect(subject).to have_concat__fragment_resource_count(1)
+          expect(subject).to contain_concat__fragment('autofs::mapping/data').
             with(target: '/mnt/auto.data', content: "data		storage.host.net:/exports/data\n")
         end
       end
@@ -77,10 +79,10 @@ describe 'autofs::mapping', type: :define do
         end
 
         it do
-          is_expected.to compile
-          is_expected.not_to contain_class('autofs')
-          is_expected.to have_concat_resource_count(0)
-          is_expected.to have_concat__fragment_resource_count(0)
+          expect(subject).to compile
+          expect(subject).not_to contain_class('autofs')
+          expect(subject).to have_concat_resource_count(0)
+          expect(subject).to have_concat__fragment_resource_count(0)
         end
       end
 
@@ -95,11 +97,11 @@ describe 'autofs::mapping', type: :define do
         end
 
         it do
-          is_expected.to compile
-          is_expected.not_to contain_class('autofs')
-          is_expected.to have_concat_resource_count(0)
-          is_expected.to have_concat__fragment_resource_count(1)
-          is_expected.to contain_concat__fragment('autofs::mapping/data').
+          expect(subject).to compile
+          expect(subject).not_to contain_class('autofs')
+          expect(subject).to have_concat_resource_count(0)
+          expect(subject).to have_concat__fragment_resource_count(1)
+          expect(subject).to contain_concat__fragment('autofs::mapping/data').
             with(target: '/mnt/auto.data', content: "data	-rw,sync,nosuid	storage.host.net:/exports/data\n")
         end
       end
@@ -115,11 +117,11 @@ describe 'autofs::mapping', type: :define do
         end
 
         it do
-          is_expected.to compile
-          is_expected.not_to contain_class('autofs')
-          is_expected.to have_concat_resource_count(0)
-          is_expected.to have_concat__fragment_resource_count(1)
-          is_expected.to contain_concat__fragment('autofs::mapping/data').
+          expect(subject).to compile
+          expect(subject).not_to contain_class('autofs')
+          expect(subject).to have_concat_resource_count(0)
+          expect(subject).to have_concat__fragment_resource_count(1)
+          expect(subject).to contain_concat__fragment('autofs::mapping/data').
             with(target: '/mnt/auto.data', content: "data		storage.host.net:/exports/data\n")
         end
       end
@@ -135,11 +137,11 @@ describe 'autofs::mapping', type: :define do
         end
 
         it do
-          is_expected.to compile
-          is_expected.not_to contain_class('autofs')
-          is_expected.to have_concat_resource_count(0)
-          is_expected.to have_concat__fragment_resource_count(1)
-          is_expected.to contain_concat__fragment('autofs::mapping/data').
+          expect(subject).to compile
+          expect(subject).not_to contain_class('autofs')
+          expect(subject).to have_concat_resource_count(0)
+          expect(subject).to have_concat__fragment_resource_count(1)
+          expect(subject).to contain_concat__fragment('autofs::mapping/data').
             with(target: '/mnt/auto.data', content: "data	-rw,sync,nosuid	storage.host.net:/exports/data\n")
         end
       end
@@ -155,11 +157,11 @@ describe 'autofs::mapping', type: :define do
         end
 
         it do
-          is_expected.to compile
-          is_expected.not_to contain_class('autofs')
-          is_expected.to have_concat_resource_count(0)
-          is_expected.to have_concat__fragment_resource_count(1)
-          is_expected.to contain_concat__fragment('autofs::mapping/data').
+          expect(subject).to compile
+          expect(subject).not_to contain_class('autofs')
+          expect(subject).to have_concat_resource_count(0)
+          expect(subject).to have_concat__fragment_resource_count(1)
+          expect(subject).to contain_concat__fragment('autofs::mapping/data').
             with(target: '/mnt/auto.data', content: "data	-rw	storage.host.net:/exports/data backup.host.net:/exports/data\n")
         end
       end

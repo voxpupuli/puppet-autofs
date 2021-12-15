@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe 'autofs::map', type: :define do
@@ -16,13 +18,13 @@ describe 'autofs::map', type: :define do
 
       context 'with default parameters' do
         it do
-          is_expected.to contain_concat('/etc/auto.data').with(
+          expect(subject).to contain_concat('/etc/auto.data').with(
             'ensure' => 'present',
-            'owner'  => 'root',
-            'group'  => group,
-            'mode'   => '0644'
+            'owner' => 'root',
+            'group' => group,
+            'mode' => '0644'
           )
-          is_expected.to contain_concat__fragment('/etc/auto.data_data_entries').with(
+          expect(subject).to contain_concat__fragment('/etc/auto.data_data_entries').with(
             'target' => '/etc/auto.data'
           )
         end

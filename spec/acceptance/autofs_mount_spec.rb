@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 
 require 'spec_helper_acceptance'
 
@@ -22,11 +23,12 @@ describe 'autofs::mount tests' do
 
     describe file('/etc/auto.master') do
       it 'exists and have content' do
-        is_expected.to exist
-        is_expected.to be_owned_by 'root'
-        is_expected.to be_grouped_into 'root'
-        is_expected.to be_mode 644
+        expect(subject).to exist
+        expect(subject).to be_owned_by 'root'
+        expect(subject).to be_grouped_into 'root'
+        expect(subject).to be_mode 644
       end
+
       its(:content) { is_expected.to match(%r{^\s*/mnt/data\s+/etc/auto.data\s*$}) }
     end
 
@@ -66,18 +68,19 @@ describe 'autofs::mount tests' do
 
     describe file('/etc/auto.data') do
       it 'is unaffected' do
-        is_expected.to exist
-        is_expected.to contain 'TEST CONTENT'
+        expect(subject).to exist
+        expect(subject).to contain 'TEST CONTENT'
       end
     end
 
     describe file('/etc/auto.master') do
       it 'exists and have content' do
-        is_expected.to exist
-        is_expected.to be_owned_by 'root'
-        is_expected.to be_grouped_into 'root'
-        is_expected.to be_mode 644
+        expect(subject).to exist
+        expect(subject).to be_owned_by 'root'
+        expect(subject).to be_grouped_into 'root'
+        expect(subject).to be_mode 644
       end
+
       its(:content) { is_expected.not_to match(%r{^\s*/mnt/data\s}) }
     end
   end

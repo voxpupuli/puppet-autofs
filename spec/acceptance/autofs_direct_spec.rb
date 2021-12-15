@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper_acceptance'
 
 describe 'autofs::mount direct tests' do
@@ -25,19 +27,21 @@ describe 'autofs::mount direct tests' do
 
     describe file('/etc/auto.master') do
       it 'exists and is has correct ownership' do
-        is_expected.to exist
-        is_expected.to be_owned_by 'root'
-        is_expected.to be_grouped_into 'root'
+        expect(subject).to exist
+        expect(subject).to be_owned_by 'root'
+        expect(subject).to be_grouped_into 'root'
       end
+
       its(:content) { is_expected.to match(%r{^/-\s+/etc/auto.direct\s+--timeout=120\s*$}) }
     end
 
     describe file('/etc/auto.direct') do
       it 'exists and has correct ownership' do
-        is_expected.to exist
-        is_expected.to be_owned_by 'root'
-        is_expected.to be_grouped_into 'root'
+        expect(subject).to exist
+        expect(subject).to be_owned_by 'root'
+        expect(subject).to be_grouped_into 'root'
       end
+
       its(:content) do
         is_expected.to match(%r{^\s*/home/test_home\s+-rw\s+remote.com:/export/home\s*$})
         is_expected.to match(%r{^\s*/tmp/test_tmp\s+-rw\s+remote.com:/export/tmp\s*$})

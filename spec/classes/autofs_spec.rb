@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 require 'hiera'
 
@@ -52,28 +54,28 @@ describe 'autofs', type: :class do
         let(:params) do
           {
             mounts: {
-              'home'        => { mount: '/home', mapfile: '/etc/auto.home', options: '--timeout=120', order: 1 },
-              '/mnt/other'  => { mapfile: '/etc/auto.other' },
-              'direct'      => { mount: '/-', mapfile: '/etc/auto.direct' },
+              'home' => { mount: '/home', mapfile: '/etc/auto.home', options: '--timeout=120', order: 1 },
+              '/mnt/other' => { mapfile: '/etc/auto.other' },
+              'direct' => { mount: '/-', mapfile: '/etc/auto.direct' },
               'remove this' => { mount: '/unwanted', mapfile: '/etc/auto.unwanted', ensure: 'absent' }
             }
           }
         end
 
         it do
-          is_expected.to compile.with_all_deps
-          is_expected.to have_autofs__mount_resource_count(4)
-          is_expected.to contain_autofs__mount('home').
+          expect(subject).to compile.with_all_deps
+          expect(subject).to have_autofs__mount_resource_count(4)
+          expect(subject).to contain_autofs__mount('home').
             with(mount: '/home', mapfile: '/etc/auto.home', options: '--timeout=120', order: 1)
-          is_expected.to contain_autofs__mount('/mnt/other').
+          expect(subject).to contain_autofs__mount('/mnt/other').
             with(mapfile: '/etc/auto.other')
-          is_expected.to contain_autofs__mount('direct').
+          expect(subject).to contain_autofs__mount('direct').
             with(mount: '/-', mapfile: '/etc/auto.direct')
-          is_expected.to contain_autofs__mount('remove this').
+          expect(subject).to contain_autofs__mount('remove this').
             with(mount: '/unwanted', ensure: 'absent')
-          is_expected.to have_autofs__map_resource_count(0)
-          is_expected.to have_autofs__mapfile_resource_count(0)
-          is_expected.to have_autofs__mapping_resource_count(0)
+          expect(subject).to have_autofs__map_resource_count(0)
+          expect(subject).to have_autofs__mapfile_resource_count(0)
+          expect(subject).to have_autofs__mapping_resource_count(0)
         end
       end
 
@@ -94,15 +96,15 @@ describe 'autofs', type: :class do
         end
 
         it do
-          is_expected.to compile.with_all_deps
-          is_expected.to contain_autofs__mapfile('home').
+          expect(subject).to compile.with_all_deps
+          expect(subject).to contain_autofs__mapfile('home').
             with(path: '/etc/auto.home', mappings: home_mappings)
-          is_expected.to contain_autofs__mapfile('/mnt/defaults')
-          is_expected.to contain_autofs__mapfile('unwanted').
+          expect(subject).to contain_autofs__mapfile('/mnt/defaults')
+          expect(subject).to contain_autofs__mapfile('unwanted').
             with(path: '/etc/auto.evil', ensure: 'absent')
-          is_expected.to have_autofs__mapfile_resource_count(3)
-          is_expected.to have_autofs__mount_resource_count(0)
-          is_expected.to have_autofs__map_resource_count(0)
+          expect(subject).to have_autofs__mapfile_resource_count(3)
+          expect(subject).to have_autofs__mount_resource_count(0)
+          expect(subject).to have_autofs__map_resource_count(0)
         end
       end
 
@@ -110,7 +112,7 @@ describe 'autofs', type: :class do
         let(:params) { { mounts: 'string' } }
 
         it 'is expected to fail' do
-          is_expected.to compile.and_raise_error(%r{parameter 'mounts' expects a Hash value})
+          expect(subject).to compile.and_raise_error(%r{parameter 'mounts' expects a Hash value})
         end
       end
 
@@ -120,7 +122,7 @@ describe 'autofs', type: :class do
         it { is_expected.to compile.with_all_deps }
 
         it {
-          is_expected.to contain_file('autofs_service_config').with_content(%r{USE_MISC_DEVICE="yes"})
+          expect(subject).to contain_file('autofs_service_config').with_content(%r{USE_MISC_DEVICE="yes"})
         }
       end
 
@@ -143,8 +145,8 @@ describe 'autofs', type: :class do
         it { is_expected.to compile.with_all_deps }
 
         it {
-          is_expected.to contain_file('autofs_service_config').
-            with_content(%r{LDAP_URI=ldap:\/\/ldap\.example\.org}).
+          expect(subject).to contain_file('autofs_service_config').
+            with_content(%r{LDAP_URI=ldap://ldap\.example\.org}).
             with_content(%r{SEARCH_BASE=dc=example,dc=org}).
             with_content(%r{MAP_OBJECT_CLASS=automountMap}).
             with_content(%r{ENTRY_OBJECT_CLASS=automount}).
@@ -160,7 +162,7 @@ describe 'autofs', type: :class do
         it { is_expected.to compile.with_all_deps }
 
         it {
-          is_expected.to contain_file('autofs_ldap_auth_config').
+          expect(subject).to contain_file('autofs_ldap_auth_config').
             with_content(%r{authrequired="no"}).
             with_content(%r{tlsrequired="no"}).
             with_content(%r{usetls="no"})
@@ -182,7 +184,7 @@ describe 'autofs', type: :class do
         it { is_expected.to compile.with_all_deps }
 
         it {
-          is_expected.to contain_file('autofs_ldap_auth_config').
+          expect(subject).to contain_file('autofs_ldap_auth_config').
             with_content(%r{authrequired="yes"}).
             with_content(%r{tlsrequired="yes"}).
             with_content(%r{usetls="yes"})
