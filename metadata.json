@@ -35,6 +35,13 @@
       ]
     },
     {
+      "operatingsystem": "FreeBSD",
+      "operatingsystemrelease": [
+        "12",
+        "13"
+      ]
+    },
+    {
       "operatingsystem": "OpenSuSE",
       "operatingsystemrelease": [
         "15.2"

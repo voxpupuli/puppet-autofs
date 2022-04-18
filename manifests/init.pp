@@ -87,12 +87,16 @@
 # @param manage_ldap_auth_conf Determines if the /etc/autofs_ldap_auth.conf file should be managed
 # @param service_use_misc_device Sets the USE_MISC_DEVICE value in the service configuration file
 # @param reload_command In lieu of a service reload capability in Puppet, exec this command to reload automount without restarting it.
+# @param automountd_service_ensure Determines state of the service. Can be set to: running or stopped.
+# @param autounmountd_service_ensure Determines state of the service. Can be set to: running or stopped.
+# @param automountd_service_name Determine the name of the automountd service for cross platform compatibility
+# @param autounmountd_service_name Determine the name of the autounmountd service for cross platform compatibility
 #
 class autofs (
   String $package_ensure,
   Hash[String, Hash] $mounts,
   Variant[String, Array[String]] $package_name,
-  Enum['stopped', 'running'] $service_ensure,
+  Optional[Enum['stopped', 'running']] $service_ensure,
   Boolean $service_enable,
   String $service_name,
   String $auto_master_map,
@@ -110,6 +114,10 @@ class autofs (
   Optional[String] $reload_command = undef,
   Optional[Array[String]] $service_options = undef,
   Optional[Hash] $service_conf_options = undef,
+  Optional[Enum['stopped', 'running']] $automountd_service_ensure = undef,
+  Optional[Enum['stopped', 'running']] $autounmountd_service_ensure = undef,
+  Optional[String] $automountd_service_name = undef,
+  Optional[String] $autounmountd_service_name = undef,
 ) {
   contain 'autofs::package'
   unless $package_ensure == 'absent' {

@@ -68,6 +68,20 @@ class autofs::service {
     require    => Class['autofs::package'],
   }
 
+  if $autofs::automountd_service_name {
+    service { $autofs::automountd_service_name:
+      ensure => $autofs::automountd_service_ensure,
+      enable => $autofs::service_enable,
+    }
+  }
+
+  if $autofs::autounmountd_service_name {
+    service { $autofs::autounmountd_service_name:
+      ensure => $autofs::autounmountd_service_ensure,
+      enable => $autofs::service_enable,
+    }
+  }
+
   if $autofs::reload_command {
     exec { 'automount-reload':
       path        => '/sbin:/usr/sbin',
