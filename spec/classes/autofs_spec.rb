@@ -9,7 +9,13 @@ describe 'autofs', type: :class do
   on_supported_os.each do |os, os_facts|
     context "on #{os}" do
       let(:facts) { os_facts }
-      let(:service) { facts[:os]['family'] == 'AIX' ? 'automountd' : 'autofs' }
+      let(:service) do
+        case facts[:os]['family']
+        when 'AIX' then 'automountd'
+        when 'FreeBSD' then 'automount'
+        else 'autofs'
+        end
+      end
       let(:package) do
         case facts[:os]['family']
         when 'AIX'
@@ -32,9 +38,14 @@ describe 'autofs', type: :class do
         it { is_expected.to contain_class('autofs::service') }
 
         # Check Package and service
-        it { is_expected.to contain_package(package).with_ensure('installed') }
-        it { is_expected.to contain_service(service).that_requires("Package[#{package}]") }
-        it { is_expected.to contain_service(service).with_ensure('running') }
+        if os_facts[:os]['family'] == 'FreeBSD'
+          it { is_expected.to contain_service('automountd').with_ensure('running') }
+          it { is_expected.to contain_service('autounmountd').with_ensure('running') }
+        else
+          it { is_expected.to contain_package(package).with_ensure('installed') }
+          it { is_expected.to contain_service(service).that_requires("Package[#{package}]") }
+          it { is_expected.to contain_service(service).with_ensure('running') }
+        end
         it { is_expected.to contain_service(service).with_enable(true) }
         it { is_expected.not_to contain_file('autofs_service_config') }
         it { is_expected.not_to contain_file('autofs_ldap_auth_config') }
@@ -47,7 +58,7 @@ describe 'autofs', type: :class do
           }
         end
 
-        it { is_expected.to contain_package(package).with_ensure('absent') }
+        it { is_expected.to contain_package(package).with_ensure('absent') } if os_facts[:os]['family'] != 'FreeBSD'
       end
 
       context 'should declare mount points' do

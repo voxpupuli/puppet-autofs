@@ -7,7 +7,13 @@ describe 'autofs::map', type: :define do
     context "on #{os}" do
       let(:title) { 'data' }
       let(:pre_condition) { 'include autofs' }
-      let(:group) { facts[:os]['family'] == 'AIX' ? 'system' : 'root' }
+      let(:group) do
+        case facts[:os]['family']
+        when 'AIX' then 'system'
+        when 'FreeBSD' then 'wheel'
+        else 'root'
+        end
+      end
       let(:facts) { os_facts }
       let(:params) do
         {

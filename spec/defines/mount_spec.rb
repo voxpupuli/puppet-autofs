@@ -6,8 +6,14 @@ describe 'autofs::mount', type: :define do
     context "on #{os}" do
       let(:title) { 'auto.home' }
       let(:pre_condition) { 'include autofs' }
-      let(:group) { facts[:os]['family'] == 'AIX' ? 'system' : 'root' }
-      let(:master_map_file) { %w[AIX Solaris].include?(facts[:os]['family']) ? '/etc/auto_master' : '/etc/auto.master' }
+      let(:group) do
+        case facts[:os]['family']
+        when 'AIX' then 'system'
+        when 'FreeBSD' then 'wheel'
+        else 'root'
+        end
+      end
+      let(:master_map_file) { %w[AIX FreeBSD Solaris].include?(facts[:os]['family']) ? '/etc/auto_master' : '/etc/auto.master' }
       let(:facts) { os_facts }
 
       # rubocop:disable RSpec/MultipleMemoizedHelpers

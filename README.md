@@ -171,7 +171,7 @@ autofs::mounts:
 
 The autofs module supports the use of Autofs's `+dir:` option (Autofs 5.0.5
 or later) to record master map content in drop-in files in a specified
-directory instead of directly int rhe master map.  When a `mount`'s `use_dir`
+directory instead of directly in the master map.  When a `mount`'s `use_dir`
 parameter is `true` (default is `false`), the corresponding master map entry
 is created as a separate file in the appropriate directory instead of being
 written directly into the master map.  The master map is still, however,

@@ -1,0 +1,10 @@
+---
+autofs::auto_master_map: /etc/auto_master
+autofs::map_file_group: wheel
+autofs::package_name: []
+autofs::service_name: automount
+autofs::service_ensure: ~
+autofs::automountd_service_name: automountd
+autofs::automountd_service_ensure: running
+autofs::autounmountd_service_name: autounmountd
+autofs::autounmountd_service_ensure: running

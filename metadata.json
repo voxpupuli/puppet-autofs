@@ -14,10 +14,10 @@
   ],
   "operatingsystem_support": [
     {
-      "operatingsystem": "RedHat",
+      "operatingsystem": "AIX",
       "operatingsystemrelease": [
-        "7",
-        "8"
+        "7.1",
+        "7.2"
       ]
     },
     {
@@ -28,7 +28,34 @@
       ]
     },
     {
+      "operatingsystem": "Debian",
+      "operatingsystemrelease": [
+        "9",
+        "10"
+      ]
+    },
+    {
+      "operatingsystem": "FreeBSD",
+      "operatingsystemrelease": [
+        "12",
+        "13"
+      ]
+    },
+    {
+      "operatingsystem": "OpenSuSE",
+      "operatingsystemrelease": [
+        "15.2"
+      ]
+    },
+    {
       "operatingsystem": "OracleLinux",
+      "operatingsystemrelease": [
+        "7",
+        "8"
+      ]
+    },
+    {
+      "operatingsystem": "RedHat",
       "operatingsystemrelease": [
         "7",
         "8"
@@ -41,31 +68,10 @@
       ]
     },
     {
-      "operatingsystem": "Ubuntu",
-      "operatingsystemrelease": [
-        "16.04",
-        "18.04",
-        "20.04"
-      ]
-    },
-    {
       "operatingsystem": "SLES",
       "operatingsystemrelease": [
         "11",
         "12"
-      ]
-    },
-    {
-      "operatingsystem": "OpenSuSE",
-      "operatingsystemrelease": [
-        "15.2"
-      ]
-    },
-    {
-      "operatingsystem": "Debian",
-      "operatingsystemrelease": [
-        "9",
-        "10"
       ]
     },
     {
@@ -76,10 +82,11 @@
       ]
     },
     {
-      "operatingsystem": "AIX",
+      "operatingsystem": "Ubuntu",
       "operatingsystemrelease": [
-        "7.1",
-        "7.2"
+        "16.04",
+        "18.04",
+        "20.04"
       ]
     }
   ],
