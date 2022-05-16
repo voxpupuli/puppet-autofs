@@ -56,6 +56,11 @@
 # @option mounts [String] :map_dir Full path, including file name, to the master map
 #   drop-in directory in which to manage this mount's definition.  Relevant only when
 #   :use_dir is set to true
+<<<<<<< HEAD
+=======
+# @option mounts [String] :purge_map_dir Purge the $map_dir directory of unmanaged
+#   files.
+>>>>>>> purge_map_dir
 # @option mounts [Boolean] :use_dir Whether to manage this mount via a file in the
 #   master map's drop-in directory instead of directly in the master map
 # @param mapfiles options with which to manage map files.
@@ -66,11 +71,14 @@
 #   string or array form, and a filesystem specification as expected by the 'mount'
 #   command.
 # @option mapfiles [Boolean] replace: whether to modify the map file if it already exists
+<<<<<<< HEAD
 # @option ldap_auth_conf_path The path to the ldap_auth.conf file
 # @option ldap_auth_config The hash to use for the configuration settings in the ldap_auth.conf file
 # @option service_conf_path The path to the service configuration file
 # @option service_options An array of options to add to the OPTIONS variable in the service configuration file
 # @option service_conf_options A hash of environment variables to add to the service configuration file for LDAP configuration
+=======
+>>>>>>> purge_map_dir
 # @param maps Deprecated.  Use the mapfiles parameter instead.
 # @param package_ensure Determines the state of the package. Can be set to: installed, absent, lastest, or a specific version string.
 # @param package_name Determine the name of the package to install. Should be covered by hieradata.
@@ -83,6 +91,7 @@
 # @param auto_master_map Filename of the auto.master map for cross platform compatiblity
 # @param map_file_owner owner of the automount map files for cross platform compatiblity
 # @param map_file_group group of the automount map files for cross platform compatiblity
+<<<<<<< HEAD
 # @param manage_service_config Determines if the service configuration file (in /etc/default or /etc/sysconfig) should be managed
 # @param manage_ldap_auth_conf Determines if the /etc/autofs_ldap_auth.conf file should be managed
 # @param service_use_misc_device Sets the USE_MISC_DEVICE value in the service configuration file
@@ -91,33 +100,48 @@
 # @param autounmountd_service_ensure Determines state of the service. Can be set to: running or stopped.
 # @param automountd_service_name Determine the name of the automountd service for cross platform compatibility
 # @param autounmountd_service_name Determine the name of the autounmountd service for cross platform compatibility
+=======
+# @param reload_command In lieu of a service reload capability in Puppet, exec this command to reload automount without restarting it.
+>>>>>>> purge_map_dir
 #
 class autofs (
   String $package_ensure,
   Hash[String, Hash] $mounts,
   Variant[String, Array[String]] $package_name,
+<<<<<<< HEAD
   Optional[Enum['stopped', 'running']] $service_ensure,
   Boolean $service_enable,
+=======
+  Enum[ 'stopped', 'running' ] $service_ensure,
+  Boolean $service_enable,
+  Boolean $purge_map_dir  = false,
+>>>>>>> purge_map_dir
   String $service_name,
   String $auto_master_map,
   String $map_file_owner,
   String $map_file_group,
+<<<<<<< HEAD
   Boolean $manage_service_config,
   Boolean $manage_ldap_auth_conf,
   Enum['no', 'yes'] $service_use_misc_device,
   Optional[Stdlib::Absolutepath] $ldap_auth_conf_path,
   Optional[Hash] $ldap_auth_config,
   Optional[Stdlib::Absolutepath] $service_conf_path,
+=======
+>>>>>>> purge_map_dir
   Optional[Hash[String, Hash]] $mapfiles = undef,
   Optional[Hash[String, Hash]] $maps = undef,  # deprecated
   Optional[String] $package_source = undef,
   Optional[String] $reload_command = undef,
+<<<<<<< HEAD
   Optional[Array[String]] $service_options = undef,
   Optional[Hash] $service_conf_options = undef,
   Optional[Enum['stopped', 'running']] $automountd_service_ensure = undef,
   Optional[Enum['stopped', 'running']] $autounmountd_service_ensure = undef,
   Optional[String] $automountd_service_name = undef,
   Optional[String] $autounmountd_service_name = undef,
+=======
+>>>>>>> purge_map_dir
 ) {
   contain 'autofs::package'
   unless $package_ensure == 'absent' {

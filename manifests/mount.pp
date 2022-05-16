@@ -113,6 +113,7 @@ define autofs::mount (
         notify            => Service[$autofs::service_name],
       }
     }
+<<<<<<< HEAD
   } else {
     # $use_dir == true
     ensure_resource('file', $map_dir, {
@@ -123,6 +124,18 @@ define autofs::mount (
         require => Class['autofs::package'],
       }
     )
+=======
+  } else {  # $use_dir == true
+    ensure_resource('file', $map_dir, {
+      'ensure'  => directory,
+      'owner'   => $autofs::map_file_owner,
+      'group'   => $autofs::map_file_group,
+      'mode'    => '0755',
+      purge     => $autof::purge_map_dir,
+      recure    => $autof::purge_map_dir,
+      'require' => Class['autofs::package'],
+    })
+>>>>>>> purge_map_dir
 
     if !defined(Concat::Fragment['autofs::fragment preamble map directory']) and $ensure == 'present' {
       concat::fragment { 'autofs::fragment preamble map directory':

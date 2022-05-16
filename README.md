@@ -1,4 +1,9 @@
+<<<<<<< HEAD
 # Autofs Puppet Module
+=======
+Autofs Puppet Module
+====================
+>>>>>>> purge_map_dir
 
 [![Travis branch](https://img.shields.io/travis/voxpupuli/puppet-autofs/master.svg?style=flat-square)](https://travis-ci.org/voxpupuli/puppet-autofs)
 [![Puppet Forge](https://img.shields.io/puppetforge/v/puppet/autofs.svg?style=flat-square)](https://forge.puppetlabs.com/puppet/autofs)
@@ -6,8 +11,12 @@
 [![Puppet Forge](https://img.shields.io/puppetforge/e/puppet/autofs.svg?style=flat-square)](https://forge.puppet.com/puppet/autofs)
 [![Puppet Forge](https://img.shields.io/puppetforge/f/puppet/autofs.svg?style=flat-square)](https://forge.puppet.com/puppet/autofs)
 
+<<<<<<< HEAD
 ## Table of Contents
 
+=======
+#### Table of Contents
+>>>>>>> purge_map_dir
 1. [Description - - What the module does and why it is useful](#description)
 2. [Setup - The basics of getting started with Autofs](#setup)
   * [The module manages the following](#the-module-manages-the-following)
@@ -19,17 +28,28 @@
 5. [Development - Guide for contributing to the module](#development)
 6. [Support - When you need help with this module](#support)
 
+<<<<<<< HEAD
 ### Description
 
+=======
+Description
+-----------
+>>>>>>> purge_map_dir
 The Autofs module is a Puppet module for managing the configuration of on-demand mounting and
 automatic unmounting of local and remote filesystems via autofs / automount. This is a global
 module designed to be used by any organization.  It enables most details of Autofs
 configuration to be specified via the user's choice of Puppet manifest or external data.
 
+<<<<<<< HEAD
 ### Setup
 
 The Module manages the following:
 
+=======
+Setup
+-----
+### The Module manages the following:
+>>>>>>> purge_map_dir
 * Autofs package
 * Autofs service
 * Autofs master map (/etc/auto.master)
@@ -68,7 +88,11 @@ class { 'autofs':
 }
 ```
 
+<<<<<<< HEAD
 #### Master Map
+=======
+### Master Map
+>>>>>>> purge_map_dir
 
 The module provides two compatible, built-in mechanisms for managing the
 content of the master map: by setting the `mounts` parameter of the `autofs`
@@ -98,7 +122,11 @@ autofs::mount { 'home':
 `$autofs::mounts`, will result in the following entry in the master
 map"
 
+<<<<<<< HEAD
 ```sh
+=======
+```
+>>>>>>> purge_map_dir
 /home /etc/auto.home --timeout=120
 ```
 
@@ -137,6 +165,10 @@ For more information about merge behavior see the doc for:
 * [Lookup docs](https://docs.puppet.com/puppet/4.7/lookup_quick.html#puppet-lookup:-quick-reference-for-hiera-users)
 * [Hiera 5 docs](https://docs.puppet.com/puppet/5.1/hiera_merging.html) if using Puppet >= 4.9
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> purge_map_dir
 #### Direct Map `/-` argument
 
 The autofs module supports Autofs direct maps naturally.  For a direct map,
@@ -148,8 +180,12 @@ directories; this module does *not* validate that constraint.
 ##### example
 
 Define:
+<<<<<<< HEAD
 
 ```puppet
+=======
+``` puppet
+>>>>>>> purge_map_dir
 autofs::mount { 'foo':
   mount       => '/-',
   mapfile     => '/etc/auto.foo',
@@ -158,8 +194,12 @@ autofs::mount { 'foo':
 ```
 
 Hiera:
+<<<<<<< HEAD
 
 ```yaml
+=======
+``` yaml
+>>>>>>> purge_map_dir
 autofs::mounts:
   foo:
     mount: '/-'
@@ -171,7 +211,11 @@ autofs::mounts:
 
 The autofs module supports the use of Autofs's `+dir:` option (Autofs 5.0.5
 or later) to record master map content in drop-in files in a specified
+<<<<<<< HEAD
 directory instead of directly in the master map.  When a `mount`'s `use_dir`
+=======
+directory instead of directly int rhe master map.  When a `mount`'s `use_dir`
+>>>>>>> purge_map_dir
 parameter is `true` (default is `false`), the corresponding master map entry
 is created as a separate file in the appropriate directory instead of being
 written directly into the master map.  The master map is still, however,
@@ -181,7 +225,10 @@ drop-in directory.
 ##### example
 
 Define:
+<<<<<<< HEAD
 
+=======
+>>>>>>> purge_map_dir
 ```puppet
 autofs::mount { 'home':
   mount       => '/home',
@@ -192,7 +239,10 @@ autofs::mount { 'home':
 ```
 
 Hiera:
+<<<<<<< HEAD
 
+=======
+>>>>>>> purge_map_dir
 ```yaml
 autofs::mounts:
   home:
@@ -214,7 +264,10 @@ also be sufficient to simply omit unwanted mount points.
 ##### example
 
 Define:
+<<<<<<< HEAD
 
+=======
+>>>>>>> purge_map_dir
 ```puppet
 autofs::mount { 'home':
   ensure      => 'absent',
@@ -224,7 +277,10 @@ autofs::mount { 'home':
 ```
 
 Hiera:
+<<<<<<< HEAD
 
+=======
+>>>>>>> purge_map_dir
 ```yaml
 autofs::mounts:
   home:
@@ -233,7 +289,11 @@ autofs::mounts:
     mapfile: '/etc/auto.home'
 ```
 
+<<<<<<< HEAD
 #### Map Files
+=======
+### Map Files
+>>>>>>> purge_map_dir
 
 The module also provides two compatible, built-in mechanisms for managing
 Autofs map files: by setting the `mapfiles` parameter of the `autofs`
@@ -277,8 +337,13 @@ autofs::mapfiles:
 
 Whichever form is used, the resulting mapping in file `/etc/auto.home` is
 
+<<<<<<< HEAD
 ```sh
 * -rw,soft,intr server.example.com:/path/to/home/shares
+=======
+```
+*	-rw,soft,intr	server.example.com:/path/to/home/shares
+>>>>>>> purge_map_dir
 ```
 
 #### Executable map files
@@ -321,9 +386,15 @@ autofs::mapping { '/mnt/data_dataB':
 
 The resulting content of file `/mnt/data` would be
 
+<<<<<<< HEAD
 ```sh
 dataA -ro remote.com:/exports/dataA
 dataB -rw,noexec remote.com:/exports/dataB
+=======
+```
+dataA	-ro	remote.com:/exports/dataA
+dataB	-rw,noexec	remote.com:/exports/dataB
+>>>>>>> purge_map_dir
 ```
 
 #### Removing Entries
@@ -344,6 +415,7 @@ autofs::mapping { 'data':
 }
 ```
 
+<<<<<<< HEAD
 #### LDAP configuration
 
 To setup autofs with an LDAP backend, some additional options need to be added to apply LDAP settings to the autofs configuration.  The first involves the `/etc/auth_ldap.conf` configuration file using the `$ldap_auth_config` hash.  The second is configuring the service itself with the service configuration file (in `/etc/default` or `/etc/sysconfig` depending on the operating system) using `$service_conf_options`.  It is also necessary to enable managing of these two files, which are not managed by default, using `$manage_ldap_auth_conf` and `$manage_service_config`.
@@ -367,6 +439,8 @@ autofs::service_conf_options:
   VALUE_ATTRIBUTE: 'automountInformation'
 ```
 
+=======
+>>>>>>> purge_map_dir
 ## Reference
 
 ### Classes
@@ -554,6 +628,17 @@ parameter is set to `true`.
 
 Default: '/etc/auto.master.d'
 
+<<<<<<< HEAD
+=======
+#### `purge_map_dir`
+
+Data type: Boolen
+
+This parameter specifies if the $map_dir path should be purged of unmanaged files.
+
+Default: false
+
+>>>>>>> purge_map_dir
 #### `use_dir`
 
 Data type: Boolean
@@ -594,7 +679,10 @@ wide variety of Autofs-recognized alternatives such as shared mounts,
 multi-mounts, and replicated mounts.
 
 Example:
+<<<<<<< HEAD
 
+=======
+>>>>>>> purge_map_dir
 ```puppet
 [
   { 'key' => 'dataA', 'options' => 'rw,noexec', 'fs' => 'remote.net:/exports/dataA' }
@@ -686,10 +774,18 @@ mapping for the same key.
 
 Default: 10
 
+<<<<<<< HEAD
 ## Limitations
 
 ### Removals
 
+=======
+
+Limitations
+------------
+
+#### Removals
+>>>>>>> purge_map_dir
 Directly calling the `autofs::package` and `autofs::service` classes is disabled in 3.0.0.
 These are now private classes.
 
@@ -700,6 +796,7 @@ The `direct`, `executable`, `mapcontents`, `mapfile_manage`, and `replace` param
 `autofs::mount` are removed in 5.0.0, the first having already been ineffective in 4.3.0,
 and the others no longer being relevant starting in 5.0.0.
 
+<<<<<<< HEAD
 ### Puppet platforms
 
 Compatible with Puppet 4 or greater only. Puppet 4.6.0 or greater
@@ -736,6 +833,45 @@ Compatible with Puppet 4 or greater only. Puppet 4.6.0 or greater
 Please see the [CONTRIBUTING.md](CONTRIBUTING.md) file for instructions regarding development environments and testing.
 
 ## Authors
+=======
+#### Puppet platforms
+Compatible with Puppet 4 or greater only. Puppet 4.6.0 or greater
+(including Puppet 5) will provide best results.
+
+#### Operating Systems
+
+* Supported
+    * Ubuntu
+      * 16.04
+      * 18.04
+    * CentOS/RHEL/Scientific/Oracle Linux
+      * 6.x
+      * 7.x
+    * SLES
+      * 11 Service Pack 4
+      * 12 Service Pack 1
+    * OpenSUSE 13.1
+    * Debian
+      * 7 "Wheezy"
+      * 8 "Jessie"
+* Self Support - should work, support not provided by developer
+    * Solaris 10, 11
+    * AIX 7.1, 7.2
+    * Fedora 24, 25
+    * SLES 10
+    * CentOS/RHEL/Scientific/Oracle Linux 5.x
+* Unsupported
+    * Windows (Autofs not available)
+    * Mac OS X
+
+Development
+-------------
+
+Please see the [CONTRIBUTING.md](CONTRIBUTING.md) file for instructions regarding development environments and testing.
+
+Authors
+-------
+>>>>>>> purge_map_dir
 
 * Vox Pupuli: [voxpupuli@groups.io](mailto:voxpupuli@groups.io)
 * David Hollinger: [david.hollinger@moduletux.com](mailto:david.hollinger@moduletux.com)
