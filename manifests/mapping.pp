@@ -20,7 +20,7 @@
 #     ensuring 'absent' is not meaningfully different from omitting the
 #     resource declaration altogether
 # @param fs the remote filesystem to mount
-# @param key the autofs key for this mappingr. For indirect maps it is the
+# @param key the autofs key for this mapping. For indirect maps it is the
 #     basename of the mountpoint directory for $fs (not to be confused with
 #     an _autofs_ mount point, which is the parent directory).  For direct
 #     maps it is the absolute path to the mountpoint directory.
