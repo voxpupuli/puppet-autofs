@@ -56,6 +56,8 @@
 # @option mounts [String] :map_dir Full path, including file name, to the master map
 #   drop-in directory in which to manage this mount's definition.  Relevant only when
 #   :use_dir is set to true
+# @option mounts [String] :purge_map_dir Purge the $map_dir directory of unmanaged
+#   files.
 # @option mounts [Boolean] :use_dir Whether to manage this mount via a file in the
 #   master map's drop-in directory instead of directly in the master map
 # @param mapfiles options with which to manage map files.
@@ -96,7 +98,6 @@ class autofs (
   String $package_ensure,
   Hash[String, Hash] $mounts,
   Variant[String, Array[String]] $package_name,
-  Optional[Enum['stopped', 'running']] $service_ensure,
   Boolean $service_enable,
   String $service_name,
   String $auto_master_map,
@@ -105,6 +106,8 @@ class autofs (
   Boolean $manage_service_config,
   Boolean $manage_ldap_auth_conf,
   Enum['no', 'yes'] $service_use_misc_device,
+  Boolean $purge_map_dir  = false,
+  Optional[Enum['stopped', 'running']] $service_ensure,
   Optional[Stdlib::Absolutepath] $ldap_auth_conf_path,
   Optional[Hash] $ldap_auth_config,
   Optional[Stdlib::Absolutepath] $service_conf_path,

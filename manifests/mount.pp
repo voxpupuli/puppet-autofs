@@ -120,6 +120,8 @@ define autofs::mount (
         owner   => $autofs::map_file_owner,
         group   => $autofs::map_file_group,
         mode    => '0755',
+        purge   => $autofs::purge_map_dir,
+        recurse => $autofs::purge_map_dir,
         require => Class['autofs::package'],
       }
     )

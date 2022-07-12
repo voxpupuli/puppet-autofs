@@ -554,6 +554,14 @@ parameter is set to `true`.
 
 Default: '/etc/auto.master.d'
 
+#### `purge_map_dir`
+
+Data type: Boolen
+
+This parameter specifies if the $map_dir path should be purged of unmanaged files.
+
+Default: false
+
 #### `use_dir`
 
 Data type: Boolean
