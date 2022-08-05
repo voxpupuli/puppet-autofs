@@ -100,6 +100,5 @@ define autofs::mapping (
       content => $content,
       order   => $order,
     }
-    }
   }
 }
