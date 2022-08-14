@@ -1,10 +1,13 @@
 # Autofs Puppet Module
 
-[![Travis branch](https://img.shields.io/travis/voxpupuli/puppet-autofs/master.svg?style=flat-square)](https://travis-ci.org/voxpupuli/puppet-autofs)
-[![Puppet Forge](https://img.shields.io/puppetforge/v/puppet/autofs.svg?style=flat-square)](https://forge.puppetlabs.com/puppet/autofs)
-[![Puppet Forge](https://img.shields.io/puppetforge/dt/puppet/autofs.svg?style=flat-square)](https://forge.puppet.com/puppet/autofs)
-[![Puppet Forge](https://img.shields.io/puppetforge/e/puppet/autofs.svg?style=flat-square)](https://forge.puppet.com/puppet/autofs)
-[![Puppet Forge](https://img.shields.io/puppetforge/f/puppet/autofs.svg?style=flat-square)](https://forge.puppet.com/puppet/autofs)
+[![Build Status](https://github.com/voxpupuli/puppet-autofs/workflows/CI/badge.svg)](https://github.com/voxpupuli/puppet-autofs/actions?query=workflow%3ACI)
+[![Release](https://github.com/voxpupuli/puppet-autofs/actions/workflows/release.yml/badge.svg)](https://github.com/voxpupuli/puppet-autofs/actions/workflows/release.yml)
+[![Puppet Forge](https://img.shields.io/puppetforge/v/puppet/autofs.svg)](https://forge.puppetlabs.com/puppet/autofs)
+[![Puppet Forge - downloads](https://img.shields.io/puppetforge/dt/puppet/autofs.svg)](https://forge.puppetlabs.com/puppet/autofs)
+[![Puppet Forge - endorsement](https://img.shields.io/puppetforge/e/puppet/autofs.svg)](https://forge.puppetlabs.com/puppet/autofs)
+[![Puppet Forge - scores](https://img.shields.io/puppetforge/f/puppet/autofs.svg)](https://forge.puppetlabs.com/puppet/autofs)
+[![puppetmodule.info docs](http://www.puppetmodule.info/images/badge.png)](http://www.puppetmodule.info/m/puppet-autofs)
+[![Apache-2 License](https://img.shields.io/github/license/voxpupuli/puppet-autofs.svg)](LICENSE)
 
 ## Table of Contents
 
