@@ -720,18 +720,17 @@ Compatible with Puppet 4 or greater only. Puppet 4.6.0 or greater
 
 * Supported
   * Ubuntu
-    * 16.04
     * 18.04
   * CentOS/RHEL/Scientific/Oracle Linux
-    * 6.x
     * 7.x
+    * 8.x
   * SLES
     * 11 Service Pack 4
     * 12 Service Pack 1
   * OpenSUSE 13.1
   * Debian
-    * 7 "Wheezy"
-    * 8 "Jessie"
+    * 9
+    * 10
 * Self Support - should work, support not provided by developer
   * Solaris 10, 11
   * AIX 7.1, 7.2
@@ -741,6 +740,8 @@ Compatible with Puppet 4 or greater only. Puppet 4.6.0 or greater
 * Unsupported
   * Windows (Autofs not available)
   * Mac OS X
+
+For an up2date list of supported modules, take a look at the metadata.json.
 
 ## Development
 
