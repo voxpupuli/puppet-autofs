@@ -209,6 +209,41 @@ describe 'autofs' do
       end
     end
 
+    context 'master nismap inclusion test' do
+      before(:context) do
+        cleanup_helper
+      end
+
+      it 'applies' do
+        pp = <<-EOS
+          class { 'autofs':
+
+            mapfiles => {
+              '/etc/auto.master' => {
+                mappings => [
+                  { 'key' => '+', 'fs' => 'auto.master' }
+                ]
+              }
+            }
+          }
+        EOS
+
+        apply_manifest(pp, catch_failures: true)
+      end
+
+      describe file('/etc/auto.master') do
+        it 'exists and belongs to root' do
+          expect(subject).to exist
+          expect(subject).to be_owned_by 'root'
+          expect(subject).to be_grouped_into 'root'
+        end
+
+        its(:content) do
+          is_expected.to match %r{^\+auto.master$}
+        end
+      end
+    end
+
     context 'package set to absent' do
       before(:context) do
         cleanup_helper
