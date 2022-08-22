@@ -4,6 +4,37 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v7.0.0](https://github.com/voxpupuli/puppet-autofs/tree/v7.0.0) (2022-08-22)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-autofs/compare/v6.0.0...v7.0.0)
+
+**Breaking changes:**
+
+- Drop Ubuntu 16.04 support [\#185](https://github.com/voxpupuli/puppet-autofs/pull/185) ([bastelfreak](https://github.com/bastelfreak))
+- Drop RedHat-derivatives 6; Add RedHat-derivatives 8 [\#174](https://github.com/voxpupuli/puppet-autofs/pull/174) ([smortex](https://github.com/smortex))
+- Drop EOL CentOS 6; Debian 8; Add Debian 9, Debian 10, Ubuntu 20.04 [\#172](https://github.com/voxpupuli/puppet-autofs/pull/172) ([smortex](https://github.com/smortex))
+- Drop EOL Puppet 5; Add Puppet 7 [\#171](https://github.com/voxpupuli/puppet-autofs/pull/171) ([smortex](https://github.com/smortex))
+
+**Implemented enhancements:**
+
+- Allow to add +auto.master in auto.master file [\#183](https://github.com/voxpupuli/puppet-autofs/pull/183) ([erobhal](https://github.com/erobhal))
+- Add the ability to purge the $map\_dir directory of unmanaged files. [\#181](https://github.com/voxpupuli/puppet-autofs/pull/181) ([bschonec](https://github.com/bschonec))
+- Add support for FreeBSD [\#179](https://github.com/voxpupuli/puppet-autofs/pull/179) ([smortex](https://github.com/smortex))
+- Enable LDAP in autofs [\#163](https://github.com/voxpupuli/puppet-autofs/pull/163) ([coreone](https://github.com/coreone))
+
+**Closed issues:**
+
+- Dependency chain issue with puppetlabs-concat [\#169](https://github.com/voxpupuli/puppet-autofs/issues/169)
+
+**Merged pull requests:**
+
+- delete legacy nodesets [\#186](https://github.com/voxpupuli/puppet-autofs/pull/186) ([bastelfreak](https://github.com/bastelfreak))
+- Allow stdlib 8.0.0 [\#175](https://github.com/voxpupuli/puppet-autofs/pull/175) ([smortex](https://github.com/smortex))
+- Allow latest versions of dependencies [\#173](https://github.com/voxpupuli/puppet-autofs/pull/173) ([smortex](https://github.com/smortex))
+- Drop OpenSuSE 13, add OpenSuSE 15.2 [\#166](https://github.com/voxpupuli/puppet-autofs/pull/166) ([ekohl](https://github.com/ekohl))
+- Use voxpupuli-acceptance [\#159](https://github.com/voxpupuli/puppet-autofs/pull/159) ([ekohl](https://github.com/ekohl))
+- Add optional integer "order" to fs\_mapping type [\#152](https://github.com/voxpupuli/puppet-autofs/pull/152) ([georgestagg](https://github.com/georgestagg))
+
 ## [v6.0.0](https://github.com/voxpupuli/puppet-autofs/tree/v6.0.0) (2020-04-07)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-autofs/compare/v5.0.1...v6.0.0)
