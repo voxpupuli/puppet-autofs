@@ -45,34 +45,13 @@
 #           fs: 'server.example.com:/path/to/home/shares'
 #
 # @param mounts the options with which to manage the autofs master map
-# @option mounts [String] :mount The autofs mount point to be managed
-# @option mounts [Integer] :order The relative order in which the mount point's
-#   definition will appear in the master map
-# @option mounts [String] :mapfile Name of the autofs map file for this mount point
-# @option mounts [String] :options Mount options to be recorded for this mount point
-#   in the master map
-# @option mounts [String] :master Full path, including file name, to the master map
-#   in which to manage this mount point
-# @option mounts [String] :map_dir Full path, including file name, to the master map
-#   drop-in directory in which to manage this mount's definition.  Relevant only when
-#   :use_dir is set to true
-# @option mounts [String] :purge_map_dir Purge the $map_dir directory of unmanaged
-#   files.
-# @option mounts [Boolean] :use_dir Whether to manage this mount via a file in the
-#   master map's drop-in directory instead of directly in the master map
-# @param mapfiles options with which to manage map files.
-# @option mapfiles [String] path: Full path, including file name, to a
-#   map file to manage.  Defaults to the key with which this value is associated.
-# @option mapfiles [Array] mappings: an array of hashes defining specific, sun-format
-#   mappings that should appear in this map file.  Each has a 'key', an option list in
-#   string or array form, and a filesystem specification as expected by the 'mount'
-#   command.
-# @option mapfiles [Boolean] replace: whether to modify the map file if it already exists
-# @option ldap_auth_conf_path The path to the ldap_auth.conf file
-# @option ldap_auth_config The hash to use for the configuration settings in the ldap_auth.conf file
-# @option service_conf_path The path to the service configuration file
-# @option service_options An array of options to add to the OPTIONS variable in the service configuration file
-# @option service_conf_options A hash of environment variables to add to the service configuration file for LDAP configuration
+# @param purge_map_dir Purge the $map_dir directory of unmanaged
+# @param ldap_auth_conf_path The path to the ldap_auth.conf file
+# @param ldap_auth_config The hash to use for the configuration settings in the ldap_auth.conf file
+# @param service_conf_path The path to the service configuration file
+# @param service_options An array of options to add to the OPTIONS variable in the service configuration file
+# @param service_conf_options A hash of environment variables to add to the service configuration file for LDAP configuration
+# @param mapfiles replace: whether to modify the map file if it already exists
 # @param maps Deprecated.  Use the mapfiles parameter instead.
 # @param package_ensure Determines the state of the package. Can be set to: installed, absent, lastest, or a specific version string.
 # @param package_name Determine the name of the package to install. Should be covered by hieradata.
@@ -95,22 +74,22 @@
 # @param autounmountd_service_name Determine the name of the autounmountd service for cross platform compatibility
 #
 class autofs (
-  String $package_ensure,
-  Hash[String, Hash] $mounts,
-  Variant[String, Array[String]] $package_name,
-  Boolean $service_enable,
-  String $service_name,
-  String $auto_master_map,
-  String $map_file_owner,
-  String $map_file_group,
-  Boolean $manage_service_config,
-  Boolean $manage_ldap_auth_conf,
-  Enum['no', 'yes'] $service_use_misc_device,
+  String $package_ensure = 'installed',
+  Hash[String, Hash] $mounts = {},
+  Variant[String, Array[String]] $package_name = 'autofs',
+  Boolean $service_enable = true,
+  String $service_name = 'autofs',
+  String $auto_master_map = '/etc/auto.master',
+  String $map_file_owner = 'root',
+  String $map_file_group = 'root',
+  Boolean $manage_service_config = false,
+  Boolean $manage_ldap_auth_conf = false,
+  Enum['no', 'yes'] $service_use_misc_device = 'yes',
   Boolean $purge_map_dir  = false,
-  Optional[Enum['stopped', 'running']] $service_ensure,
-  Optional[Stdlib::Absolutepath] $ldap_auth_conf_path,
-  Optional[Hash] $ldap_auth_config,
-  Optional[Stdlib::Absolutepath] $service_conf_path,
+  Enum['stopped', 'running'] $service_ensure = 'running',
+  Stdlib::Absolutepath $ldap_auth_conf_path = '/etc/autofs_ldap_auth.conf',
+  Hash $ldap_auth_config = { 'usetls' => 'no', 'tlsrequired' => 'no', 'authrequired' => 'no' },
+  Stdlib::Absolutepath $service_conf_path = '/etc/sysconfig/autofs',
   Optional[Hash[String, Hash]] $mapfiles = undef,
   Optional[Hash[String, Hash]] $maps = undef,  # deprecated
   Optional[String] $package_source = undef,
