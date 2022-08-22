@@ -89,9 +89,15 @@ define autofs::mapping (
     }
 
     # Declare an appropriate fragment of the target map file
+    if $key == '+' {
+      $content = "${key}${fs}\n"
+    } else {
+      $content = "${key}	${formatted_options}	${fs}\n"
+    }
+
     concat::fragment { "autofs::mapping/${title}":
       target  => $mapfile,
-      content => "${key}	${formatted_options}	${fs}\n",
+      content => $content,
       order   => $order,
     }
   }

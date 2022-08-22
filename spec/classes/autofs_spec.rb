@@ -119,6 +119,30 @@ describe 'autofs', type: :class do
         end
       end
 
+      context 'should declare automaster mapfile with nismap' do
+        master_mappings = [
+          { 'key' => '+', 'fs' => 'auto.master' }
+        ]
+        let(:params) do
+          {
+            mounts: {},
+            mapfiles: {
+              'master' => { path: '/etc/auto.master', mappings: master_mappings },
+            },
+            maps: :undef
+          }
+        end
+
+        it do
+          expect(subject).to compile.with_all_deps
+          expect(subject).to contain_autofs__mapfile('master').
+            with(path: '/etc/auto.master', mappings: master_mappings)
+          expect(subject).to have_autofs__mapfile_resource_count(1)
+          expect(subject).to have_autofs__mount_resource_count(0)
+          expect(subject).to have_autofs__map_resource_count(0)
+        end
+      end
+
       context 'with $mounts not a hash' do
         let(:params) { { mounts: 'string' } }
 
