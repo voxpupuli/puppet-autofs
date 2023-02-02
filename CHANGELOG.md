@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v7.1.0](https://github.com/voxpupuli/puppet-autofs/tree/v7.1.0) (2023-02-02)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-autofs/compare/v7.0.0...v7.1.0)
+
+**Implemented enhancements:**
+
+- Add AlmaLinux and Rocky support [\#191](https://github.com/voxpupuli/puppet-autofs/pull/191) ([bastelfreak](https://github.com/bastelfreak))
+
 ## [v7.0.0](https://github.com/voxpupuli/puppet-autofs/tree/v7.0.0) (2022-08-22)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-autofs/compare/v6.0.0...v7.0.0)
@@ -17,6 +25,7 @@ These should not affect the functionality of the module.
 
 **Implemented enhancements:**
 
+- Move hiera data to init.pp / puppet-lint: enable type/documentation check [\#188](https://github.com/voxpupuli/puppet-autofs/pull/188) ([bastelfreak](https://github.com/bastelfreak))
 - Allow to add +auto.master in auto.master file [\#183](https://github.com/voxpupuli/puppet-autofs/pull/183) ([erobhal](https://github.com/erobhal))
 - Add the ability to purge the $map\_dir directory of unmanaged files. [\#181](https://github.com/voxpupuli/puppet-autofs/pull/181) ([bschonec](https://github.com/bschonec))
 - Add support for FreeBSD [\#179](https://github.com/voxpupuli/puppet-autofs/pull/179) ([smortex](https://github.com/smortex))

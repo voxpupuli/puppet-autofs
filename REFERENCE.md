@@ -18,18 +18,18 @@ points and maps.
 
 ### Defined types
 
-* [`autofs::map`](#autofsmap): Defined type to generate autofs map entry configuration files.
-* [`autofs::mapfile`](#autofsmapfile): Defined type to manage overall autofs map files
-* [`autofs::mapping`](#autofsmapping): Defined type to manage a single filesystem mapping in a single map
+* [`autofs::map`](#autofs--map): Defined type to generate autofs map entry configuration files.
+* [`autofs::mapfile`](#autofs--mapfile): Defined type to manage overall autofs map files
+* [`autofs::mapping`](#autofs--mapping): Defined type to manage a single filesystem mapping in a single map
 file.
-* [`autofs::mount`](#autofsmount): Defined type to manage mount point definitions in the Autofs master
+* [`autofs::mount`](#autofs--mount): Defined type to manage mount point definitions in the Autofs master
 map.
 
 ### Data types
 
-* [`Autofs::Fs_mapping`](#autofsfs_mapping): A type representing a single filesystem mapping, relative to the context provided by an (unspecified) autofs map.  "Single" refers to a singl
-* [`Autofs::Mapentry`](#autofsmapentry): This type matches a map specfication with map type and optional format, or the built-in -hosts map.
-* [`Autofs::Options`](#autofsoptions): A type representing an autofs options list, represented either as a single non-empty string or an array of such strings
+* [`Autofs::Fs_mapping`](#Autofs--Fs_mapping): A type representing a single filesystem mapping, relative to the context provided by an (unspecified) autofs map.  "Single" refers to a singl
+* [`Autofs::Mapentry`](#Autofs--Mapentry): This type matches a map specfication with map type and optional format, or the built-in -hosts map.
+* [`Autofs::Options`](#Autofs--Options): A type representing an autofs options list, represented either as a single non-empty string or an array of such strings
 
 ## Classes
 
@@ -98,34 +98,34 @@ autofs::mapfiles:
 
 The following parameters are available in the `autofs` class:
 
-* [`mounts`](#mounts)
-* [`purge_map_dir`](#purge_map_dir)
-* [`ldap_auth_conf_path`](#ldap_auth_conf_path)
-* [`ldap_auth_config`](#ldap_auth_config)
-* [`service_conf_path`](#service_conf_path)
-* [`service_options`](#service_options)
-* [`service_conf_options`](#service_conf_options)
-* [`mapfiles`](#mapfiles)
-* [`maps`](#maps)
-* [`package_ensure`](#package_ensure)
-* [`package_name`](#package_name)
-* [`package_source`](#package_source)
-* [`service_ensure`](#service_ensure)
-* [`service_enable`](#service_enable)
-* [`service_name`](#service_name)
-* [`auto_master_map`](#auto_master_map)
-* [`map_file_owner`](#map_file_owner)
-* [`map_file_group`](#map_file_group)
-* [`manage_service_config`](#manage_service_config)
-* [`manage_ldap_auth_conf`](#manage_ldap_auth_conf)
-* [`service_use_misc_device`](#service_use_misc_device)
-* [`reload_command`](#reload_command)
-* [`automountd_service_ensure`](#automountd_service_ensure)
-* [`autounmountd_service_ensure`](#autounmountd_service_ensure)
-* [`automountd_service_name`](#automountd_service_name)
-* [`autounmountd_service_name`](#autounmountd_service_name)
+* [`mounts`](#-autofs--mounts)
+* [`purge_map_dir`](#-autofs--purge_map_dir)
+* [`ldap_auth_conf_path`](#-autofs--ldap_auth_conf_path)
+* [`ldap_auth_config`](#-autofs--ldap_auth_config)
+* [`service_conf_path`](#-autofs--service_conf_path)
+* [`service_options`](#-autofs--service_options)
+* [`service_conf_options`](#-autofs--service_conf_options)
+* [`mapfiles`](#-autofs--mapfiles)
+* [`maps`](#-autofs--maps)
+* [`package_ensure`](#-autofs--package_ensure)
+* [`package_name`](#-autofs--package_name)
+* [`package_source`](#-autofs--package_source)
+* [`service_ensure`](#-autofs--service_ensure)
+* [`service_enable`](#-autofs--service_enable)
+* [`service_name`](#-autofs--service_name)
+* [`auto_master_map`](#-autofs--auto_master_map)
+* [`map_file_owner`](#-autofs--map_file_owner)
+* [`map_file_group`](#-autofs--map_file_group)
+* [`manage_service_config`](#-autofs--manage_service_config)
+* [`manage_ldap_auth_conf`](#-autofs--manage_ldap_auth_conf)
+* [`service_use_misc_device`](#-autofs--service_use_misc_device)
+* [`reload_command`](#-autofs--reload_command)
+* [`automountd_service_ensure`](#-autofs--automountd_service_ensure)
+* [`autounmountd_service_ensure`](#-autofs--autounmountd_service_ensure)
+* [`automountd_service_name`](#-autofs--automountd_service_name)
+* [`autounmountd_service_name`](#-autofs--autounmountd_service_name)
 
-##### <a name="mounts"></a>`mounts`
+##### <a name="-autofs--mounts"></a>`mounts`
 
 Data type: `Hash[String, Hash]`
 
@@ -133,15 +133,15 @@ the options with which to manage the autofs master map
 
 Default value: `{}`
 
-##### <a name="purge_map_dir"></a>`purge_map_dir`
+##### <a name="-autofs--purge_map_dir"></a>`purge_map_dir`
 
 Data type: `Boolean`
 
 Purge the $map_dir directory of unmanaged
 
-Default value: ``false``
+Default value: `false`
 
-##### <a name="ldap_auth_conf_path"></a>`ldap_auth_conf_path`
+##### <a name="-autofs--ldap_auth_conf_path"></a>`ldap_auth_conf_path`
 
 Data type: `Stdlib::Absolutepath`
 
@@ -149,7 +149,7 @@ The path to the ldap_auth.conf file
 
 Default value: `'/etc/autofs_ldap_auth.conf'`
 
-##### <a name="ldap_auth_config"></a>`ldap_auth_config`
+##### <a name="-autofs--ldap_auth_config"></a>`ldap_auth_config`
 
 Data type: `Hash`
 
@@ -157,7 +157,7 @@ The hash to use for the configuration settings in the ldap_auth.conf file
 
 Default value: `{ 'usetls' => 'no', 'tlsrequired' => 'no', 'authrequired' => 'no' }`
 
-##### <a name="service_conf_path"></a>`service_conf_path`
+##### <a name="-autofs--service_conf_path"></a>`service_conf_path`
 
 Data type: `Stdlib::Absolutepath`
 
@@ -165,39 +165,39 @@ The path to the service configuration file
 
 Default value: `'/etc/sysconfig/autofs'`
 
-##### <a name="service_options"></a>`service_options`
+##### <a name="-autofs--service_options"></a>`service_options`
 
 Data type: `Optional[Array[String]]`
 
 An array of options to add to the OPTIONS variable in the service configuration file
 
-Default value: ``undef``
+Default value: `undef`
 
-##### <a name="service_conf_options"></a>`service_conf_options`
+##### <a name="-autofs--service_conf_options"></a>`service_conf_options`
 
 Data type: `Optional[Hash]`
 
 A hash of environment variables to add to the service configuration file for LDAP configuration
 
-Default value: ``undef``
+Default value: `undef`
 
-##### <a name="mapfiles"></a>`mapfiles`
+##### <a name="-autofs--mapfiles"></a>`mapfiles`
 
 Data type: `Optional[Hash[String, Hash]]`
 
 replace: whether to modify the map file if it already exists
 
-Default value: ``undef``
+Default value: `undef`
 
-##### <a name="maps"></a>`maps`
+##### <a name="-autofs--maps"></a>`maps`
 
 Data type: `Optional[Hash[String, Hash]]`
 
 Deprecated.  Use the mapfiles parameter instead.
 
-Default value: ``undef``
+Default value: `undef`
 
-##### <a name="package_ensure"></a>`package_ensure`
+##### <a name="-autofs--package_ensure"></a>`package_ensure`
 
 Data type: `String`
 
@@ -205,7 +205,7 @@ Determines the state of the package. Can be set to: installed, absent, lastest, 
 
 Default value: `'installed'`
 
-##### <a name="package_name"></a>`package_name`
+##### <a name="-autofs--package_name"></a>`package_name`
 
 Data type: `Variant[String, Array[String]]`
 
@@ -213,15 +213,15 @@ Determine the name of the package to install. Should be covered by hieradata.
 
 Default value: `'autofs'`
 
-##### <a name="package_source"></a>`package_source`
+##### <a name="-autofs--package_source"></a>`package_source`
 
 Data type: `Optional[String]`
 
 Determine the source of the package, required on certain platforms (AIX)
 
-Default value: ``undef``
+Default value: `undef`
 
-##### <a name="service_ensure"></a>`service_ensure`
+##### <a name="-autofs--service_ensure"></a>`service_ensure`
 
 Data type: `Enum['stopped', 'running']`
 
@@ -229,7 +229,7 @@ Determines state of the service. Can be set to: running or stopped.
 
 Default value: `'running'`
 
-##### <a name="service_enable"></a>`service_enable`
+##### <a name="-autofs--service_enable"></a>`service_enable`
 
 Data type: `Boolean`
 
@@ -237,9 +237,9 @@ Determines if the service should start with the system boot. true
 will start the autofs service on boot. false will not start the autofs service
 on boot.
 
-Default value: ``true``
+Default value: `true`
 
-##### <a name="service_name"></a>`service_name`
+##### <a name="-autofs--service_name"></a>`service_name`
 
 Data type: `String`
 
@@ -247,7 +247,7 @@ Determine the name of the service for cross platform compatibility
 
 Default value: `'autofs'`
 
-##### <a name="auto_master_map"></a>`auto_master_map`
+##### <a name="-autofs--auto_master_map"></a>`auto_master_map`
 
 Data type: `String`
 
@@ -255,7 +255,7 @@ Filename of the auto.master map for cross platform compatiblity
 
 Default value: `'/etc/auto.master'`
 
-##### <a name="map_file_owner"></a>`map_file_owner`
+##### <a name="-autofs--map_file_owner"></a>`map_file_owner`
 
 Data type: `String`
 
@@ -263,7 +263,7 @@ owner of the automount map files for cross platform compatiblity
 
 Default value: `'root'`
 
-##### <a name="map_file_group"></a>`map_file_group`
+##### <a name="-autofs--map_file_group"></a>`map_file_group`
 
 Data type: `String`
 
@@ -271,23 +271,23 @@ group of the automount map files for cross platform compatiblity
 
 Default value: `'root'`
 
-##### <a name="manage_service_config"></a>`manage_service_config`
+##### <a name="-autofs--manage_service_config"></a>`manage_service_config`
 
 Data type: `Boolean`
 
 Determines if the service configuration file (in /etc/default or /etc/sysconfig) should be managed
 
-Default value: ``false``
+Default value: `false`
 
-##### <a name="manage_ldap_auth_conf"></a>`manage_ldap_auth_conf`
+##### <a name="-autofs--manage_ldap_auth_conf"></a>`manage_ldap_auth_conf`
 
 Data type: `Boolean`
 
 Determines if the /etc/autofs_ldap_auth.conf file should be managed
 
-Default value: ``false``
+Default value: `false`
 
-##### <a name="service_use_misc_device"></a>`service_use_misc_device`
+##### <a name="-autofs--service_use_misc_device"></a>`service_use_misc_device`
 
 Data type: `Enum['no', 'yes']`
 
@@ -295,49 +295,49 @@ Sets the USE_MISC_DEVICE value in the service configuration file
 
 Default value: `'yes'`
 
-##### <a name="reload_command"></a>`reload_command`
+##### <a name="-autofs--reload_command"></a>`reload_command`
 
 Data type: `Optional[String]`
 
 In lieu of a service reload capability in Puppet, exec this command to reload automount without restarting it.
 
-Default value: ``undef``
+Default value: `undef`
 
-##### <a name="automountd_service_ensure"></a>`automountd_service_ensure`
-
-Data type: `Optional[Enum['stopped', 'running']]`
-
-Determines state of the service. Can be set to: running or stopped.
-
-Default value: ``undef``
-
-##### <a name="autounmountd_service_ensure"></a>`autounmountd_service_ensure`
+##### <a name="-autofs--automountd_service_ensure"></a>`automountd_service_ensure`
 
 Data type: `Optional[Enum['stopped', 'running']]`
 
 Determines state of the service. Can be set to: running or stopped.
 
-Default value: ``undef``
+Default value: `undef`
 
-##### <a name="automountd_service_name"></a>`automountd_service_name`
+##### <a name="-autofs--autounmountd_service_ensure"></a>`autounmountd_service_ensure`
+
+Data type: `Optional[Enum['stopped', 'running']]`
+
+Determines state of the service. Can be set to: running or stopped.
+
+Default value: `undef`
+
+##### <a name="-autofs--automountd_service_name"></a>`automountd_service_name`
 
 Data type: `Optional[String]`
 
 Determine the name of the automountd service for cross platform compatibility
 
-Default value: ``undef``
+Default value: `undef`
 
-##### <a name="autounmountd_service_name"></a>`autounmountd_service_name`
+##### <a name="-autofs--autounmountd_service_name"></a>`autounmountd_service_name`
 
 Data type: `Optional[String]`
 
 Determine the name of the autounmountd service for cross platform compatibility
 
-Default value: ``undef``
+Default value: `undef`
 
 ## Defined types
 
-### <a name="autofsmap"></a>`autofs::map`
+### <a name="autofs--map"></a>`autofs::map`
 
 Defined type to generate autofs map entry configuration files.
 
@@ -367,15 +367,15 @@ autofs::map { 'data':
 
 The following parameters are available in the `autofs::map` defined type:
 
-* [`ensure`](#ensure)
-* [`mapcontents`](#mapcontents)
-* [`mapfile`](#mapfile)
-* [`template`](#template)
-* [`mapmode`](#mapmode)
-* [`replace`](#replace)
-* [`order`](#order)
+* [`ensure`](#-autofs--map--ensure)
+* [`mapcontents`](#-autofs--map--mapcontents)
+* [`mapfile`](#-autofs--map--mapfile)
+* [`template`](#-autofs--map--template)
+* [`mapmode`](#-autofs--map--mapmode)
+* [`replace`](#-autofs--map--replace)
+* [`order`](#-autofs--map--order)
 
-##### <a name="ensure"></a>`ensure`
+##### <a name="-autofs--map--ensure"></a>`ensure`
 
 Data type: `Enum['present', 'absent']`
 
@@ -383,7 +383,7 @@ Whether to create the mapfile or not.
 
 Default value: `'present'`
 
-##### <a name="mapcontents"></a>`mapcontents`
+##### <a name="-autofs--map--mapcontents"></a>`mapcontents`
 
 Data type: `Variant[Array, String]`
 
@@ -392,7 +392,7 @@ Example: '* -user,rw,soft nfs.example.org:/path/to'
 
 Default value: `[]`
 
-##### <a name="mapfile"></a>`mapfile`
+##### <a name="-autofs--map--mapfile"></a>`mapfile`
 
 Data type: `Stdlib::Absolutepath`
 
@@ -400,7 +400,7 @@ Name of the "auto." configuration file that will be generated.
 
 Default value: `$title`
 
-##### <a name="template"></a>`template`
+##### <a name="-autofs--map--template"></a>`template`
 
 Data type: `Enum['autofs/auto.map.erb', 'autofs/auto.map.exec.erb']`
 
@@ -408,7 +408,7 @@ Template to use to generate the mapfile.
 
 Default value: `'autofs/auto.map.erb'`
 
-##### <a name="mapmode"></a>`mapmode`
+##### <a name="-autofs--map--mapmode"></a>`mapmode`
 
 Data type: `String`
 
@@ -416,15 +416,15 @@ UNIX permissions to be added to the file.
 
 Default value: `'0644'`
 
-##### <a name="replace"></a>`replace`
+##### <a name="-autofs--map--replace"></a>`replace`
 
 Data type: `Boolean`
 
 Whether or not to replace an existing mapfile of the same filename/path.
 
-Default value: ``true``
+Default value: `true`
 
-##### <a name="order"></a>`order`
+##### <a name="-autofs--map--order"></a>`order`
 
 Data type: `Integer`
 
@@ -432,7 +432,7 @@ Order in which entries will appear in the autofs map file.
 
 Default value: `1`
 
-### <a name="autofsmapfile"></a>`autofs::mapfile`
+### <a name="autofs--mapfile"></a>`autofs::mapfile`
 
 Defined type to manage overall autofs map files
 
@@ -450,13 +450,13 @@ Defined type to manage overall autofs map files
 
 The following parameters are available in the `autofs::mapfile` defined type:
 
-* [`ensure`](#ensure)
-* [`path`](#path)
-* [`mappings`](#mappings)
-* [`replace`](#replace)
-* [`execute`](#execute)
+* [`ensure`](#-autofs--mapfile--ensure)
+* [`path`](#-autofs--mapfile--path)
+* [`mappings`](#-autofs--mapfile--mappings)
+* [`replace`](#-autofs--mapfile--replace)
+* [`execute`](#-autofs--mapfile--execute)
 
-##### <a name="ensure"></a>`ensure`
+##### <a name="-autofs--mapfile--ensure"></a>`ensure`
 
 Data type: `Enum['present', 'absent']`
 
@@ -464,7 +464,7 @@ Whether the mapfile should be present on the target system
 
 Default value: `'present'`
 
-##### <a name="path"></a>`path`
+##### <a name="-autofs--mapfile--path"></a>`path`
 
 Data type: `Stdlib::Absolutepath`
 
@@ -472,7 +472,7 @@ An absolute path to the map file
 
 Default value: `$title`
 
-##### <a name="mappings"></a>`mappings`
+##### <a name="-autofs--mapfile--mappings"></a>`mappings`
 
 Data type: `Array[Autofs::Fs_mapping]`
 
@@ -481,24 +481,24 @@ mappings can be specified for this mapfile via autofs::mapping resources
 
 Default value: `[]`
 
-##### <a name="replace"></a>`replace`
+##### <a name="-autofs--mapfile--replace"></a>`replace`
 
 Data type: `Boolean`
 
 Whether to replace the contents of any an existing file
 at the specified path
 
-Default value: ``true``
+Default value: `true`
 
-##### <a name="execute"></a>`execute`
+##### <a name="-autofs--mapfile--execute"></a>`execute`
 
 Data type: `Boolean`
 
 Whether to make the mapfile executable or not
 
-Default value: ``false``
+Default value: `false`
 
-### <a name="autofsmapping"></a>`autofs::mapping`
+### <a name="autofs--mapping"></a>`autofs::mapping`
 
 When ensured 'present', a autofs::mapfile resource managing the overall
 target map file must also be present in the catalog.  This resource
@@ -555,14 +555,14 @@ autofs::mapping{ '/etc/auto.data_data':
 
 The following parameters are available in the `autofs::mapping` defined type:
 
-* [`ensure`](#ensure)
-* [`fs`](#fs)
-* [`key`](#key)
-* [`mapfile`](#mapfile)
-* [`options`](#options)
-* [`order`](#order)
+* [`ensure`](#-autofs--mapping--ensure)
+* [`fs`](#-autofs--mapping--fs)
+* [`key`](#-autofs--mapping--key)
+* [`mapfile`](#-autofs--mapping--mapfile)
+* [`options`](#-autofs--mapping--options)
+* [`order`](#-autofs--mapping--order)
 
-##### <a name="ensure"></a>`ensure`
+##### <a name="-autofs--mapping--ensure"></a>`ensure`
 
 Data type: `Enum['present', 'absent']`
 
@@ -572,13 +572,13 @@ resource declaration altogether
 
 Default value: `'present'`
 
-##### <a name="fs"></a>`fs`
+##### <a name="-autofs--mapping--fs"></a>`fs`
 
 Data type: `Pattern[/\S/]`
 
 the remote filesystem to mount
 
-##### <a name="key"></a>`key`
+##### <a name="-autofs--mapping--key"></a>`key`
 
 Data type: `Pattern[/\A\S+\z/]`
 
@@ -587,14 +587,14 @@ basename of the mountpoint directory for $fs (not to be confused with
 an _autofs_ mount point, which is the parent directory).  For direct
 maps it is the absolute path to the mountpoint directory.
 
-##### <a name="mapfile"></a>`mapfile`
+##### <a name="-autofs--mapping--mapfile"></a>`mapfile`
 
 Data type: `Stdlib::Absolutepath`
 
 the absolute path to the file containing the Autofs map
 to which this mapping belongs
 
-##### <a name="options"></a>`options`
+##### <a name="-autofs--mapping--options"></a>`options`
 
 Data type: `Optional[Autofs::Options]`
 
@@ -604,9 +604,9 @@ option list should be specified with a leading hyphen (-); that is
 part of the map file format, not of the options themselves, and
 it is provided by this resource
 
-Default value: ``undef``
+Default value: `undef`
 
-##### <a name="order"></a>`order`
+##### <a name="-autofs--mapping--order"></a>`order`
 
 Data type: `Integer`
 
@@ -617,7 +617,7 @@ in the map, in which case only the first is effective.
 
 Default value: `10`
 
-### <a name="autofsmount"></a>`autofs::mount`
+### <a name="autofs--mount"></a>`autofs::mount`
 
 autofs::mount { 'home':
     mount          => '/home',
@@ -668,16 +668,16 @@ autofs::mount { '/smb':
 
 The following parameters are available in the `autofs::mount` defined type:
 
-* [`ensure`](#ensure)
-* [`mount`](#mount)
-* [`mapfile`](#mapfile)
-* [`master`](#master)
-* [`map_dir`](#map_dir)
-* [`use_dir`](#use_dir)
-* [`options`](#options)
-* [`order`](#order)
+* [`ensure`](#-autofs--mount--ensure)
+* [`mount`](#-autofs--mount--mount)
+* [`mapfile`](#-autofs--mount--mapfile)
+* [`master`](#-autofs--mount--master)
+* [`map_dir`](#-autofs--mount--map_dir)
+* [`use_dir`](#-autofs--mount--use_dir)
+* [`options`](#-autofs--mount--options)
+* [`order`](#-autofs--mount--order)
 
-##### <a name="ensure"></a>`ensure`
+##### <a name="-autofs--mount--ensure"></a>`ensure`
 
 Data type: `Enum['present', 'absent']`
 
@@ -686,7 +686,7 @@ master map.  (default: 'present')
 
 Default value: `'present'`
 
-##### <a name="mount"></a>`mount`
+##### <a name="-autofs--mount--mount"></a>`mount`
 
 Data type: `Stdlib::Absolutepath`
 
@@ -697,7 +697,7 @@ Autofs mount point.  (default: the title of this resource)
 
 Default value: `$title`
 
-##### <a name="mapfile"></a>`mapfile`
+##### <a name="-autofs--mount--mapfile"></a>`mapfile`
 
 Data type: `Variant[Stdlib::Absolutepath,Autofs::Mapentry]`
 
@@ -706,7 +706,7 @@ point.  Typically, this is an absolute path to a map file, whose base name
 conventionally begins with "auto.", but Autofs recognizes other alternatives,
 too, that can be specified via this parameter.
 
-##### <a name="master"></a>`master`
+##### <a name="-autofs--mount--master"></a>`master`
 
 Data type: `Stdlib::Absolutepath`
 
@@ -716,7 +716,7 @@ not need to specify this.
 
 Default value: `$autofs::auto_master_map`
 
-##### <a name="map_dir"></a>`map_dir`
+##### <a name="-autofs--mount--map_dir"></a>`map_dir`
 
 Data type: `Stdlib::Absolutepath`
 
@@ -726,7 +726,7 @@ map's drop-in directory.  Relevant only when $use_dir is true.  (default:
 
 Default value: `'/etc/auto.master.d'`
 
-##### <a name="use_dir"></a>`use_dir`
+##### <a name="-autofs--mount--use_dir"></a>`use_dir`
 
 Data type: `Boolean`
 
@@ -735,18 +735,18 @@ master map's drop-in directory instead of directly in the master map.
 The master map will still be managed, however, to ensure at least that
 it enables the (correct) drop-in directory.
 
-Default value: ``false``
+Default value: `false`
 
-##### <a name="options"></a>`options`
+##### <a name="-autofs--mount--options"></a>`options`
 
 Data type: `Optional[String]`
 
 Options to be specified for the autofs mount point within
 the master map.
 
-Default value: ``undef``
+Default value: `undef`
 
-##### <a name="order"></a>`order`
+##### <a name="-autofs--mount--order"></a>`order`
 
 Data type: `Integer`
 
@@ -757,7 +757,7 @@ Default value: `1`
 
 ## Data types
 
-### <a name="autofsfs_mapping"></a>`Autofs::Fs_mapping`
+### <a name="Autofs--Fs_mapping"></a>`Autofs::Fs_mapping`
 
 A type representing a single filesystem mapping, relative to the
 context provided by an (unspecified) autofs map.  "Single" refers to
@@ -799,7 +799,7 @@ Struct[{
 }]
 ```
 
-### <a name="autofsmapentry"></a>`Autofs::Mapentry`
+### <a name="Autofs--Mapentry"></a>`Autofs::Mapentry`
 
 This type matches a map specfication with map type and optional format,
 or the built-in -hosts map.
@@ -836,20 +836,12 @@ or the built-in -hosts map.
 
 ```
 
-Alias of
+Alias of `Pattern[/\A([a-z]+(,[a-z]+)?:\S+|-hosts)\z/]`
 
-```puppet
-Pattern[/\A([a-z]+(,[a-z]+)?:\S+|-hosts)\z/]
-```
-
-### <a name="autofsoptions"></a>`Autofs::Options`
+### <a name="Autofs--Options"></a>`Autofs::Options`
 
 A type representing an autofs options list, represented either as a single
 non-empty string or an array of such strings
 
-Alias of
-
-```puppet
-Variant[Pattern[/\A\S+\z/], Array[Pattern[/\A\S+\z/]]]
-```
+Alias of `Variant[Pattern[/\A\S+\z/], Array[Pattern[/\A\S+\z/]]]`
 
