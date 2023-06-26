@@ -4,6 +4,23 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v8.0.0](https://github.com/voxpupuli/puppet-autofs/tree/v8.0.0) (2023-06-26)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-autofs/compare/v7.1.0...v8.0.0)
+
+**Breaking changes:**
+
+- Drop EoL Debian 9 support [\#195](https://github.com/voxpupuli/puppet-autofs/pull/195) ([bastelfreak](https://github.com/bastelfreak))
+- Drop Puppet 6 support [\#194](https://github.com/voxpupuli/puppet-autofs/pull/194) ([bastelfreak](https://github.com/bastelfreak))
+
+**Implemented enhancements:**
+
+- Add Debian 11 support [\#200](https://github.com/voxpupuli/puppet-autofs/pull/200) ([bastelfreak](https://github.com/bastelfreak))
+- Add Ubuntu 22.04 support [\#199](https://github.com/voxpupuli/puppet-autofs/pull/199) ([bastelfreak](https://github.com/bastelfreak))
+- Add EL9/Rocky/Alma support [\#198](https://github.com/voxpupuli/puppet-autofs/pull/198) ([bastelfreak](https://github.com/bastelfreak))
+- Add puppet 8 support [\#197](https://github.com/voxpupuli/puppet-autofs/pull/197) ([bastelfreak](https://github.com/bastelfreak))
+- Relax dependencies version requirements [\#196](https://github.com/voxpupuli/puppet-autofs/pull/196) ([smortex](https://github.com/smortex))
+
 ## [v7.1.0](https://github.com/voxpupuli/puppet-autofs/tree/v7.1.0) (2023-02-02)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-autofs/compare/v7.0.0...v7.1.0)
