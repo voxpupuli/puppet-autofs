@@ -1,6 +1,6 @@
 {
   "name": "puppet-autofs",
-  "version": "8.0.0",
+  "version": "8.0.1-rc0",
   "author": "Vox Pupuli",
   "summary": "Module for installing and managing autofs",
   "license": "Apache-2.0",
