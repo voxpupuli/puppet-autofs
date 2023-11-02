@@ -20,5 +20,5 @@ type Autofs::Fs_mapping = Struct[{
   key     => String[1],
   options => Optional[Autofs::Options],
   order   => Optional[Integer],
-  fs      => Pattern[/\S/]  # contains at least one non-whitespace character
+  fs      => Variant[String[1], Array[String[1]]],
 }]

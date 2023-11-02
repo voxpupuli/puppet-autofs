@@ -152,7 +152,10 @@ describe 'autofs::mapping', type: :define do
             mapfile: '/mnt/auto.data',
             key: 'data',
             options: 'rw',
-            fs: 'storage.host.net:/exports/data backup.host.net:/exports/data'
+            fs: [
+              'storage.host.net:/exports/data',
+              'backup.host.net:/exports/data'
+            ]
           }
         end
 
@@ -172,7 +175,7 @@ describe 'autofs::mapping', type: :define do
             mapfile: '/mnt/auto.data',
             key: %(/scary/don't fear "quotes" and spaces),
             options: 'rw',
-            fs: %("storage.host.net:/exports/data/don't fear \\"quotes\\" and spaces")
+            fs: %(storage.host.net:/exports/data/don't fear "quotes" and spaces)
           }
         end
 

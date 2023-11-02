@@ -62,7 +62,7 @@
 define autofs::mapping (
   Stdlib::Absolutepath $mapfile,
   String[1] $key,
-  Pattern[/\S/] $fs,
+  Variant[String[1], Array[String[1]]] $fs,
   Enum['present', 'absent'] $ensure  = 'present',
   Optional[Autofs::Options] $options = undef,
   Integer $order                     = 10,
@@ -92,12 +92,13 @@ define autofs::mapping (
         default => "-${prelim_options}",
       }
     }
+    $formatted_fs = [$fs].flatten.map |$value| { if $value =~ /[[:blank:]"]/ { String($value, '%#p') } else { $value } }.join(' ')
 
     # Declare an appropriate fragment of the target map file
     if $formatted_key == '+' {
-      $content = "${formatted_key}${fs}\n"
+      $content = "${formatted_key}${formatted_fs}\n"
     } else {
-      $content = "${formatted_key}\t${formatted_options}\t${fs}\n"
+      $content = "${formatted_key}\t${formatted_options}\t${formatted_fs}\n"
     }
 
     concat::fragment { "autofs::mapping/${title}":
