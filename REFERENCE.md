@@ -580,7 +580,7 @@ the remote filesystem to mount
 
 ##### <a name="-autofs--mapping--key"></a>`key`
 
-Data type: `Pattern[/\A\S+\z/]`
+Data type: `String[1]`
 
 the autofs key for this mapping. For indirect maps it is the
 basename of the mountpoint directory for $fs (not to be confused with
@@ -792,7 +792,7 @@ Alias of
 
 ```puppet
 Struct[{
-  key     => Pattern[/\A\S+\z/],
+  key     => String[1],
   options => Optional[Autofs::Options],
   order   => Optional[Integer],
   fs      => Pattern[/\S/]  # contains at least one non-whitespace character

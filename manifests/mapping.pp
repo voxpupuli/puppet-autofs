@@ -61,13 +61,18 @@
 #
 define autofs::mapping (
   Stdlib::Absolutepath $mapfile,
-  Pattern[/\A\S+\z/] $key,
+  String[1] $key,
   Pattern[/\S/] $fs,
   Enum['present', 'absent'] $ensure  = 'present',
   Optional[Autofs::Options] $options = undef,
   Integer $order                     = 10,
 ) {
   unless $ensure == 'absent' {
+    $formatted_key = if $key =~ /[[:blank:]"]/ {
+      String($key, '%#p')
+    } else {
+      $key
+    }
     # Format the options string, relying to some extent on the
     # $options parameter, if specified, to indeed match the
     # Autofs::Options data type
@@ -89,10 +94,10 @@ define autofs::mapping (
     }
 
     # Declare an appropriate fragment of the target map file
-    if $key == '+' {
-      $content = "${key}${fs}\n"
+    if $formatted_key == '+' {
+      $content = "${formatted_key}${fs}\n"
     } else {
-      $content = "${key}	${formatted_options}	${fs}\n"
+      $content = "${formatted_key}\t${formatted_options}\t${fs}\n"
     }
 
     concat::fragment { "autofs::mapping/${title}":

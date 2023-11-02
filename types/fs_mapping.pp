@@ -17,7 +17,7 @@
 #   { 'key' => 'other', 'options' => [ 'ro', 'noexec' ], 'fs' => 'external.net:/the/exported/fs' }
 #
 type Autofs::Fs_mapping = Struct[{
-  key     => Pattern[/\A\S+\z/],
+  key     => String[1],
   options => Optional[Autofs::Options],
   order   => Optional[Integer],
   fs      => Pattern[/\S/]  # contains at least one non-whitespace character
