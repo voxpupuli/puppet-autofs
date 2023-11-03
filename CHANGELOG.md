@@ -4,6 +4,23 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v9.0.0](https://github.com/voxpupuli/puppet-autofs/tree/v9.0.0) (2023-11-02)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-autofs/compare/v8.0.0...v9.0.0)
+
+**Breaking changes:**
+
+- Quote and escape special chars in mapping fs [\#206](https://github.com/voxpupuli/puppet-autofs/pull/206) ([smortex](https://github.com/smortex))
+
+**Implemented enhancements:**
+
+- Quote and escape special chars in mapping keys [\#205](https://github.com/voxpupuli/puppet-autofs/pull/205) ([smortex](https://github.com/smortex))
+
+**Merged pull requests:**
+
+- package: remove obsolete comments [\#204](https://github.com/voxpupuli/puppet-autofs/pull/204) ([kenyon](https://github.com/kenyon))
+- README: remove obsolete Reference and OS support sections [\#203](https://github.com/voxpupuli/puppet-autofs/pull/203) ([kenyon](https://github.com/kenyon))
+
 ## [v8.0.0](https://github.com/voxpupuli/puppet-autofs/tree/v8.0.0) (2023-06-26)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-autofs/compare/v7.1.0...v8.0.0)
