@@ -298,7 +298,7 @@ autofs::mapfile { 'home':
 #### Multiple mappings in the same file
 
 Multiple mappings may be declared for the same map file, either in the same
-`autofs::mapfile` resource (or an entry in the `$::autofs::mappings` class
+`autofs::mapfile` resource (or an entry in the `autofs::mappings` class
 parameter or corresponding external data), or in one or more separate
 `autofs::mapping` resources:
 
