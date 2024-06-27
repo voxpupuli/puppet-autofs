@@ -10,18 +10,18 @@ describe 'autofs', type: :class do
     context "on #{os}" do
       let(:facts) { os_facts }
       let(:service) do
-        case facts[:os]['family']
+        case facts['os']['family']
         when 'AIX' then 'automountd'
         when 'FreeBSD' then 'automount'
         else 'autofs'
         end
       end
       let(:package) do
-        case facts[:os]['family']
+        case facts['os']['family']
         when 'AIX'
           'bos.net.nfs.client'
         when 'Solaris'
-          if facts[:os]['release']['major'].to_s == '11'
+          if facts['os']['release']['major'].to_s == '11'
             'system/file-system/autofs'
           else
             'SUNWatfsu' # and SUNWatfsr, but close enough
@@ -38,7 +38,7 @@ describe 'autofs', type: :class do
         it { is_expected.to contain_class('autofs::service') }
 
         # Check Package and service
-        if os_facts[:os]['family'] == 'FreeBSD'
+        if os_facts['os']['family'] == 'FreeBSD'
           it { is_expected.to contain_service('automountd').with_ensure('running') }
           it { is_expected.to contain_service('autounmountd').with_ensure('running') }
         else
@@ -58,7 +58,7 @@ describe 'autofs', type: :class do
           }
         end
 
-        it { is_expected.to contain_package(package).with_ensure('absent') } if os_facts[:os]['family'] != 'FreeBSD'
+        it { is_expected.to contain_package(package).with_ensure('absent') } if os_facts['os']['family'] != 'FreeBSD'
       end
 
       context 'should declare mount points' do

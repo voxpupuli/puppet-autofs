@@ -8,7 +8,7 @@ describe 'autofs::map', type: :define do
       let(:title) { 'data' }
       let(:pre_condition) { 'include autofs' }
       let(:group) do
-        case facts[:os]['family']
+        case facts['os']['family']
         when 'AIX' then 'system'
         when 'FreeBSD' then 'wheel'
         else 'root'
