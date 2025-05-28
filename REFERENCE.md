@@ -792,11 +792,11 @@ Alias of
 
 ```puppet
 Struct[{
-  key     => String[1],
-  options => Optional[Autofs::Options],
-  order   => Optional[Integer],
-  fs      => Variant[String[1], Array[String[1]]],
-}]
+    key     => String[1],
+    options => Optional[Autofs::Options],
+    order   => Optional[Integer],
+    fs      => Variant[String[1], Array[String[1]]],
+  }]
 ```
 
 ### <a name="Autofs--Mapentry"></a>`Autofs::Mapentry`
