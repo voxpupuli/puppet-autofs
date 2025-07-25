@@ -28,8 +28,7 @@
     },
     {
       "operatingsystem": "Debian",
-      "operatingsystemrelease": [
-      ]
+      "operatingsystemrelease": []
     },
     {
       "operatingsystem": "FreeBSD",
