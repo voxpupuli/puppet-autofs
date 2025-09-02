@@ -92,7 +92,7 @@ define autofs::mapping (
         default => "-${prelim_options}",
       }
     }
-    $formatted_fs = [$fs].flatten.map |$value| { if $value =~ /[[:blank:]"]/ { String($value, '%#p') } else { $value } }.join(' ')
+    $formatted_fs = [$fs].flatten.map |$value| { if $value =~ /[[:blank:]"]/ { "\"${value.regsubst(/\\/, '\\\\', 'G').regsubst(/"/, '\"', 'G')}\"" } else { $value } }.join(' ')
 
     # Declare an appropriate fragment of the target map file
     if $formatted_key == '+' {
