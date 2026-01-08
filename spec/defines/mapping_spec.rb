@@ -175,7 +175,7 @@ describe 'autofs::mapping', type: :define do
             mapfile: '/mnt/auto.data',
             key: %(/scary/don't fear "quotes" and spaces),
             options: 'rw',
-            fs: %(storage.host.net:/exports/data/don't fear "quotes" and spaces)
+            fs: %(storage.host.net:/exports/data/don't fear "quotes" and spaces nor $do\\\\ars)
           }
         end
 
@@ -185,7 +185,7 @@ describe 'autofs::mapping', type: :define do
           expect(subject).to have_concat_resource_count(0)
           expect(subject).to have_concat__fragment_resource_count(1)
           expect(subject).to contain_concat__fragment('autofs::mapping/data').
-            with(target: '/mnt/auto.data', content: %("/scary/don't fear \\"quotes\\" and spaces"\t-rw\t"storage.host.net:/exports/data/don't fear \\"quotes\\" and spaces"\n))
+            with(target: '/mnt/auto.data', content: %("/scary/don't fear \\"quotes\\" and spaces"\t-rw\t"storage.host.net:/exports/data/don't fear \\"quotes\\" and spaces nor $do\\\\ars"\n))
         end
       end
     end
