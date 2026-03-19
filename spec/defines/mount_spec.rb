@@ -24,14 +24,14 @@ describe 'autofs::mount', type: :define do
             mapfile: '/etc/auto.home',
             options: '--timeout=120',
             order: 1,
-            master: '/etc/auto.master'
+            master: '/etc/auto.master',
           }
         end
 
         it do
           expect(subject).not_to contain_file('/home')
-          expect(subject).to contain_concat('/etc/auto.master').
-            with(group: group)
+          expect(subject).to contain_concat('/etc/auto.master')
+            .with(group: group)
           expect(subject).to contain_concat__fragment('autofs::fragment preamble /home /etc/auto.home').with('target' => '/etc/auto.master')
           expect(subject).to have_concat_resource_count(1)
           expect(subject).to have_autofs__map_resource_count(0)
@@ -45,7 +45,7 @@ describe 'autofs::mount', type: :define do
             mount: '/smb',
             mapfile: 'program:/etc/auto.smb',
             options: '--timeout=120',
-            order: 2
+            order: 2,
           }
         end
 
@@ -61,7 +61,7 @@ describe 'autofs::mount', type: :define do
             mount: '/-',
             mapfile: '/etc/auto.home',
             options: '--timeout=120',
-            order: 1
+            order: 1,
           }
         end
 
@@ -76,7 +76,7 @@ describe 'autofs::mount', type: :define do
             mount: '/net',
             options: '-host',
             use_dir: false,
-            order: 1
+            order: 1,
           }
         end
 
@@ -88,7 +88,7 @@ describe 'autofs::mount', type: :define do
           {
             mapfile: '/etc/auto.home',
             options: '--timeout=120',
-            order: 1
+            order: 1,
           }
         end
 
@@ -103,18 +103,18 @@ describe 'autofs::mount', type: :define do
           {
             mapfile: '/etc/auto.data',
             options: '--timeout=360',
-            order: 1
+            order: 1,
           }
         end
 
         it do
           expect(subject).to have_autofs__map_resource_count(0)
-          expect(subject).to contain_concat(master_map_file).
-            with(group: group)
-          expect(subject).to contain_concat__fragment('autofs::fragment preamble /data /etc/auto.data').
-            with_target(master_map_file)
-          expect(subject).not_to contain_concat('/etc/auto.data').
-            with(group: group)
+          expect(subject).to contain_concat(master_map_file)
+            .with(group: group)
+          expect(subject).to contain_concat__fragment('autofs::fragment preamble /data /etc/auto.data')
+            .with_target(master_map_file)
+          expect(subject).not_to contain_concat('/etc/auto.data')
+            .with(group: group)
           expect(subject).not_to contain_file('/data')
         end
       end
@@ -124,15 +124,15 @@ describe 'autofs::mount', type: :define do
         let(:params) do
           {
             mount: '/net',
-            mapfile: '-hosts'
+            mapfile: '-hosts',
           }
         end
 
         it do
-          expect(subject).to contain_concat(master_map_file).
-            with(group: group)
-          expect(subject).to contain_concat__fragment('autofs::fragment preamble /net -hosts').
-            with_target(master_map_file)
+          expect(subject).to contain_concat(master_map_file)
+            .with(group: group)
+          expect(subject).to contain_concat__fragment('autofs::fragment preamble /net -hosts')
+            .with_target(master_map_file)
         end
       end
 
@@ -140,17 +140,17 @@ describe 'autofs::mount', type: :define do
         let(:title) { '/data' }
         let(:params) do
           {
-            mapfile: 'file,sun:/etc/auto.data'
+            mapfile: 'file,sun:/etc/auto.data',
           }
         end
 
         it do
           expect(subject).to compile
-          expect(subject).to contain_concat(master_map_file).
-            with(group: group)
-          expect(subject).to contain_concat__fragment('autofs::fragment preamble /data file,sun:/etc/auto.data').
-            with_target(master_map_file).
-            with_content(%r{\A\s*/data\s+file,sun:/etc/auto.data\s*$})
+          expect(subject).to contain_concat(master_map_file)
+            .with(group: group)
+          expect(subject).to contain_concat__fragment('autofs::fragment preamble /data file,sun:/etc/auto.data')
+            .with_target(master_map_file)
+            .with_content(%r{\A\s*/data\s+file,sun:/etc/auto.data\s*$})
         end
       end
 
@@ -159,17 +159,17 @@ describe 'autofs::mount', type: :define do
         let(:title) { '/mnt' }
         let(:params) do
           {
-            mapfile: 'yp:mnt.map'
+            mapfile: 'yp:mnt.map',
           }
         end
 
         it do
           expect(subject).to compile
-          expect(subject).to contain_concat(master_map_file).
-            with(group: group)
-          expect(subject).to contain_concat__fragment('autofs::fragment preamble /mnt yp:mnt.map').
-            with_target(master_map_file).
-            with_content(%r{\A\s*/mnt\s+yp:mnt.map\s*$})
+          expect(subject).to contain_concat(master_map_file)
+            .with(group: group)
+          expect(subject).to contain_concat__fragment('autofs::fragment preamble /mnt yp:mnt.map')
+            .with_target(master_map_file)
+            .with_content(%r{\A\s*/mnt\s+yp:mnt.map\s*$})
         end
       end
 
@@ -178,7 +178,7 @@ describe 'autofs::mount', type: :define do
         let(:title) { '/data' }
         let(:params) do
           {
-            mapfile: 'etc/auto.data'
+            mapfile: 'etc/auto.data',
           }
         end
 
@@ -191,7 +191,7 @@ describe 'autofs::mount', type: :define do
         let(:params) do
           {
             ensure: 'absent',
-            mapfile: '/etc/auto.data'
+            mapfile: '/etc/auto.data',
           }
         end
 
@@ -199,10 +199,10 @@ describe 'autofs::mount', type: :define do
           expect(subject).to contain_file_line("#{master_map_file}::/data_/etc/auto.data").with(
             ensure: 'absent',
             path: master_map_file,
-            match: '^\\s*/data\\s+/etc/auto.data\\s'
+            match: '^\\s*/data\\s+/etc/auto.data\\s',
           )
-          expect(subject).to contain_concat(master_map_file).
-            with(group: group)
+          expect(subject).to contain_concat(master_map_file)
+            .with(group: group)
           expect(subject).to have_concat__fragment_resource_count(0)
           expect(subject).to have_autofs__map_resource_count(0)
         end
