@@ -204,6 +204,52 @@ autofs::mounts:
     use_dir: true
 ```
 
+#### Declining to manage the master map directly
+
+Sometimes the master map is owned by another module, tool, or configuration
+management system, and this module must not write to it at all.  Setting the
+class parameter `manage_auto_master` to `false` disables all direct
+management of the master map: the module will neither create the file nor
+write entries or `+dir:` lines into it.  Every `autofs::mount` must then use
+`use_dir => true`, so its entry is recorded as a drop-in file (which this
+module does continue to manage) in the drop-in directory.  In that case, it
+is the responsibility of whoever owns the master map to ensure the directory
+is enabled, either via a `+dir:` entry or by relying on a build of autofs
+that reads the drop-in directory automatically.  Any `autofs::mount` left
+with `use_dir => false` under this setting fails compilation rather than
+silently doing nothing.
+
+##### example
+
+```puppet
+class { 'autofs':
+  manage_auto_master => false,
+}
+
+autofs::mount { 'home':
+  mount       => '/home',
+  mapfile     => '/etc/auto.home',
+  options     => '--timeout=120',
+  use_dir     => true,
+}
+```
+
+Hiera:
+
+```yaml
+autofs::manage_auto_master: false
+autofs::mounts:
+  home:
+    mount: '/home'
+    mapfile: '/etc/auto.home'
+    options: '--timeout=120'
+    use_dir: true
+```
+
+Note that an explicitly declared `autofs::mapfile` resource whose `path` is
+the master map is a direct, deliberate statement of intent and is not
+affected by `manage_auto_master`.
+
 #### Removing mount points
 
 Unwanted mount points can be ensured `absent` to force their removal.  This

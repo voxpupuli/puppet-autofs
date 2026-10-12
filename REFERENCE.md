@@ -114,6 +114,7 @@ The following parameters are available in the `autofs` class:
 * [`service_enable`](#-autofs--service_enable)
 * [`service_name`](#-autofs--service_name)
 * [`auto_master_map`](#-autofs--auto_master_map)
+* [`manage_auto_master`](#-autofs--manage_auto_master)
 * [`map_file_owner`](#-autofs--map_file_owner)
 * [`map_file_group`](#-autofs--map_file_group)
 * [`manage_service_config`](#-autofs--manage_service_config)
@@ -254,6 +255,19 @@ Data type: `String`
 Filename of the auto.master map for cross platform compatiblity
 
 Default value: `'/etc/auto.master'`
+
+##### <a name="-autofs--manage_auto_master"></a>`manage_auto_master`
+
+Data type: `Boolean`
+
+Determines if the master map (auto.master) should
+be managed directly by this module.  When false, the module will never
+create or write to the master map; autofs::mount resources must instead
+record their entries via drop-in files (use_dir => true) in the master
+map's drop-in directory.  Use this when another module, tool, or
+configuration management system owns the master map.
+
+Default value: `true`
 
 ##### <a name="-autofs--map_file_owner"></a>`map_file_owner`
 
@@ -712,7 +726,9 @@ Data type: `Stdlib::Absolutepath`
 
 Full path, including filename, to the autofs master map.
 Usually the correct master map will be chosen automatically, and you will
-not need to specify this.
+not need to specify this.  Ignored (aside from validation) when
+autofs::manage_auto_master is false, since the master map is then
+unmanaged by this module.
 
 Default value: `$autofs::auto_master_map`
 
@@ -732,8 +748,13 @@ Data type: `Boolean`
 
 If true, autofs will manage this mount via a file in the
 master map's drop-in directory instead of directly in the master map.
-The master map will still be managed, however, to ensure at least that
-it enables the (correct) drop-in directory.
+Unless autofs::manage_auto_master is false, the master map will still be
+managed, however, to ensure at least that it enables the (correct) drop-in
+directory.  When autofs::manage_auto_master is false, the owner of the
+master map must ensure the +dir: entry (or rely on a build of autofs that
+reads the drop-in directory implicitly), but the drop-in files themselves
+are still managed here.  This parameter must be true whenever
+autofs::manage_auto_master is false.
 
 Default value: `false`
 
@@ -844,4 +865,3 @@ A type representing an autofs options list, represented either as a single
 non-empty string or an array of such strings
 
 Alias of `Variant[Pattern[/\A\S+\z/], Array[Pattern[/\A\S+\z/]]]`
-

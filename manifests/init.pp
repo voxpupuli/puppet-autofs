@@ -62,6 +62,12 @@
 #   on boot.
 # @param service_name Determine the name of the service for cross platform compatibility
 # @param auto_master_map Filename of the auto.master map for cross platform compatiblity
+# @param manage_auto_master Determines if the master map (auto.master) should
+#   be managed directly by this module.  When false, the module will never
+#   create or write to the master map; autofs::mount resources must instead
+#   record their entries via drop-in files (use_dir => true) in the master
+#   map's drop-in directory.  Use this when another module, tool, or
+#   configuration management system owns the master map.
 # @param map_file_owner owner of the automount map files for cross platform compatiblity
 # @param map_file_group group of the automount map files for cross platform compatiblity
 # @param manage_service_config Determines if the service configuration file (in /etc/default or /etc/sysconfig) should be managed
@@ -80,6 +86,7 @@ class autofs (
   Boolean $service_enable = true,
   String $service_name = 'autofs',
   String $auto_master_map = '/etc/auto.master',
+  Boolean $manage_auto_master = true,
   String $map_file_owner = 'root',
   String $map_file_group = 'root',
   Boolean $manage_service_config = false,
