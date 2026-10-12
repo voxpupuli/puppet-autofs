@@ -376,21 +376,13 @@ autofs::service_conf_options:
 Directly calling the `autofs::package` and `autofs::service` classes is disabled in 3.0.0.
 These are now private classes.
 
-The `autofs::map` defined type is no longer documented or supported, and it will be removed
-from a future version.
-
 The `direct`, `executable`, `mapcontents`, `mapfile_manage`, and `replace` parameters of
 `autofs::mount` are removed in 5.0.0, the first having already been ineffective in 4.3.0,
 and the others no longer being relevant starting in 5.0.0.
 
-### Puppet platforms
-
-Compatible with Puppet 4 or greater only. Puppet 4.6.0 or greater
-(including Puppet 5) will provide best results.
-
-### Operating Systems
-
-For an up2date list of supported operating systems, take a look at the metadata.json.
+The `autofs::map` defined type, and the `maps` parameter of the `autofs` class that
+declared it, are removed in 10.0.0.  Define map files via `autofs::mapfile` resources, or via
+the `mapfiles` class parameter, instead.
 
 ## Development
 
