@@ -84,6 +84,10 @@ mechanisms is an all-or-nothing affair.  If any autofs mount points are managed
 via either of those mechanisms, then *only* mount points managed via those
 mechanisms will appear in the master map.
 
+Before applying this module to a system with an existing, hand-maintained
+`/etc/auto.master`, see [Migrating an existing /etc/auto.master](#migrating-an-existing-etcautomaster)
+below.
+
 ##### example
 
 The declaration
@@ -136,8 +140,7 @@ autofs::mounts:
 
 For more information about merge behavior see the doc for:
 
-* [Lookup docs](https://docs.puppet.com/puppet/4.7/lookup_quick.html#puppet-lookup:-quick-reference-for-hiera-users)
-* [Hiera 5 docs](https://docs.puppet.com/puppet/5.1/hiera_merging.html) if using Puppet >= 4.9
+* [Lookup docs](https://docs.openvoxproject.org/openvox/latest/hiera_quick.html)
 
 #### Direct Map `/-` argument
 
@@ -249,6 +252,130 @@ autofs::mounts:
 Note that an explicitly declared `autofs::mapfile` resource whose `path` is
 the master map is a direct, deliberate statement of intent and is not
 affected by `manage_auto_master`.
+
+#### Migrating an existing /etc/auto.master
+
+Because the module owns the master map completely, applying it to a system
+whose `/etc/auto.master` was maintained by hand (or shipped by the
+distribution's autofs package) would otherwise replace that file's content.
+The way to preserve existing entries is to declare each of them as an
+`autofs::mount` with `use_dir => true`, so the entry lives in a drop-in file
+under `/etc/auto.master.d` instead of directly in the master map.  The
+resource title names the drop-in file: a resource titled `misc` becomes
+`/etc/auto.master.d/misc.autofs`, matching the `*.autofs` convention used by
+`+dir:`.
+
+For example, the `/etc/auto.master` shipped with recent systemd-based
+distributions contains these active entries:
+
+```sh
+/misc   /etc/auto.misc
+/net    -hosts
++dir:/etc/auto.master.d
++auto.master
+```
+
+plus a commented-out example for FedFS support:
+
+```sh
+#/nfs4  /usr/sbin/fedfs-map-nfs4 nobind
+```
+
+Convert each entry -- and the commented FedFS example, if FedFS is wanted --
+by declaring a `use_dir` mount for it.  The `-hosts` and `+dir:` lines need
+special mention: `-hosts` is a built-in map and can be given directly as the
+`mapfile`, while the `+dir:` line is not needed in any drop-in because the
+module manages it in the master map itself.
+
+```puppet
+autofs::mount { 'misc':
+  mount   => '/misc',
+  mapfile => '/etc/auto.misc',
+  use_dir => true,
+}
+
+autofs::mount { 'net':
+  mount   => '/net',
+  mapfile => '-hosts',
+  use_dir => true,
+}
+
+# The distribution ships this entry commented out; declare it the
+# same way to enable it.  An absolute path is treated by autofs as
+# an executable program map; spelling it explicitly with the
+# equivalent 'program:/usr/sbin/fedfs-map-nfs4' works too.
+autofs::mount { 'nfs4':
+  mount   => '/nfs4',
+  mapfile => '/usr/sbin/fedfs-map-nfs4',
+  options => 'nobind',
+  use_dir => true,
+}
+```
+
+The equivalent Hiera data:
+
+```yaml
+autofs::mounts:
+  misc:
+    mount: '/misc'
+    mapfile: '/etc/auto.misc'
+    use_dir: true
+  net:
+    mount: '/net'
+    mapfile: '-hosts'
+    use_dir: true
+  nfs4:
+    mount: '/nfs4'
+    mapfile: '/usr/sbin/fedfs-map-nfs4'
+    options: 'nobind'
+    use_dir: true
+```
+
+The resulting files are then
+
+```sh
+# /etc/auto.master
++dir:/etc/auto.master.d
+```
+
+```sh
+# /etc/auto.master.d/misc.autofs
+/misc /etc/auto.misc
+```
+
+```sh
+# /etc/auto.master.d/net.autofs
+/net -hosts
+```
+
+```sh
+# /etc/auto.master.d/nfs4.autofs
+/nfs4 /usr/sbin/fedfs-map-nfs4 nobind
+```
+
+Notes:
+
+* Comment lines from the old master map need no migration; only the actual
+  map entries do.
+* The `+dir:/etc/auto.master.d` line is ensured by the module itself, so it
+  is not declared as a mount.
+* A `+auto.master` line (which pulls in a central master map via nsswitch,
+  e.g. NIS) cannot be expressed as an `autofs::mount`.  Because the master
+  map is managed with the `concat` module, it can be carried over with an
+  additional fragment:
+
+  ```puppet
+  concat::fragment { 'auto.master: +auto.master':
+    target  => '/etc/auto.master',
+    content => "+auto.master\n",
+    order   => '99',
+  }
+  ```
+
+* By default, files already present in `/etc/auto.master.d` that Puppet does
+  not manage are left in place.  Set `autofs::purge_map_dir` to `true` to
+  have the module remove such leftovers, keeping the drop-in directory
+  strictly mirrored to the declared mounts.
 
 #### Removing mount points
 
@@ -372,6 +499,88 @@ The resulting content of file `/mnt/data` would be
 ```sh
 dataA -ro remote.com:/exports/dataA
 dataB -rw,noexec remote.com:/exports/dataB
+```
+
+##### Hiera
+
+The same map can be defined entirely through external Hiera data via the
+`autofs::mapfiles` class parameter, with all of a file's mappings in that
+file's `mappings` array:
+
+```yaml
+autofs::mapfiles:
+  '/mnt/data':
+    mappings:
+      - key: 'dataA'
+        options: 'ro'
+        fs: 'remote.com:/exports/dataA'
+      - key: 'dataB'
+        options: 'rw,noexec'
+        fs: 'remote.com:/exports/dataB'
+```
+
+That form requires all of a map file's mappings to live in one place.  To
+spread them across multiple Hiera files (e.g. one file per application),
+express each mapping as `autofs::mapping` data instead.  Note that Hiera
+data does not create defined type resources on its own, so a small wrapper
+class -- typically a profile -- looks the data up and creates the resources.
+A `autofs::mapfile` entry (or resource) is still required for each managed
+map file; `autofs::mapping` entries only attach fragments to it:
+
+```puppet
+class profile::autofs (
+  Hash[String, Hash] $mapfiles = {},
+  Hash[String, Hash] $mappings = {},
+) {
+  $mapfiles.each |$mapfile, $attrs| {
+    autofs::mapfile { $mapfile:
+      * => $attrs,
+    }
+  }
+
+  $mappings.each |$mapping, $attrs| {
+    autofs::mapping { $mapping:
+      * => $attrs,
+    }
+  }
+}
+```
+
+The following three Hiera data files, combined via the `lookup_options`
+`merge: deep` settings, produce exactly the `/mnt/data` content shown
+above.  The `mappings` keys (e.g. `/mnt/data_dataA`) are resource titles:
+they must be unique across all files, but their spelling is otherwise
+arbitrary.
+
+```yaml
+# Common data: lookup options, and the map file itself
+lookup_options:
+  profile::autofs::mapfiles:
+    merge: deep
+  profile::autofs::mappings:
+    merge: deep
+profile::autofs::mapfiles:
+  '/mnt/data': {}
+```
+
+```yaml
+# One application's data file
+profile::autofs::mappings:
+  '/mnt/data_dataA':
+    mapfile: '/mnt/data'
+    key: 'dataA'
+    options: 'ro'
+    fs: 'remote.com:/exports/dataA'
+```
+
+```yaml
+# A second application's data file
+profile::autofs::mappings:
+  '/mnt/data_dataB':
+    mapfile: '/mnt/data'
+    key: 'dataB'
+    options: 'rw,noexec'
+    fs: 'remote.com:/exports/dataB'
 ```
 
 #### Removing Entries
