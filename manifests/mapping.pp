@@ -68,31 +68,10 @@ define autofs::mapping (
   Integer $order                     = 10,
 ) {
   unless $ensure == 'absent' {
-    $formatted_key = if $key =~ /[[:blank:]"]/ {
-      String($key, '%#p')
-    } else {
-      $key
-    }
-    # Format the options string, relying to some extent on the
-    # $options parameter, if specified, to indeed match the
-    # Autofs::Options data type
-    if ($options =~ Undef) or ($options =~  Array[Any,0,0]) { # an empty array
-      $formatted_options = ''
-    } else {
-      $prelim_options = $options ? {
-        Array   => join($options, ','),  # a non-empty array
-        String  => $options,
-        default => fail('Unexpected value for parameter $options')
-      }
-      $formatted_options = $prelim_options ? {
-        # even though the user *shouldn't* provide the hyphen, we accommodate
-        # them doing so.  But only at the head of the option list, not
-        # internally.
-        /\A-/   => $prelim_options,
-        default => "-${prelim_options}",
-      }
-    }
-    $formatted_fs = [$fs].flatten.map |$value| { if $value =~ /[[:blank:]"]/ { "\"${value.regsubst(/\\/, '\\\\', 'G').regsubst(/"/, '\"', 'G')}\"" } else { $value } }.join(' ')
+    # Format the key, options, and filesystem strings according to the Autofs map file format
+    $formatted_key = autofs::format_key($key)
+    $formatted_options = autofs::format_options($options)
+    $formatted_fs = autofs::format_fs($fs)
 
     # Declare an appropriate fragment of the target map file
     if $formatted_key == '+' {

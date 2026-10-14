@@ -218,6 +218,33 @@ describe 'autofs::mount', type: :define do
         end
       end
 
+      context 'with manage_auto_master enabled and use_dir' do
+        let(:pre_condition) { 'class { "autofs": manage_auto_master => true }' }
+        let(:title) { 'confdir' }
+        let(:params) do
+          {
+            mount: '/mnt/confdir',
+            mapfile: '/etc/auto.confdir',
+            options: '--timeout=120',
+            use_dir: true,
+          }
+        end
+
+        it { is_expected.to compile.with_all_deps }
+        it { is_expected.to contain_concat(master_map_file) }
+
+        it {
+          is_expected.to contain_concat__fragment('autofs::fragment preamble map directory')
+            .with(target: master_map_file)
+            .with_content(%r{\A\+dir:/etc/auto.master.d\s*\z})
+        }
+
+        it {
+          is_expected.to contain_file('/etc/auto.master.d/confdir.autofs')
+            .with_content(%r{\A/mnt/confdir /etc/auto.confdir --timeout=120\s*\z})
+        }
+      end
+
       context 'with ensure set to absent' do
         # rubocop:enable RSpec/MultipleMemoizedHelpers
         let(:title) { '/data' }

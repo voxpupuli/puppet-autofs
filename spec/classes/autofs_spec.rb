@@ -9,14 +9,28 @@ describe 'autofs', type: :class do
   on_supported_os.each do |os, os_facts|
     context "on #{os}" do
       let(:facts) { os_facts }
-      let(:service) do
+
+      def group_value
+        case facts['os']['family']
+        when 'AIX' then 'system'
+        when 'FreeBSD' then 'wheel'
+        else 'root'
+        end
+      end
+
+      def master_map_file_value
+        %w[AIX FreeBSD Solaris].include?(facts['os']['family']) ? '/etc/auto_master' : '/etc/auto.master'
+      end
+
+      def service_value
         case facts['os']['family']
         when 'AIX' then 'automountd'
         when 'FreeBSD' then 'automount'
         else 'autofs'
         end
       end
-      let(:package) do
+
+      def package_value
         case facts['os']['family']
         when 'AIX'
           'bos.net.nfs.client'
@@ -42,11 +56,11 @@ describe 'autofs', type: :class do
           it { is_expected.to contain_service('automountd').with_ensure('running') }
           it { is_expected.to contain_service('autounmountd').with_ensure('running') }
         else
-          it { is_expected.to contain_package(package).with_ensure('installed') }
-          it { is_expected.to contain_service(service).that_requires("Package[#{package}]") }
-          it { is_expected.to contain_service(service).with_ensure('running') }
+          it { is_expected.to contain_package(package_value).with_ensure('installed') }
+          it { is_expected.to contain_service(service_value).that_requires("Package[#{package_value}]") }
+          it { is_expected.to contain_service(service_value).with_ensure('running') }
         end
-        it { is_expected.to contain_service(service).with_enable(true) }
+        it { is_expected.to contain_service(service_value).with_enable(true) }
         it { is_expected.not_to contain_file('autofs_service_config') }
         it { is_expected.not_to contain_file('autofs_ldap_auth_config') }
       end
@@ -58,7 +72,7 @@ describe 'autofs', type: :class do
           }
         end
 
-        it { is_expected.to contain_package(package).with_ensure('absent') } if os_facts['os']['family'] != 'FreeBSD'
+        it { is_expected.to contain_package(package_value).with_ensure('absent') } if os_facts['os']['family'] != 'FreeBSD'
       end
 
       context 'should declare mount points' do
@@ -86,6 +100,15 @@ describe 'autofs', type: :class do
             .with(mount: '/unwanted', ensure: 'absent')
           expect(subject).to have_autofs__mapfile_resource_count(0)
           expect(subject).to have_autofs__mapping_resource_count(0)
+          expect(subject).to contain_concat(master_map_file_value)
+          expect(subject).to contain_concat__fragment('autofs::fragment preamble /home /etc/auto.home')
+            .with_target(master_map_file_value)
+          expect(subject).to contain_concat__fragment('autofs::fragment preamble /mnt/other /etc/auto.other')
+            .with_target(master_map_file_value)
+          expect(subject).to contain_concat__fragment('autofs::fragment preamble /- /etc/auto.direct')
+            .with_target(master_map_file_value)
+          expect(subject).to contain_file_line("#{master_map_file_value}::/unwanted_/etc/auto.unwanted")
+            .with(ensure: 'absent', path: master_map_file_value)
         end
       end
 
@@ -104,18 +127,50 @@ describe 'autofs', type: :class do
           expect(subject).not_to contain_concat('/etc/auto.master')
           expect(subject).not_to contain_concat__fragment('autofs::fragment preamble map directory')
           expect(subject).to contain_file('/etc/auto.master.d/home.autofs')
+          expect(subject).to contain_file('/etc/auto.master.d')
+            .with(ensure: 'directory', owner: 'root', group: group_value)
         end
       end
 
-      context 'should declare map files' do
-        home_mappings = [
-          { 'key' => 'user1', 'options' => 'rw,exec', 'fs' => 'users.com:/x/user1' },
-        ]
+      context 'should declare mappings directly' do
         let(:params) do
           {
             mounts: {},
             mapfiles: {
-              'home' => { path: '/etc/auto.home', mappings: home_mappings },
+              '/etc/auto.data' => {
+                mappings: [
+                  { 'key' => 'example1', 'options' => 'ro', 'fs' => 'fs.net:/export/example1' },
+                  { 'key' => 'example2', 'options' => %w[rw noexec], 'fs' => 'fs.net:/export/example2' },
+                  { 'key' => 'example3', 'options' => 'exec', 'fs' => 'fs.net:/export/example3' },
+                ],
+              },
+            },
+          }
+        end
+
+        it do
+          expect(subject).to compile.with_all_deps
+          expect(subject).to contain_autofs__mapfile('/etc/auto.data')
+          expect(subject).to have_autofs__mapping_resource_count(3)
+          expect(subject).to contain_autofs__mapping('/etc/auto.data:example1')
+          expect(subject).to contain_autofs__mapping('/etc/auto.data:example2')
+          expect(subject).to contain_autofs__mapping('/etc/auto.data:example3')
+          expect(subject).to contain_concat__fragment('autofs::mapping//etc/auto.data:example1')
+            .with(target: '/etc/auto.data')
+          expect(subject).to contain_concat__fragment('autofs::mapping//etc/auto.data:example2')
+            .with(target: '/etc/auto.data')
+          expect(subject).to contain_concat__fragment('autofs::mapping//etc/auto.data:example3')
+            .with(target: '/etc/auto.data')
+          expect(subject).to contain_concat('/etc/auto.data')
+        end
+      end
+
+      context 'should declare map files' do
+        let(:params) do
+          {
+            mounts: {},
+            mapfiles: {
+              'home' => { path: '/etc/auto.home', mappings: [{ 'key' => 'user1', 'options' => 'rw,exec', 'fs' => 'users.com:/x/user1' }] },
               '/mnt/defaults' => {},
               'unwanted' => { path: '/etc/auto.evil', ensure: 'absent' },
             },
@@ -125,24 +180,31 @@ describe 'autofs', type: :class do
         it do
           expect(subject).to compile.with_all_deps
           expect(subject).to contain_autofs__mapfile('home')
-            .with(path: '/etc/auto.home', mappings: home_mappings)
+            .with(path: '/etc/auto.home', mappings: [{ 'key' => 'user1', 'options' => 'rw,exec', 'fs' => 'users.com:/x/user1' }])
           expect(subject).to contain_autofs__mapfile('/mnt/defaults')
           expect(subject).to contain_autofs__mapfile('unwanted')
             .with(path: '/etc/auto.evil', ensure: 'absent')
           expect(subject).to have_autofs__mapfile_resource_count(3)
           expect(subject).to have_autofs__mount_resource_count(0)
+          expect(subject).to have_autofs__mapping_resource_count(1)
+          expect(subject).to contain_autofs__mapping('/etc/auto.home:user1')
+            .with(mapfile: '/etc/auto.home', key: 'user1', options: 'rw,exec', fs: 'users.com:/x/user1')
+          expect(subject).to contain_concat__fragment('autofs::mapping//etc/auto.home:user1')
+            .with(target: '/etc/auto.home')
+          expect(subject).to contain_concat('/etc/auto.home')
+            .with(owner: 'root', group: group_value, mode: '0644')
+          expect(subject).to contain_concat('/etc/auto.evil')
+            .with(ensure: 'absent')
+          expect(subject).to contain_concat('/mnt/defaults')
         end
       end
 
       context 'should declare automaster mapfile with nismap' do
-        master_mappings = [
-          { 'key' => '+', 'fs' => 'auto.master' },
-        ]
         let(:params) do
           {
             mounts: {},
             mapfiles: {
-              'master' => { path: '/etc/auto.master', mappings: master_mappings },
+              'master' => { path: '/etc/auto.master', mappings: [{ 'key' => '+', 'fs' => 'auto.master' }] },
             },
           }
         end
@@ -150,9 +212,15 @@ describe 'autofs', type: :class do
         it do
           expect(subject).to compile.with_all_deps
           expect(subject).to contain_autofs__mapfile('master')
-            .with(path: '/etc/auto.master', mappings: master_mappings)
+            .with(path: '/etc/auto.master', mappings: [{ 'key' => '+', 'fs' => 'auto.master' }])
           expect(subject).to have_autofs__mapfile_resource_count(1)
           expect(subject).to have_autofs__mount_resource_count(0)
+          expect(subject).to have_autofs__mapping_resource_count(1)
+          expect(subject).to contain_autofs__mapping('/etc/auto.master:+')
+            .with(mapfile: '/etc/auto.master', key: '+', fs: 'auto.master')
+          expect(subject).to contain_concat__fragment('autofs::mapping//etc/auto.master:+')
+            .with(target: '/etc/auto.master')
+          expect(subject).to contain_concat('/etc/auto.master')
         end
       end
 
