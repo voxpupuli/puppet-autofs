@@ -61,6 +61,61 @@ describe 'autofs', type: :class do
         it { is_expected.to contain_package(package).with_ensure('absent') } if os_facts['os']['family'] != 'FreeBSD'
       end
 
+      context 'with map_dirs' do
+        let(:params) do
+          {
+            mounts: {},
+            map_dirs: ['/etc/auto.master.d', '/etc/auto.master.d.site'],
+          }
+        end
+
+        it do
+          master = %w[AIX FreeBSD Solaris].include?(facts['os']['family']) ? '/etc/auto_master' : '/etc/auto.master'
+          expect(subject).to compile.with_all_deps
+          expect(subject).to have_concat_resource_count(1)
+          expect(subject).to contain_concat(master)
+            .with(ensure_newline: true, mode: '0644')
+            .that_notifies("Service[#{service}]")
+          expect(subject).to contain_concat__fragment('autofs::fragment preamble map directory /etc/auto.master.d')
+            .with(target: master, content: '+dir:/etc/auto.master.d', order: 0)
+          expect(subject).to contain_concat__fragment('autofs::fragment preamble map directory /etc/auto.master.d.site')
+            .with(target: master, content: '+dir:/etc/auto.master.d.site', order: 1)
+        end
+      end
+
+      context 'with map_dirs and a mount for one of them' do
+        let(:params) do
+          {
+            map_dirs: ['/etc/auto.master.d'],
+            mounts: { 'data' => { mount: '/data', mapfile: '/etc/auto.data', use_dir: true } },
+          }
+        end
+
+        # The +dir entry must not be duplicated by the autofs::mount resource.
+        it do
+          expect(subject).to compile.with_all_deps
+          expect(subject).to have_concat__fragment_resource_count(1)
+          expect(subject).to have_concat_resource_count(1)
+          expect(subject).to contain_file('/etc/auto.master.d/data.autofs')
+            .with_content(%r{/data /etc/auto\.data})
+        end
+      end
+
+      context 'with map_dirs and package absent' do
+        let(:params) do
+          {
+            package_ensure: 'absent',
+            mounts: {},
+            map_dirs: ['/etc/auto.master.d'],
+          }
+        end
+
+        it do
+          expect(subject).to compile.with_all_deps
+          expect(subject).not_to contain_concat('/etc/auto.master')
+        end
+      end
+
       context 'should declare mount points' do
         let(:params) do
           {

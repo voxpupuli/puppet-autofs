@@ -45,6 +45,11 @@
 #           fs: 'server.example.com:/path/to/home/shares'
 #
 # @param mounts the options with which to manage the autofs master map
+# @param map_dirs Master map drop-in directories to enable via `+dir:` entries
+#   in the master map, without needing to declare any autofs::mount resource.
+#   The master map is managed to include a `+dir:` entry for each, in the order
+#   given.  Useful when map files are delivered to a drop-in directory by other
+#   means (e.g., an RPM).  (default: [])
 # @param purge_map_dir Purge the $map_dir directory of unmanaged
 # @param ldap_auth_conf_path The path to the ldap_auth.conf file
 # @param ldap_auth_config The hash to use for the configuration settings in the ldap_auth.conf file
@@ -85,6 +90,7 @@ class autofs (
   Boolean $manage_ldap_auth_conf = false,
   Enum['no', 'yes'] $service_use_misc_device = 'yes',
   Boolean $purge_map_dir  = false,
+  Array[Stdlib::Absolutepath] $map_dirs = [],
   Enum['stopped', 'running'] $service_ensure = 'running',
   Stdlib::Absolutepath $ldap_auth_conf_path = '/etc/autofs_ldap_auth.conf',
   Hash $ldap_auth_config = { 'usetls' => 'no', 'tlsrequired' => 'no', 'authrequired' => 'no' },
@@ -102,6 +108,35 @@ class autofs (
   contain 'autofs::package'
   unless $package_ensure == 'absent' {
     contain 'autofs::service'
+
+    if $reload_command {
+      Concat {
+        notify => Exec['automount-reload'],
+      }
+    } else {
+      Concat {
+        notify => Service[$service_name],
+      }
+    }
+
+    if !defined(Concat[$auto_master_map]) {
+      concat { $auto_master_map:
+        owner          => $map_file_owner,
+        group          => $map_file_group,
+        mode           => '0644',
+        ensure_newline => true,
+        before         => Service[$service_name],
+      }
+    }
+
+    $map_dirs.each |Integer $index, Stdlib::Absolutepath $dir| {
+      ensure_resource('concat::fragment', "autofs::fragment preamble map directory ${dir}", {
+          target  => $auto_master_map,
+          content => "+dir:${dir}",
+          order   => $index,
+        }
+      )
+    }
   }
 
   $mounts.each |String $mount, Hash $attributes| {

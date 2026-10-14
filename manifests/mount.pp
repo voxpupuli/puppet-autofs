@@ -71,7 +71,6 @@ define autofs::mount (
   unless $autofs::package_ensure == 'absent' {
     if $autofs::reload_command {
       Concat {
-        before => Service[$autofs::service_name],
         notify => Exec['automount-reload'],
       }
     } else {
@@ -87,6 +86,7 @@ define autofs::mount (
       group          => $autofs::map_file_group,
       mode           => '0644',
       ensure_newline => true,
+      before         => Service[$autofs::service_name],
     }
   }
 
@@ -126,8 +126,12 @@ define autofs::mount (
       }
     )
 
-    if !defined(Concat::Fragment['autofs::fragment preamble map directory']) and $ensure == 'present' {
-      concat::fragment { 'autofs::fragment preamble map directory':
+    # The fragment title designates the directory so that (a) distinct drop-in
+    # directories each get their own +dir entry, and (b) an entry created by
+    # class autofs's $map_dirs is not duplicated here.
+    $preamble_fragment = "autofs::fragment preamble map directory ${map_dir}"
+    if !defined(Concat::Fragment[$preamble_fragment]) and $ensure == 'present' {
+      concat::fragment { $preamble_fragment:
         target  => $master,
         content => "+dir:${map_dir}",
         order   => $order,

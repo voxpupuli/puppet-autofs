@@ -43,14 +43,18 @@ define autofs::mapfile (
     false => '0644'
   }
 
-  concat { $path:
-    ensure  => $ensure,
-    owner   => $autofs::map_file_owner,
-    group   => $autofs::map_file_group,
-    mode    => $mapfile_mode,
-    replace => $replace,
-    require => Class['autofs::package'],
-    warn    => template('autofs/mapfile.banner.erb'),
+  unless $autofs::package_ensure == 'absent' {
+    if !defined(Concat[$path]) {
+      concat { $path:
+        ensure  => $ensure,
+        owner   => $autofs::map_file_owner,
+        group   => $autofs::map_file_group,
+        mode    => $mapfile_mode,
+        replace => $replace,
+        require => Class['autofs::package'],
+        warn    => template('autofs/mapfile.banner.erb'),
+      }
+    }
   }
 
   if $ensure == 'present' {

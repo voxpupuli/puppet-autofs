@@ -98,6 +98,7 @@ autofs::mapfiles:
 The following parameters are available in the `autofs` class:
 
 * [`mounts`](#-autofs--mounts)
+* [`map_dirs`](#-autofs--map_dirs)
 * [`purge_map_dir`](#-autofs--purge_map_dir)
 * [`ldap_auth_conf_path`](#-autofs--ldap_auth_conf_path)
 * [`ldap_auth_config`](#-autofs--ldap_auth_config)
@@ -130,6 +131,18 @@ Data type: `Hash[String, Hash]`
 the options with which to manage the autofs master map
 
 Default value: `{}`
+
+##### <a name="-autofs--map_dirs"></a>`map_dirs`
+
+Data type: `Array[Stdlib::Absolutepath]`
+
+Master map drop-in directories to enable via `+dir:` entries
+in the master map, without needing to declare any autofs::mount resource.
+The master map is managed to include a `+dir:` entry for each, in the order
+given.  Useful when map files are delivered to a drop-in directory by other
+means (e.g., an RPM).  (default: [])
+
+Default value: `[]`
 
 ##### <a name="-autofs--purge_map_dir"></a>`purge_map_dir`
 

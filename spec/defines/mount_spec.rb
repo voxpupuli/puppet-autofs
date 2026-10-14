@@ -185,6 +185,30 @@ describe 'autofs::mount', type: :define do
         it { is_expected.to compile.and_raise_error(%r{.*}) }
       end
 
+      context 'with use_dir' do
+        let(:title) { 'data' }
+        let(:params) do
+          {
+            mount: '/data',
+            mapfile: '/etc/auto.data',
+            options: '--timeout=30',
+            use_dir: true,
+          }
+        end
+
+        it do
+          expect(subject).to compile.with_all_deps
+          expect(subject).to contain_file('/etc/auto.master.d')
+            .with(ensure: 'directory', mode: '0755')
+          expect(subject).to contain_file('/etc/auto.master.d/data.autofs')
+            .with_content("/data /etc/auto.data --timeout=30\n")
+          expect(subject).to contain_concat__fragment('autofs::fragment preamble map directory /etc/auto.master.d')
+            .with_target(master_map_file)
+            .with_content('+dir:/etc/auto.master.d')
+          expect(subject).to have_concat_resource_count(1)
+        end
+      end
+
       context 'with ensure set to absent' do
         # rubocop:enable RSpec/MultipleMemoizedHelpers
         let(:title) { '/data' }

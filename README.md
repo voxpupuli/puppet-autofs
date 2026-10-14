@@ -180,6 +180,30 @@ written directly into the master map.  The master map is still, however,
 ensured to contain an appropriate `+dir:` entry designating the chosen
 drop-in directory.
 
+To enable drop-in directories without declaring any mount (e.g., when map
+files are delivered to a drop-in directory by an RPM), list the directories
+via the class parameter `map_dirs` (default is `[]`).  The master map is
+ensured to contain a `+dir:` entry for each, in the order given.  The `+dir:`
+entries sort ahead of entries contributed by `autofs::mount` resources unless
+those specify an `order` below the directory's position in the `map_dirs`
+array.
+
+Mixing RPM-delivered drop-in files with Puppet-managed mounts is supported:
+`map_dirs` never creates or removes files inside the listed directories.
+When combining the two, note that:
+
+* `purge_map_dir => true` would delete the RPM-provided (unmanaged) files
+  in these directories; leave it at its default (`false`) in mixed setups.
+* Once any mount or `map_dirs` entry is declared, the module owns the
+  entire master map file.  Packaged maps must therefore be drop-ins in a
+  `+dir:` directory; lines a package appends directly to the master map
+  would be overwritten.
+* Puppet names each `use_dir` mount's drop-in file `<name>.autofs`; an RPM
+  providing a file at the same path would be overwritten by Puppet.  Use
+  distinct file names.
+* autofs reads drop-in files in alphabetical order by file name, regardless
+  of the Puppet `order` values used to create them.
+
 ##### example
 
 Define:
@@ -202,6 +226,22 @@ autofs::mounts:
     mapfile: '/etc/auto.home'
     options: '--timeout=120'
     use_dir: true
+```
+
+Enable the `+dir:` entry in the master map alone, without declaring a
+mount (the map files themselves arrive via other means, such as an RPM):
+
+```puppet
+class { 'autofs':
+  map_dirs => ['/etc/auto.master.d'],
+}
+```
+
+Hiera:
+
+```yaml
+autofs::map_dirs:
+  - /etc/auto.master.d
 ```
 
 #### Removing mount points
