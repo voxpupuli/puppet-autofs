@@ -18,7 +18,6 @@ points and maps.
 
 ### Defined types
 
-* [`autofs::map`](#autofs--map): Defined type to generate autofs map entry configuration files.
 * [`autofs::mapfile`](#autofs--mapfile): Defined type to manage overall autofs map files
 * [`autofs::mapping`](#autofs--mapping): Defined type to manage a single filesystem mapping in a single map
 file.
@@ -106,7 +105,6 @@ The following parameters are available in the `autofs` class:
 * [`service_options`](#-autofs--service_options)
 * [`service_conf_options`](#-autofs--service_conf_options)
 * [`mapfiles`](#-autofs--mapfiles)
-* [`maps`](#-autofs--maps)
 * [`package_ensure`](#-autofs--package_ensure)
 * [`package_name`](#-autofs--package_name)
 * [`package_source`](#-autofs--package_source)
@@ -186,14 +184,6 @@ Default value: `undef`
 Data type: `Optional[Hash[String, Hash]]`
 
 replace: whether to modify the map file if it already exists
-
-Default value: `undef`
-
-##### <a name="-autofs--maps"></a>`maps`
-
-Data type: `Optional[Hash[String, Hash]]`
-
-Deprecated.  Use the mapfiles parameter instead.
 
 Default value: `undef`
 
@@ -336,101 +326,6 @@ Determine the name of the autounmountd service for cross platform compatibility
 Default value: `undef`
 
 ## Defined types
-
-### <a name="autofs--map"></a>`autofs::map`
-
-Defined type to generate autofs map entry configuration files.
-
-* **See also**
-  * https://voxpupuli.org/puppet-autofs
-    * Home
-  * https://voxpupuli.org/puppet-autofs/puppet_classes/autofs.html
-    * puppet_classes::autofs
-  * https://www.github.com/voxpupuli/puppet-autofs
-    * Github
-  * https://forge.puppet.com/puppet/autofs
-    * Puppet Forge
-
-#### Examples
-
-##### Using the autofs::map defined type to setup automount for nfs data directory.
-
-```puppet
-autofs::map { 'data':
-  mapcontents => 'mydata -user,rw,soft,intr,rsize=32768,wsize=32768  nfs.example.org:/path/to/some/data',
-  mapfile => '/etc/auto.data',
-  order   => '01',
-}
-```
-
-#### Parameters
-
-The following parameters are available in the `autofs::map` defined type:
-
-* [`ensure`](#-autofs--map--ensure)
-* [`mapcontents`](#-autofs--map--mapcontents)
-* [`mapfile`](#-autofs--map--mapfile)
-* [`template`](#-autofs--map--template)
-* [`mapmode`](#-autofs--map--mapmode)
-* [`replace`](#-autofs--map--replace)
-* [`order`](#-autofs--map--order)
-
-##### <a name="-autofs--map--ensure"></a>`ensure`
-
-Data type: `Enum['present', 'absent']`
-
-Whether to create the mapfile or not.
-
-Default value: `'present'`
-
-##### <a name="-autofs--map--mapcontents"></a>`mapcontents`
-
-Data type: `Variant[Array, String]`
-
-The mount point options and parameters,
-Example: '* -user,rw,soft nfs.example.org:/path/to'
-
-Default value: `[]`
-
-##### <a name="-autofs--map--mapfile"></a>`mapfile`
-
-Data type: `Stdlib::Absolutepath`
-
-Name of the "auto." configuration file that will be generated.
-
-Default value: `$title`
-
-##### <a name="-autofs--map--template"></a>`template`
-
-Data type: `Enum['autofs/auto.map.erb', 'autofs/auto.map.exec.erb']`
-
-Template to use to generate the mapfile.
-
-Default value: `'autofs/auto.map.erb'`
-
-##### <a name="-autofs--map--mapmode"></a>`mapmode`
-
-Data type: `String`
-
-UNIX permissions to be added to the file.
-
-Default value: `'0644'`
-
-##### <a name="-autofs--map--replace"></a>`replace`
-
-Data type: `Boolean`
-
-Whether or not to replace an existing mapfile of the same filename/path.
-
-Default value: `true`
-
-##### <a name="-autofs--map--order"></a>`order`
-
-Data type: `Integer`
-
-Order in which entries will appear in the autofs map file.
-
-Default value: `1`
 
 ### <a name="autofs--mapfile"></a>`autofs::mapfile`
 
@@ -844,4 +739,3 @@ A type representing an autofs options list, represented either as a single
 non-empty string or an array of such strings
 
 Alias of `Variant[Pattern[/\A\S+\z/], Array[Pattern[/\A\S+\z/]]]`
-

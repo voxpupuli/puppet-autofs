@@ -52,7 +52,6 @@
 # @param service_options An array of options to add to the OPTIONS variable in the service configuration file
 # @param service_conf_options A hash of environment variables to add to the service configuration file for LDAP configuration
 # @param mapfiles replace: whether to modify the map file if it already exists
-# @param maps Deprecated.  Use the mapfiles parameter instead.
 # @param package_ensure Determines the state of the package. Can be set to: installed, absent, lastest, or a specific version string.
 # @param package_name Determine the name of the package to install. Should be covered by hieradata.
 # @param package_source Determine the source of the package, required on certain platforms (AIX)
@@ -91,7 +90,6 @@ class autofs (
   Hash $ldap_auth_config = { 'usetls' => 'no', 'tlsrequired' => 'no', 'authrequired' => 'no' },
   Stdlib::Absolutepath $service_conf_path = '/etc/sysconfig/autofs',
   Optional[Hash[String, Hash]] $mapfiles = undef,
-  Optional[Hash[String, Hash]] $maps = undef,  # deprecated
   Optional[String] $package_source = undef,
   Optional[String] $reload_command = undef,
   Optional[Array[String]] $service_options = undef,
@@ -113,13 +111,6 @@ class autofs (
   if $mapfiles =~ NotUndef {
     $mapfiles.each |String $file, Hash $attributes| {
       autofs::mapfile { $file: * => $attributes }
-    }
-  }
-
-  if $maps =~ NotUndef {
-    deprecation('autofs::maps', 'Class parameter $autofs::maps is deprecated and will be removed in a future version.  Define maps via the $mapfiles parameter instead')
-    $maps.each |String $map, Hash $attributes| {
-      autofs::map { $map: * => $attributes }
     }
   }
 }

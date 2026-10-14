@@ -84,7 +84,6 @@ describe 'autofs', type: :class do
             .with(mount: '/-', mapfile: '/etc/auto.direct')
           expect(subject).to contain_autofs__mount('remove this')
             .with(mount: '/unwanted', ensure: 'absent')
-          expect(subject).to have_autofs__map_resource_count(0)
           expect(subject).to have_autofs__mapfile_resource_count(0)
           expect(subject).to have_autofs__mapping_resource_count(0)
         end
@@ -102,7 +101,6 @@ describe 'autofs', type: :class do
               '/mnt/defaults' => {},
               'unwanted' => { path: '/etc/auto.evil', ensure: 'absent' },
             },
-            maps: :undef,
           }
         end
 
@@ -115,7 +113,6 @@ describe 'autofs', type: :class do
             .with(path: '/etc/auto.evil', ensure: 'absent')
           expect(subject).to have_autofs__mapfile_resource_count(3)
           expect(subject).to have_autofs__mount_resource_count(0)
-          expect(subject).to have_autofs__map_resource_count(0)
         end
       end
 
@@ -129,7 +126,6 @@ describe 'autofs', type: :class do
             mapfiles: {
               'master' => { path: '/etc/auto.master', mappings: master_mappings },
             },
-            maps: :undef,
           }
         end
 
@@ -139,7 +135,6 @@ describe 'autofs', type: :class do
             .with(path: '/etc/auto.master', mappings: master_mappings)
           expect(subject).to have_autofs__mapfile_resource_count(1)
           expect(subject).to have_autofs__mount_resource_count(0)
-          expect(subject).to have_autofs__map_resource_count(0)
         end
       end
 
