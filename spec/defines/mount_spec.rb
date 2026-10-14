@@ -185,6 +185,39 @@ describe 'autofs::mount', type: :define do
         it { is_expected.to compile.and_raise_error(%r{.*}) }
       end
 
+      context 'with manage_auto_master disabled and a direct master map entry' do
+        let(:pre_condition) { 'class { "autofs": manage_auto_master => false }' }
+        let(:params) do
+          {
+            mount: '/home',
+            mapfile: '/etc/auto.home',
+            options: '--timeout=120',
+          }
+        end
+
+        it { is_expected.to compile.and_raise_error(%r{manage_auto_master}) }
+      end
+
+      context 'with manage_auto_master disabled and use_dir' do
+        let(:pre_condition) { 'class { "autofs": manage_auto_master => false }' }
+        let(:params) do
+          {
+            mount: '/home',
+            mapfile: '/etc/auto.home',
+            options: '--timeout=120',
+            use_dir: true,
+          }
+        end
+
+        it do
+          expect(subject).to compile.with_all_deps
+          expect(subject).not_to contain_concat(master_map_file)
+          expect(subject).not_to contain_concat__fragment('autofs::fragment preamble map directory')
+          expect(subject).to contain_file('/etc/auto.master.d/auto.home.autofs')
+            .with_content(%r{\A/home /etc/auto.home --timeout=120\s*\z})
+        end
+      end
+
       context 'with ensure set to absent' do
         # rubocop:enable RSpec/MultipleMemoizedHelpers
         let(:title) { '/data' }

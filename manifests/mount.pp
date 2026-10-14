@@ -43,14 +43,21 @@
 #   too, that can be specified via this parameter.
 # @param master Full path, including filename, to the autofs master map.
 #   Usually the correct master map will be chosen automatically, and you will
-#   not need to specify this.
+#   not need to specify this.  Ignored (aside from validation) when
+#   autofs::manage_auto_master is false, since the master map is then
+#   unmanaged by this module.
 # @param map_dir Full path, including directory name, to the autofs master
 #   map's drop-in directory.  Relevant only when $use_dir is true.  (default:
 #   '/etc/auto.master.d').
 # @param use_dir If true, autofs will manage this mount via a file in the
 #   master map's drop-in directory instead of directly in the master map.
-#   The master map will still be managed, however, to ensure at least that
-#   it enables the (correct) drop-in directory.
+#   Unless autofs::manage_auto_master is false, the master map will still be
+#   managed, however, to ensure at least that it enables the (correct) drop-in
+#   directory.  When autofs::manage_auto_master is false, the owner of the
+#   master map must ensure the +dir: entry (or rely on a build of autofs that
+#   reads the drop-in directory implicitly), but the drop-in files themselves
+#   are still managed here.  This parameter must be true whenever
+#   autofs::manage_auto_master is false.
 # @param options Options to be specified for the autofs mount point within
 #   the master map.
 # @param order The relative order in which entries will appear in the master
@@ -68,6 +75,11 @@ define autofs::mount (
 ) {
   include 'autofs'
 
+  if !$autofs::manage_auto_master and !$use_dir {
+    $msg = "autofs::mount[${title}]: autofs::manage_auto_master is false; set use_dir => true to record the entry in ${map_dir}"
+    fail($msg)
+  }
+
   unless $autofs::package_ensure == 'absent' {
     if $autofs::reload_command {
       Concat {
@@ -81,7 +93,7 @@ define autofs::mount (
     }
   }
 
-  if !defined(Concat[$master]) {
+  if $autofs::manage_auto_master and !defined(Concat[$master]) {
     concat { $master:
       owner          => $autofs::map_file_owner,
       group          => $autofs::map_file_group,
@@ -126,7 +138,7 @@ define autofs::mount (
       }
     )
 
-    if !defined(Concat::Fragment['autofs::fragment preamble map directory']) and $ensure == 'present' {
+    if $autofs::manage_auto_master and !defined(Concat::Fragment['autofs::fragment preamble map directory']) and $ensure == 'present' {
       concat::fragment { 'autofs::fragment preamble map directory':
         target  => $master,
         content => "+dir:${map_dir}",

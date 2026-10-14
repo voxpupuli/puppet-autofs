@@ -89,6 +89,24 @@ describe 'autofs', type: :class do
         end
       end
 
+      context 'with manage_auto_master disabled' do
+        let(:params) do
+          {
+            manage_auto_master: false,
+            mounts: {
+              'home' => { mount: '/home', mapfile: '/etc/auto.home', use_dir: true },
+            },
+          }
+        end
+
+        it do
+          expect(subject).to compile.with_all_deps
+          expect(subject).not_to contain_concat('/etc/auto.master')
+          expect(subject).not_to contain_concat__fragment('autofs::fragment preamble map directory')
+          expect(subject).to contain_file('/etc/auto.master.d/home.autofs')
+        end
+      end
+
       context 'should declare map files' do
         home_mappings = [
           { 'key' => 'user1', 'options' => 'rw,exec', 'fs' => 'users.com:/x/user1' },
