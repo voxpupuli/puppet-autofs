@@ -44,11 +44,17 @@ The Module manages the following:
 
 ### Usage
 
-The module provides one class:
+The module provides one public class:
 
 ```puppet
 include autofs
 ```
+
+This class manages the autofs package and service, and optionally the master
+map (`/etc/auto.master`) and mount points.  When `manage_auto_master` is true
+(the default), the module also declares the private `autofs::master` class to
+set up the master map file for use with `autofs::add_master_entry` and
+`autofs::mount` resources.
 
 With all default parameter values, this installs, enables, and starts the
 autofs service, configuring it to rely on the default location for the
@@ -181,7 +187,8 @@ parameter is `true` (default is `false`), the corresponding master map entry
 is created as a separate file in the appropriate directory instead of being
 written directly into the master map.  The master map is still, however,
 ensured to contain an appropriate `+dir:` entry designating the chosen
-drop-in directory.
+drop-in directory.  Internally, this uses the `autofs::add_master_entry` defined
+type to manage the master map entry.
 
 ##### example
 
@@ -207,6 +214,63 @@ autofs::mounts:
     use_dir: true
 ```
 
+#### Managing master map entries independently
+
+If you need to add an entry to the master map without managing a corresponding
+mount point (for example, when a package drops files into a drop-in directory
+that you don't manage through Puppet, or when you need an entry other than
+`+dir:`), use the `autofs::add_master_entry` defined type.
+
+This ensures the specified entry appears in `/etc/auto.master`, but does not
+manage any map files or mount points.
+
+##### example
+
+Add a `+dir:` entry for a drop-in directory managed externally (title defaults
+to entry):
+
+```puppet
+autofs::add_master_entry { '+dir:/etc/auto.master.d/myapp': }
+```
+
+With `ensure_dir => true`, also ensure the directory exists:
+
+```puppet
+autofs::add_master_entry { '+dir:/etc/auto.master.d/myapp':
+  ensure_dir   => true,
+}
+```
+
+Or specify the entry explicitly:
+
+```puppet
+autofs::add_master_entry { 'myapp':
+  entry => '+dir:/etc/auto.master.d/myapp',
+}
+```
+
+Add an arbitrary master map entry (e.g., NIS map inclusion):
+
+```puppet
+autofs::add_master_entry { 'nis_maps':
+  entry => '+auto.master',
+}
+```
+
+Hiera:
+
+```yaml
+autofs::add_master_entry:
+  '+dir:/etc/auto.master.d/myapp':
+    ensure_dir: true
+  nis_maps:
+    entry: '+auto.master'
+```
+
+This approach is cleaner than using a dummy `autofs::mount` with `use_dir`
+when you only need an entry without any mounts. The title defaults to the
+entry content, simplifying the common case of `+dir:` entries.
+
 #### Declining to manage the master map directly
 
 Sometimes the master map is owned by another module, tool, or configuration
@@ -221,6 +285,11 @@ is enabled, either via a `+dir:` entry or by relying on a build of autofs
 that reads the drop-in directory automatically.  Any `autofs::mount` left
 with `use_dir => false` under this setting fails compilation rather than
 silently doing nothing.
+
+If the drop-in directory is not provided by the platform's autofs package,
+add `ensure_dir => true` to a mount (or to an `autofs::add_master_entry`
+for a `+dir:` entry) and the module will ensure the directory itself,
+even while leaving the master map untouched.
 
 ##### example
 
@@ -355,21 +424,22 @@ The resulting files are then
 
 Notes:
 
-* Comment lines from the old master map need no migration; only the actual
-  map entries do.
-* The `+dir:/etc/auto.master.d` line is ensured by the module itself, so it
-  is not declared as a mount.
 * A `+auto.master` line (which pulls in a central master map via nsswitch,
-  e.g. NIS) cannot be expressed as an `autofs::mount`.  Because the master
-  map is managed with the `concat` module, it can be carried over with an
-  additional fragment:
+  e.g. NIS) cannot be expressed as an `autofs::mount`.  Use `autofs::add_master_entry`
+  to carry over such entries:
 
   ```puppet
-  concat::fragment { 'auto.master: +auto.master':
-    target  => '/etc/auto.master',
-    content => "+auto.master\n",
-    order   => '99',
+  autofs::add_master_entry { '+auto.master':
+    entry => '+auto.master',
   }
+  ```
+
+  Or in Hiera:
+
+  ```yaml
+  autofs::add_master_entry:
+    '+auto.master':
+      entry: '+auto.master'
   ```
 
 * By default, files already present in `/etc/auto.master.d` that Puppet does
@@ -379,12 +449,8 @@ Notes:
 
 #### Removing mount points
 
-Unwanted mount points can be ensured `absent` to force their removal.  This
-will remove them from the master map even if the master map is not otherwise
-managed (and in that specific case, without otherwise managing that file),
-either directly in the file or in the drop-in directory (but not both).  If
-at least one mount point is managed `present` in the master map then it may
-also be sufficient to simply omit unwanted mount points.
+Unwanted mount points can be ensured `absent` to force their removal from
+`auto.master`.
 
 ##### example
 

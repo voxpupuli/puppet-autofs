@@ -13,16 +13,24 @@ points and maps.
 
 #### Private Classes
 
+* `autofs::master`: The autofs::master class configures the autofs master map.
 * `autofs::package`: The autofs::package class installs the autofs package.
 * `autofs::service`: The autofs::service class configures the autofs service.
 
 ### Defined types
 
+#### Public Defined types
+
+* [`autofs::add_master_entry`](#autofs--add_master_entry): Defined type to add entries to the Autofs master map.
 * [`autofs::mapfile`](#autofs--mapfile): Defined type to manage overall autofs map files
 * [`autofs::mapping`](#autofs--mapping): Defined type to manage a single filesystem mapping in a single map
 file.
 * [`autofs::mount`](#autofs--mount): Defined type to manage mount point definitions in the Autofs master
 map.
+
+#### Private Defined types
+
+* `autofs::mapdir`: Ensure an autofs drop-in map directory exists.
 
 ### Functions
 
@@ -103,96 +111,35 @@ autofs::mapfiles:
 
 The following parameters are available in the `autofs` class:
 
-* [`mounts`](#-autofs--mounts)
-* [`purge_map_dir`](#-autofs--purge_map_dir)
-* [`ldap_auth_conf_path`](#-autofs--ldap_auth_conf_path)
-* [`ldap_auth_config`](#-autofs--ldap_auth_config)
-* [`service_conf_path`](#-autofs--service_conf_path)
-* [`service_options`](#-autofs--service_options)
-* [`service_conf_options`](#-autofs--service_conf_options)
-* [`mapfiles`](#-autofs--mapfiles)
 * [`package_ensure`](#-autofs--package_ensure)
 * [`package_name`](#-autofs--package_name)
-* [`package_source`](#-autofs--package_source)
-* [`service_ensure`](#-autofs--service_ensure)
 * [`service_enable`](#-autofs--service_enable)
 * [`service_name`](#-autofs--service_name)
-* [`auto_master_map`](#-autofs--auto_master_map)
 * [`manage_auto_master`](#-autofs--manage_auto_master)
+* [`auto_master_map`](#-autofs--auto_master_map)
+* [`default_map_dir`](#-autofs--default_map_dir)
 * [`map_file_owner`](#-autofs--map_file_owner)
 * [`map_file_group`](#-autofs--map_file_group)
+* [`map_file_mode`](#-autofs--map_file_mode)
+* [`map_dir_mode`](#-autofs--map_dir_mode)
 * [`manage_service_config`](#-autofs--manage_service_config)
 * [`manage_ldap_auth_conf`](#-autofs--manage_ldap_auth_conf)
 * [`service_use_misc_device`](#-autofs--service_use_misc_device)
+* [`purge_map_dir`](#-autofs--purge_map_dir)
+* [`service_ensure`](#-autofs--service_ensure)
+* [`ldap_auth_conf_path`](#-autofs--ldap_auth_conf_path)
+* [`ldap_auth_config`](#-autofs--ldap_auth_config)
+* [`service_conf_path`](#-autofs--service_conf_path)
+* [`package_source`](#-autofs--package_source)
 * [`reload_command`](#-autofs--reload_command)
+* [`service_options`](#-autofs--service_options)
+* [`service_conf_options`](#-autofs--service_conf_options)
 * [`automountd_service_ensure`](#-autofs--automountd_service_ensure)
 * [`autounmountd_service_ensure`](#-autofs--autounmountd_service_ensure)
 * [`automountd_service_name`](#-autofs--automountd_service_name)
 * [`autounmountd_service_name`](#-autofs--autounmountd_service_name)
-
-##### <a name="-autofs--mounts"></a>`mounts`
-
-Data type: `Hash[String, Hash]`
-
-the options with which to manage the autofs master map
-
-Default value: `{}`
-
-##### <a name="-autofs--purge_map_dir"></a>`purge_map_dir`
-
-Data type: `Boolean`
-
-Purge the $map_dir directory of unmanaged
-
-Default value: `false`
-
-##### <a name="-autofs--ldap_auth_conf_path"></a>`ldap_auth_conf_path`
-
-Data type: `Stdlib::Absolutepath`
-
-The path to the ldap_auth.conf file
-
-Default value: `'/etc/autofs_ldap_auth.conf'`
-
-##### <a name="-autofs--ldap_auth_config"></a>`ldap_auth_config`
-
-Data type: `Hash`
-
-The hash to use for the configuration settings in the ldap_auth.conf file
-
-Default value: `{ 'usetls' => 'no', 'tlsrequired' => 'no', 'authrequired' => 'no' }`
-
-##### <a name="-autofs--service_conf_path"></a>`service_conf_path`
-
-Data type: `Stdlib::Absolutepath`
-
-The path to the service configuration file
-
-Default value: `'/etc/sysconfig/autofs'`
-
-##### <a name="-autofs--service_options"></a>`service_options`
-
-Data type: `Optional[Array[String]]`
-
-An array of options to add to the OPTIONS variable in the service configuration file
-
-Default value: `undef`
-
-##### <a name="-autofs--service_conf_options"></a>`service_conf_options`
-
-Data type: `Optional[Hash]`
-
-A hash of environment variables to add to the service configuration file for LDAP configuration
-
-Default value: `undef`
-
-##### <a name="-autofs--mapfiles"></a>`mapfiles`
-
-Data type: `Optional[Hash[String, Hash]]`
-
-replace: whether to modify the map file if it already exists
-
-Default value: `undef`
+* [`mounts`](#-autofs--mounts)
+* [`mapfiles`](#-autofs--mapfiles)
 
 ##### <a name="-autofs--package_ensure"></a>`package_ensure`
 
@@ -209,22 +156,6 @@ Data type: `Variant[String, Array[String]]`
 Determine the name of the package to install. Should be covered by hieradata.
 
 Default value: `'autofs'`
-
-##### <a name="-autofs--package_source"></a>`package_source`
-
-Data type: `Optional[String]`
-
-Determine the source of the package, required on certain platforms (AIX)
-
-Default value: `undef`
-
-##### <a name="-autofs--service_ensure"></a>`service_ensure`
-
-Data type: `Enum['stopped', 'running']`
-
-Determines state of the service. Can be set to: running or stopped.
-
-Default value: `'running'`
 
 ##### <a name="-autofs--service_enable"></a>`service_enable`
 
@@ -244,14 +175,6 @@ Determine the name of the service for cross platform compatibility
 
 Default value: `'autofs'`
 
-##### <a name="-autofs--auto_master_map"></a>`auto_master_map`
-
-Data type: `String`
-
-Filename of the auto.master map for cross platform compatiblity
-
-Default value: `'/etc/auto.master'`
-
 ##### <a name="-autofs--manage_auto_master"></a>`manage_auto_master`
 
 Data type: `Boolean`
@@ -264,6 +187,22 @@ map's drop-in directory.  Use this when another module, tool, or
 configuration management system owns the master map.
 
 Default value: `true`
+
+##### <a name="-autofs--auto_master_map"></a>`auto_master_map`
+
+Data type: `Stdlib::Absolutepath`
+
+Filename of the auto.master map for cross platform compatiblity
+
+Default value: `'/etc/auto.master'`
+
+##### <a name="-autofs--default_map_dir"></a>`default_map_dir`
+
+Data type: `Stdlib::Absolutepath`
+
+The default value for map_dir (default: '/etc/auto.master.d')
+
+Default value: `'/etc/auto.master.d'`
 
 ##### <a name="-autofs--map_file_owner"></a>`map_file_owner`
 
@@ -280,6 +219,24 @@ Data type: `String`
 group of the automount map files for cross platform compatiblity
 
 Default value: `'root'`
+
+##### <a name="-autofs--map_file_mode"></a>`map_file_mode`
+
+Data type: `String`
+
+The mode for master map files (default: '0644')
+
+Default value: `'0644'`
+
+##### <a name="-autofs--map_dir_mode"></a>`map_dir_mode`
+
+Data type: `String`
+
+The mode for the master map's drop-in directory, as
+created via autofs::add_master_entry's or autofs::mount's ensure_dir
+(default: '0755')
+
+Default value: `'0755'`
 
 ##### <a name="-autofs--manage_service_config"></a>`manage_service_config`
 
@@ -305,11 +262,75 @@ Sets the USE_MISC_DEVICE value in the service configuration file
 
 Default value: `'yes'`
 
+##### <a name="-autofs--purge_map_dir"></a>`purge_map_dir`
+
+Data type: `Boolean`
+
+Purge the $map_dir directory of unmanaged
+
+Default value: `false`
+
+##### <a name="-autofs--service_ensure"></a>`service_ensure`
+
+Data type: `Enum['stopped', 'running']`
+
+Determines state of the service. Can be set to: running or stopped.
+
+Default value: `'running'`
+
+##### <a name="-autofs--ldap_auth_conf_path"></a>`ldap_auth_conf_path`
+
+Data type: `Stdlib::Absolutepath`
+
+The path to the ldap_auth.conf file
+
+Default value: `'/etc/autofs_ldap_auth.conf'`
+
+##### <a name="-autofs--ldap_auth_config"></a>`ldap_auth_config`
+
+Data type: `Hash`
+
+The hash to use for the configuration settings in the ldap_auth.conf file
+
+Default value: `{ 'usetls' => 'no', 'tlsrequired' => 'no', 'authrequired' => 'no' }`
+
+##### <a name="-autofs--service_conf_path"></a>`service_conf_path`
+
+Data type: `Stdlib::Absolutepath`
+
+The path to the service configuration file
+
+Default value: `'/etc/sysconfig/autofs'`
+
+##### <a name="-autofs--package_source"></a>`package_source`
+
+Data type: `Optional[String]`
+
+Determine the source of the package, required on certain platforms (AIX)
+
+Default value: `undef`
+
 ##### <a name="-autofs--reload_command"></a>`reload_command`
 
 Data type: `Optional[String]`
 
 In lieu of a service reload capability in Puppet, exec this command to reload automount without restarting it.
+
+Default value: `undef`
+
+##### <a name="-autofs--service_options"></a>`service_options`
+
+Data type: `Optional[Array[String]]`
+
+An array of options to add to the OPTIONS variable in the service configuration file
+
+Default value: `undef`
+
+##### <a name="-autofs--service_conf_options"></a>`service_conf_options`
+
+Data type: `Optional[Hash]`
+
+A hash of environment variables to add to the service configuration file for LDAP configuration
 
 Default value: `undef`
 
@@ -345,11 +366,143 @@ Determine the name of the autounmountd service for cross platform compatibility
 
 Default value: `undef`
 
+##### <a name="-autofs--mounts"></a>`mounts`
+
+Data type: `Hash[String, Hash]`
+
+the options with which to manage the autofs master map
+
+Default value: `{}`
+
+##### <a name="-autofs--mapfiles"></a>`mapfiles`
+
+Data type: `Optional[Hash[String, Hash]]`
+
+Mapfiles to generate
+
+Default value: `undef`
+
 ## Defined types
+
+### <a name="autofs--add_master_entry"></a>`autofs::add_master_entry`
+
+Use this defined type to add entries to `/etc/auto.master` without having
+to declare a mount point. This is useful when:
+
+* A package drops files into a drop-in directory that you don't manage
+* You need entries other than `+dir:` (e.g., `+auto.master` for NIS)
+* You want a clean separation between master map entry management and mount
+  point management
+
+* **See also**
+  * https://voxpupuli.org/puppet-autofs
+    * Home
+  * https://voxpupuli.org/puppet-autofs/puppet_classes/autofs.html
+    * puppet_classes::autofs
+  * https://www.github.com/voxpupuli/puppet-autofs
+    * Github
+  * https://forge.puppet.com/puppet/autofs
+    * Puppet Forge
+
+#### Examples
+
+##### Add a +dir: entry for drop-in files in a subdirectory
+
+```puppet
+autofs::add_master_entry { 'myapp':
+  entry => '+dir:/etc/auto.master.d/myapp',
+}
+```
+
+##### Add a +dir: entry ensuring the directory exists
+
+```puppet
+autofs::add_master_entry { 'myapp':
+  entry        => '+dir:/etc/auto.master.d/myapp',
+  ensure_dir   => true,
+}
+```
+
+##### Use title as entry (simplifies +dir: entries)
+
+```puppet
+autofs::add_master_entry { '+dir:/etc/auto.master.d/myapp': }
+```
+
+##### Add an arbitrary master map entry (e.g., NIS map inclusion)
+
+```puppet
+autofs::add_master_entry { 'nis_maps':
+  entry => '+auto.master',
+}
+```
+
+#### Parameters
+
+The following parameters are available in the `autofs::add_master_entry` defined type:
+
+* [`ensure`](#-autofs--add_master_entry--ensure)
+* [`entry`](#-autofs--add_master_entry--entry)
+* [`master`](#-autofs--add_master_entry--master)
+* [`order`](#-autofs--add_master_entry--order)
+* [`ensure_dir`](#-autofs--add_master_entry--ensure_dir)
+
+##### <a name="-autofs--add_master_entry--ensure"></a>`ensure`
+
+Data type: `Enum['present', 'absent']`
+
+Whether the entry should be present in the master map.
+(default: 'present')
+
+Default value: `'present'`
+
+##### <a name="-autofs--add_master_entry--entry"></a>`entry`
+
+Data type: `String`
+
+The content of the master map entry. Defaults to the resource
+title, making it simple to add +dir: entries by using the title as the
+entry. (default: $title)
+
+Default value: `$title`
+
+##### <a name="-autofs--add_master_entry--master"></a>`master`
+
+Data type: `Stdlib::Absolutepath`
+
+Full path, including filename, to the autofs master map.
+Usually the correct master map will be chosen automatically, and you will
+not need to specify this.
+
+Default value: `$autofs::auto_master_map`
+
+##### <a name="-autofs--add_master_entry--order"></a>`order`
+
+Data type: `Integer`
+
+The relative order in which the entry will appear in the
+master map. (default: 50)
+
+Default value: `50`
+
+##### <a name="-autofs--add_master_entry--ensure_dir"></a>`ensure_dir`
+
+Data type: `Boolean`
+
+When the entry is a +dir: entry, also ensure the
+referenced directory exists.  (default: false)
+
+Default value: `false`
 
 ### <a name="autofs--mapfile"></a>`autofs::mapfile`
 
-Defined type to manage overall autofs map files
+When autofs::manage_auto_master is true, autofs::master owns the Concat
+resource for the master map, and only one resource per path may exist in the
+catalog.  A mapfile whose path is that same file therefore contributes only
+its mappings as concat fragments and reuses the existing Concat.  Parameters
+that autofs::master cannot express (ensure, replace, and execute) raise an
+error in that situation instead of being quietly ignored.  Prefer
+autofs::add_master_entry for master map entries.
 
 * **See also**
   * https://voxpupuli.org/puppet-autofs
@@ -534,7 +687,11 @@ Default value: `10`
 
 ### <a name="autofs--mount"></a>`autofs::mount`
 
-autofs::mount { 'home':
+This defined type manages both the master map entry and the map file.
+Master map entries are created using `autofs::add_master_entry` for both
+direct entries and `+dir:` entries.
+
+  autofs::mount { 'home':
     mount          => '/home',
     mapfile        => '/etc/auto.home',
     options        => '--timeout=120',
@@ -591,6 +748,7 @@ The following parameters are available in the `autofs::mount` defined type:
 * [`use_dir`](#-autofs--mount--use_dir)
 * [`options`](#-autofs--mount--options)
 * [`order`](#-autofs--mount--order)
+* [`ensure_dir`](#-autofs--mount--ensure_dir)
 
 ##### <a name="-autofs--mount--ensure"></a>`ensure`
 
@@ -641,7 +799,7 @@ Full path, including directory name, to the autofs master
 map's drop-in directory.  Relevant only when $use_dir is true.  (default:
 '/etc/auto.master.d').
 
-Default value: `'/etc/auto.master.d'`
+Default value: `$autofs::default_map_dir`
 
 ##### <a name="-autofs--mount--use_dir"></a>`use_dir`
 
@@ -673,9 +831,22 @@ Default value: `undef`
 Data type: `Integer`
 
 The relative order in which entries will appear in the master
-map.  Irrelevant when $use_dir is true.
+map.
 
 Default value: `1`
+
+##### <a name="-autofs--mount--ensure_dir"></a>`ensure_dir`
+
+Data type: `Boolean`
+
+Whether to ensure the drop-in directory ($map_dir) exists
+before writing entries into it.  Applies whether or not
+autofs::manage_auto_master is true; when it is false, this is the only
+way the module will create the directory.  When false, the directory is
+expected to exist already, e.g. shipped by the autofs package.
+(default: false)
+
+Default value: `false`
 
 ## Functions
 
