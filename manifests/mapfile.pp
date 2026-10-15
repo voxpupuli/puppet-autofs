@@ -16,6 +16,14 @@
 #     at the specified path
 # @param execute Whether to make the mapfile executable or not
 #
+# When autofs::manage_auto_master is true, autofs::master owns the Concat
+# resource for the master map, and only one resource per path may exist in the
+# catalog.  A mapfile whose path is that same file therefore contributes only
+# its mappings as concat fragments and reuses the existing Concat.  Parameters
+# that autofs::master cannot express (ensure, replace, and execute) raise an
+# error in that situation instead of being quietly ignored.  Prefer
+# autofs::add_master_entry for master map entries.
+#
 define autofs::mapfile (
   Enum['present', 'absent'] $ensure   = 'present',
   Stdlib::Absolutepath $path          = $title,
@@ -27,15 +35,12 @@ define autofs::mapfile (
 
   unless $autofs::package_ensure == 'absent' {
     if $autofs::reload_command {
-      Concat {
-        before => Service[$autofs::service_name],
-        notify => Exec['automount-reload'],
-      }
+      $concat_notify = Exec['automount-reload']
     } else {
-      Concat {
-        notify => Service[$autofs::service_name],
-      }
+      $concat_notify = Service[$autofs::service_name]
     }
+  } else {
+    $concat_notify = undef
   }
 
   $mapfile_mode = $execute ? {
@@ -43,14 +48,24 @@ define autofs::mapfile (
     false => '0644'
   }
 
-  concat { $path:
-    ensure  => $ensure,
-    owner   => $autofs::map_file_owner,
-    group   => $autofs::map_file_group,
-    mode    => $mapfile_mode,
-    replace => $replace,
-    require => Class['autofs::package'],
-    warn    => template('autofs/mapfile.banner.erb'),
+  # autofs::master owns the Concat resource for the managed master map.
+  # Declaring it here too would be a duplicate, so only declare our own Concat
+  # when the path is a different file, or when the master map itself is not
+  # managed (in which case autofs::master is not part of the catalog).
+  if $path != $autofs::auto_master_map or !$autofs::manage_auto_master {
+    ensure_resource('concat', $path,
+      {
+        ensure         => $ensure,
+        owner          => $autofs::map_file_owner,
+        group          => $autofs::map_file_group,
+        mode           => $mapfile_mode,
+        ensure_newline => true,
+        replace        => $replace,
+        warn           => template('autofs/mapfile.banner.erb'),
+        notify         => $concat_notify,
+        require        => Class['autofs::package'],
+      }
+    )
   }
 
   if $ensure == 'present' {

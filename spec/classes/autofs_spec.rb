@@ -100,15 +100,28 @@ describe 'autofs', type: :class do
             .with(mount: '/unwanted', ensure: 'absent')
           expect(subject).to have_autofs__mapfile_resource_count(0)
           expect(subject).to have_autofs__mapping_resource_count(0)
+          # Each mount contributes exactly one master map entry resource, which
+          # autofs::mount delegates to autofs::add_master_entry.
+          expect(subject).to have_autofs__add_master_entry_resource_count(4)
+          expect(subject).to contain_autofs__add_master_entry('autofs::mount home')
+            .with(ensure: 'present', order: 1)
+            .with_entry('/home /etc/auto.home --timeout=120')
+          expect(subject).to contain_autofs__add_master_entry('autofs::mount /mnt/other')
+            .with_entry(%r{\A/mnt/other /etc/auto\.other\s*\z})
+          expect(subject).to contain_autofs__add_master_entry('autofs::mount direct')
+            .with_entry(%r{\A/- /etc/auto\.direct\s*\z})
+          expect(subject).to contain_autofs__add_master_entry('autofs::mount remove this')
+            .with_ensure('absent')
           expect(subject).to contain_concat(master_map_file_value)
-          expect(subject).to contain_concat__fragment('autofs::fragment preamble /home /etc/auto.home')
+          expect(subject).to contain_concat__fragment('autofs::add_master_entry autofs::mount home')
             .with_target(master_map_file_value)
-          expect(subject).to contain_concat__fragment('autofs::fragment preamble /mnt/other /etc/auto.other')
+            .with_content(%r{\A\s*/home /etc/auto.home --timeout=120\s*\z})
+          expect(subject).to contain_concat__fragment('autofs::add_master_entry autofs::mount /mnt/other')
             .with_target(master_map_file_value)
-          expect(subject).to contain_concat__fragment('autofs::fragment preamble /- /etc/auto.direct')
+            .with_content(%r{\A\s*/mnt/other /etc/auto.other\s*\z})
+          expect(subject).to contain_concat__fragment('autofs::add_master_entry autofs::mount direct')
             .with_target(master_map_file_value)
-          expect(subject).to contain_file_line("#{master_map_file_value}::/unwanted_/etc/auto.unwanted")
-            .with(ensure: 'absent', path: master_map_file_value)
+            .with_content(%r{\A\s*/- /etc/auto.direct\s*\z})
         end
       end
 
@@ -125,10 +138,12 @@ describe 'autofs', type: :class do
         it do
           expect(subject).to compile.with_all_deps
           expect(subject).not_to contain_concat('/etc/auto.master')
-          expect(subject).not_to contain_concat__fragment('autofs::fragment preamble map directory')
+          expect(subject).not_to contain_concat__fragment('autofs::add_master_entry /etc/auto.master.d')
+          # The module no longer ensures the drop-in directory itself; it is
+          # shipped by the autofs package (or created via add_master_entry's
+          # ensure_dir), and only the drop-in files are managed here.
+          expect(subject).not_to contain_file('/etc/auto.master.d')
           expect(subject).to contain_file('/etc/auto.master.d/home.autofs')
-          expect(subject).to contain_file('/etc/auto.master.d')
-            .with(ensure: 'directory', owner: 'root', group: group_value)
         end
       end
 
@@ -202,6 +217,7 @@ describe 'autofs', type: :class do
       context 'should declare automaster mapfile with nismap' do
         let(:params) do
           {
+            manage_auto_master: false,
             mounts: {},
             mapfiles: {
               'master' => { path: '/etc/auto.master', mappings: [{ 'key' => '+', 'fs' => 'auto.master' }] },
@@ -220,6 +236,27 @@ describe 'autofs', type: :class do
             .with(mapfile: '/etc/auto.master', key: '+', fs: 'auto.master')
           expect(subject).to contain_concat__fragment('autofs::mapping//etc/auto.master:+')
             .with(target: '/etc/auto.master')
+          expect(subject).to contain_concat('/etc/auto.master')
+        end
+      end
+
+      # Regression: acceptance 'master nismap inclusion test' uses the default
+      # manage_auto_master (true), so autofs::master owns the Concat for the
+      # master map.  A mapfile targeting that same path must defer to it rather
+      # than declaring a second Concat, which is what broke the GitHub builds.
+      context 'with mapfile on the managed master map (nismap)' do
+        let(:params) do
+          {
+            mapfiles: {
+              'master' => { path: '/etc/auto.master', mappings: [{ 'key' => '+', 'fs' => 'auto.master' }] },
+            },
+          }
+        end
+
+        it do
+          expect(subject).to compile.with_all_deps
+          expect(subject).to contain_autofs__mapping('/etc/auto.master:+')
+            .with(mapfile: '/etc/auto.master', key: '+', fs: 'auto.master')
           expect(subject).to contain_concat('/etc/auto.master')
         end
       end

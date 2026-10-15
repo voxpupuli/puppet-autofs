@@ -1,6 +1,10 @@
 # @summary Defined type to manage mount point definitions in the Autofs master
 #   map.
 #
+# This defined type manages both the master map entry and the map file.
+# Master map entries are created using `autofs::add_master_entry` for both
+# direct entries and `+dir:` entries.
+#
 # @see https://voxpupuli.org/puppet-autofs Home
 # @see https://voxpupuli.org/puppet-autofs/puppet_classes/autofs.html puppet_classes::autofs
 # @see https://www.github.com/voxpupuli/puppet-autofs Github
@@ -61,7 +65,13 @@
 # @param options Options to be specified for the autofs mount point within
 #   the master map.
 # @param order The relative order in which entries will appear in the master
-#   map.  Irrelevant when $use_dir is true.
+#   map.
+# @param ensure_dir Whether to ensure the drop-in directory ($map_dir) exists
+#   before writing entries into it.  Applies whether or not
+#   autofs::manage_auto_master is true; when it is false, this is the only
+#   way the module will create the directory.  When false, the directory is
+#   expected to exist already, e.g. shipped by the autofs package.
+#   (default: false)
 #
 define autofs::mount (
   Variant[Stdlib::Absolutepath,Autofs::Mapentry] $mapfile,
@@ -70,8 +80,9 @@ define autofs::mount (
   Integer $order                          = 1,
   Optional[String] $options               = undef,
   Stdlib::Absolutepath $master            = $autofs::auto_master_map,
-  Stdlib::Absolutepath $map_dir           = '/etc/auto.master.d',
+  Stdlib::Absolutepath $map_dir           = $autofs::default_map_dir,
   Boolean $use_dir                        = false,
+  Boolean $ensure_dir                     = false,
 ) {
   include 'autofs'
 
@@ -80,70 +91,44 @@ define autofs::mount (
     fail($msg)
   }
 
-  unless $autofs::package_ensure == 'absent' {
-    if $autofs::reload_command {
-      Concat {
-        before => Service[$autofs::service_name],
-        notify => Exec['automount-reload'],
-      }
-    } else {
-      Concat {
-        notify => Service[$autofs::service_name],
-      }
-    }
-  }
-
-  if $autofs::manage_auto_master and !defined(Concat[$master]) {
-    concat { $master:
-      owner          => $autofs::map_file_owner,
-      group          => $autofs::map_file_group,
-      mode           => '0644',
-      ensure_newline => true,
-    }
-  }
-
-  $contents = "${mount} ${mapfile} ${options}"
+  $entry_content = "${mount} ${mapfile} ${options}"
 
   if $use_dir == false {
-    if $ensure == 'present' {
-      concat::fragment { "autofs::fragment preamble ${mount} ${mapfile}":
-        target  => $master,
-        content => "${contents}\n",
-        order   => $order,
-      }
-    } else {
-      # If the master map is being managed via other autofs::mount resources,
-      # too, at least one of which is ensured present, then this File_line is
-      # unnecessary.  Otherwise, however, it is required for ensuring this
-      # mount absent to be effective.
-      file_line { "${master}::${mount}_${mapfile}":
-        ensure            => 'absent',
-        path              => $master,
-        match             => "^\\s*${mount}\\s+${mapfile}\\s",
-        match_for_absence => true,
-        multiple          => true,
-        notify            => Service[$autofs::service_name],
-      }
+    # Direct entry in master map
+    autofs::add_master_entry { "autofs::mount ${title}":
+      ensure  => $ensure,
+      master  => $master,
+      order   => $order,
+      entry   => $entry_content,
+      require => Class['autofs::package'],
     }
   } else {
-    # $use_dir == true
-    ensure_resource('file', $map_dir, {
-        ensure  => directory,
-        owner   => $autofs::map_file_owner,
-        group   => $autofs::map_file_group,
-        mode    => '0755',
-        purge   => $autofs::purge_map_dir,
-        recurse => $autofs::purge_map_dir,
-        require => Class['autofs::package'],
+    # $use_dir == true: the entry is recorded as a drop-in file.  The +dir:
+    # master map line is managed via autofs::add_master_entry only when the
+    # master map itself is managed; otherwise the owner of the master map is
+    # responsible for enabling the drop-in directory (see
+    # autofs::manage_auto_master).
+    if $autofs::manage_auto_master {
+      autofs::add_master_entry { $map_dir:
+        ensure     => $ensure,
+        entry      => "+dir:${map_dir}",
+        master     => $master,
+        ensure_dir => $ensure_dir,
+        order      => $order,
+        require    => Class['autofs::package'],
       }
-    )
-
-    if $autofs::manage_auto_master and !defined(Concat::Fragment['autofs::fragment preamble map directory']) and $ensure == 'present' {
-      concat::fragment { 'autofs::fragment preamble map directory':
-        target  => $master,
-        content => "+dir:${map_dir}",
-        order   => $order,
-        require => File[$map_dir],
+      $dropin_require = Autofs::Add_master_entry[$map_dir]
+    } else {
+      # No +dir: entry is managed here, but ensure_dir still means "make sure
+      # the drop-in directory exists".
+      if $ensure_dir {
+        autofs::mapdir { "autofs::mount ${title}":
+          path    => $map_dir,
+          require => Class['autofs::package'],
+        }
+        $dropin_require = Autofs::Mapdir["autofs::mount ${title}"]
+      } else {
+        $dropin_require = undef
       }
     }
 
@@ -151,9 +136,9 @@ define autofs::mount (
       ensure  => $ensure,
       owner   => $autofs::map_file_owner,
       group   => $autofs::map_file_group,
-      mode    => '0644',
-      content => "${contents}\n",
-      require => File[$map_dir],
+      mode    => $autofs::map_file_mode,
+      content => "${entry_content}\n",
+      require => $dropin_require,
     }
   }
 }

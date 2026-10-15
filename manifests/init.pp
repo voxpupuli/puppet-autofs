@@ -44,50 +44,57 @@
 #           options: 'user,rw,soft,intr,rsize=32768,wsize=32768,tcp,nfsvers=3,noacl'
 #           fs: 'server.example.com:/path/to/home/shares'
 #
-# @param mounts the options with which to manage the autofs master map
-# @param purge_map_dir Purge the $map_dir directory of unmanaged
-# @param ldap_auth_conf_path The path to the ldap_auth.conf file
-# @param ldap_auth_config The hash to use for the configuration settings in the ldap_auth.conf file
-# @param service_conf_path The path to the service configuration file
-# @param service_options An array of options to add to the OPTIONS variable in the service configuration file
-# @param service_conf_options A hash of environment variables to add to the service configuration file for LDAP configuration
-# @param mapfiles replace: whether to modify the map file if it already exists
 # @param package_ensure Determines the state of the package. Can be set to: installed, absent, lastest, or a specific version string.
 # @param package_name Determine the name of the package to install. Should be covered by hieradata.
-# @param package_source Determine the source of the package, required on certain platforms (AIX)
-# @param service_ensure Determines state of the service. Can be set to: running or stopped.
 # @param service_enable Determines if the service should start with the system boot. true
 #   will start the autofs service on boot. false will not start the autofs service
 #   on boot.
 # @param service_name Determine the name of the service for cross platform compatibility
-# @param auto_master_map Filename of the auto.master map for cross platform compatiblity
 # @param manage_auto_master Determines if the master map (auto.master) should
 #   be managed directly by this module.  When false, the module will never
 #   create or write to the master map; autofs::mount resources must instead
 #   record their entries via drop-in files (use_dir => true) in the master
 #   map's drop-in directory.  Use this when another module, tool, or
 #   configuration management system owns the master map.
+# @param auto_master_map Filename of the auto.master map for cross platform compatiblity
+# @param default_map_dir The default value for map_dir (default: '/etc/auto.master.d')
 # @param map_file_owner owner of the automount map files for cross platform compatiblity
 # @param map_file_group group of the automount map files for cross platform compatiblity
+# @param map_file_mode The mode for master map files (default: '0644')
+# @param map_dir_mode The mode for the master map's drop-in directory, as
+#   created via autofs::add_master_entry's or autofs::mount's ensure_dir
+#   (default: '0755')
 # @param manage_service_config Determines if the service configuration file (in /etc/default or /etc/sysconfig) should be managed
 # @param manage_ldap_auth_conf Determines if the /etc/autofs_ldap_auth.conf file should be managed
 # @param service_use_misc_device Sets the USE_MISC_DEVICE value in the service configuration file
+# @param purge_map_dir Purge the $map_dir directory of unmanaged
+# @param service_ensure Determines state of the service. Can be set to: running or stopped.
+# @param ldap_auth_conf_path The path to the ldap_auth.conf file
+# @param ldap_auth_config The hash to use for the configuration settings in the ldap_auth.conf file
+# @param service_conf_path The path to the service configuration file
+# @param package_source Determine the source of the package, required on certain platforms (AIX)
 # @param reload_command In lieu of a service reload capability in Puppet, exec this command to reload automount without restarting it.
+# @param service_options An array of options to add to the OPTIONS variable in the service configuration file
+# @param service_conf_options A hash of environment variables to add to the service configuration file for LDAP configuration
 # @param automountd_service_ensure Determines state of the service. Can be set to: running or stopped.
 # @param autounmountd_service_ensure Determines state of the service. Can be set to: running or stopped.
 # @param automountd_service_name Determine the name of the automountd service for cross platform compatibility
 # @param autounmountd_service_name Determine the name of the autounmountd service for cross platform compatibility
+# @param mounts the options with which to manage the autofs master map
+# @param mapfiles Mapfiles to generate
 #
 class autofs (
   String $package_ensure = 'installed',
-  Hash[String, Hash] $mounts = {},
   Variant[String, Array[String]] $package_name = 'autofs',
   Boolean $service_enable = true,
   String $service_name = 'autofs',
-  String $auto_master_map = '/etc/auto.master',
   Boolean $manage_auto_master = true,
+  Stdlib::Absolutepath $auto_master_map = '/etc/auto.master',
+  Stdlib::Absolutepath $default_map_dir = '/etc/auto.master.d',
   String $map_file_owner = 'root',
   String $map_file_group = 'root',
+  String $map_file_mode = '0644',
+  String $map_dir_mode  = '0755',
   Boolean $manage_service_config = false,
   Boolean $manage_ldap_auth_conf = false,
   Enum['no', 'yes'] $service_use_misc_device = 'yes',
@@ -96,7 +103,6 @@ class autofs (
   Stdlib::Absolutepath $ldap_auth_conf_path = '/etc/autofs_ldap_auth.conf',
   Hash $ldap_auth_config = { 'usetls' => 'no', 'tlsrequired' => 'no', 'authrequired' => 'no' },
   Stdlib::Absolutepath $service_conf_path = '/etc/sysconfig/autofs',
-  Optional[Hash[String, Hash]] $mapfiles = undef,
   Optional[String] $package_source = undef,
   Optional[String] $reload_command = undef,
   Optional[Array[String]] $service_options = undef,
@@ -105,10 +111,16 @@ class autofs (
   Optional[Enum['stopped', 'running']] $autounmountd_service_ensure = undef,
   Optional[String] $automountd_service_name = undef,
   Optional[String] $autounmountd_service_name = undef,
+  Hash[String, Hash] $mounts = {},
+  Optional[Hash[String, Hash]] $mapfiles = undef,
 ) {
   contain 'autofs::package'
   unless $package_ensure == 'absent' {
     contain 'autofs::service'
+
+    if $manage_auto_master {
+      contain 'autofs::master'
+    }
   }
 
   $mounts.each |String $mount, Hash $attributes| {
