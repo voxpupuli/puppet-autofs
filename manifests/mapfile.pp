@@ -14,7 +14,11 @@
 #     mappings can be specified for this mapfile via autofs::mapping resources
 # @param replace Whether to replace the contents of any an existing file
 #     at the specified path
-# @param execute Whether to make the mapfile executable or not
+# @param owner What owner for the mapfile (defaults to $autofs::map_file_owner)
+# @param group What group for the mapfile (defaults to $autofs::map_file_group)
+# @param mode What mode for the mapfile (defaults to $autofs::map_file_mode)
+#     this is primarily useful for adding executable bits or setting restrictive
+#     permissions.
 #
 # When autofs::manage_auto_master is true, autofs::master owns the Concat
 # resource for the master map, and only one resource per path may exist in the
@@ -29,10 +33,10 @@ define autofs::mapfile (
   Stdlib::Absolutepath $path          = $title,
   Array[Autofs::Fs_mapping] $mappings = [],
   Boolean $replace                    = true,
-  Boolean $execute                    = false,
+  String $owner                       = $autofs::map_file_owner,
+  String $group                       = $autofs::map_file_group,
+  String $mode                        = $autofs::map_file_mode,
 ) {
-  include 'autofs'
-
   unless $autofs::package_ensure == 'absent' {
     if $autofs::reload_command {
       $concat_notify = Exec['automount-reload']
@@ -43,11 +47,6 @@ define autofs::mapfile (
     $concat_notify = undef
   }
 
-  $mapfile_mode = $execute ? {
-    true => '0755',
-    false => '0644'
-  }
-
   # autofs::master owns the Concat resource for the managed master map.
   # Declaring it here too would be a duplicate, so only declare our own Concat
   # when the path is a different file, or when the master map itself is not
@@ -56,9 +55,9 @@ define autofs::mapfile (
     ensure_resource('concat', $path,
       {
         ensure         => $ensure,
-        owner          => $autofs::map_file_owner,
-        group          => $autofs::map_file_group,
-        mode           => $mapfile_mode,
+        owner          => $owner,
+        group          => $group,
+        mode           => $mode,
         ensure_newline => true,
         replace        => $replace,
         warn           => template('autofs/mapfile.banner.erb'),

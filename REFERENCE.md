@@ -522,7 +522,9 @@ The following parameters are available in the `autofs::mapfile` defined type:
 * [`path`](#-autofs--mapfile--path)
 * [`mappings`](#-autofs--mapfile--mappings)
 * [`replace`](#-autofs--mapfile--replace)
-* [`execute`](#-autofs--mapfile--execute)
+* [`owner`](#-autofs--mapfile--owner)
+* [`group`](#-autofs--mapfile--group)
+* [`mode`](#-autofs--mapfile--mode)
 
 ##### <a name="-autofs--mapfile--ensure"></a>`ensure`
 
@@ -558,13 +560,31 @@ at the specified path
 
 Default value: `true`
 
-##### <a name="-autofs--mapfile--execute"></a>`execute`
+##### <a name="-autofs--mapfile--owner"></a>`owner`
 
-Data type: `Boolean`
+Data type: `String`
 
-Whether to make the mapfile executable or not
+What owner for the mapfile (defaults to $autofs::map_file_owner)
 
-Default value: `false`
+Default value: `$autofs::map_file_owner`
+
+##### <a name="-autofs--mapfile--group"></a>`group`
+
+Data type: `String`
+
+What group for the mapfile (defaults to $autofs::map_file_group)
+
+Default value: `$autofs::map_file_group`
+
+##### <a name="-autofs--mapfile--mode"></a>`mode`
+
+Data type: `String`
+
+What mode for the mapfile (defaults to $autofs::map_file_mode)
+this is primarily useful for adding executable bits or setting restrictive
+permissions.
+
+Default value: `$autofs::map_file_mode`
 
 ### <a name="autofs--mapping"></a>`autofs::mapping`
 
