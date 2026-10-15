@@ -24,6 +24,12 @@ file.
 * [`autofs::mount`](#autofs--mount): Defined type to manage mount point definitions in the Autofs master
 map.
 
+### Functions
+
+* [`autofs::format_fs`](#autofs--format_fs): Format an Autofs::Fs value for use in a sun format map entry.
+* [`autofs::format_key`](#autofs--format_key): Format an Autofs::Key value for use in a sun format map entry.
+* [`autofs::format_options`](#autofs--format_options): Format an Autofs::Options value for use in a sun format map entry.
+
 ### Data types
 
 * [`Autofs::Fs_mapping`](#Autofs--Fs_mapping): A type representing a single filesystem mapping, relative to the context provided by an (unspecified) autofs map.  "Single" refers to a singl
@@ -670,6 +676,78 @@ The relative order in which entries will appear in the master
 map.  Irrelevant when $use_dir is true.
 
 Default value: `1`
+
+## Functions
+
+### <a name="autofs--format_fs"></a>`autofs::format_fs`
+
+Type: Puppet Language
+
+Accepts a filesystem specification as a string or an array of such strings,
+and returns a properly escaped and quoted string suitable for inclusion
+in a sun format map entry.
+
+#### `autofs::format_fs(Variant[String[1], Array[String[1]]] $fs)`
+
+Accepts a filesystem specification as a string or an array of such strings,
+and returns a properly escaped and quoted string suitable for inclusion
+in a sun format map entry.
+
+Returns: `String` the formatted filesystem string
+
+##### `fs`
+
+Data type: `Variant[String[1], Array[String[1]]]`
+
+the filesystem specification(s) to format
+
+### <a name="autofs--format_key"></a>`autofs::format_key`
+
+Type: Puppet Language
+
+Accepts a map key string and returns it properly escaped and quoted
+if it contains whitespace or quotes, suitable for inclusion in a sun
+format map entry.
+
+#### `autofs::format_key(String[1] $key)`
+
+Accepts a map key string and returns it properly escaped and quoted
+if it contains whitespace or quotes, suitable for inclusion in a sun
+format map entry.
+
+Returns: `String` the formatted key string
+
+##### `key`
+
+Data type: `String[1]`
+
+the key to format
+
+### <a name="autofs--format_options"></a>`autofs::format_options`
+
+Type: Puppet Language
+
+Accepts undef, an empty array, a single non-empty options string, or an
+array of such strings, and returns a leading-hyphen options string
+suitable for inclusion in a sun format map entry.  The hyphen is part of
+the map file format, not of the options themselves, so it is supplied
+here.
+
+#### `autofs::format_options(Optional[Autofs::Options] $options)`
+
+Accepts undef, an empty array, a single non-empty options string, or an
+array of such strings, and returns a leading-hyphen options string
+suitable for inclusion in a sun format map entry.  The hyphen is part of
+the map file format, not of the options themselves, so it is supplied
+here.
+
+Returns: `String` the formatted options string, possibly empty
+
+##### `options`
+
+Data type: `Optional[Autofs::Options]`
+
+the options to format
 
 ## Data types
 
