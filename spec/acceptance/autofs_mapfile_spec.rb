@@ -6,6 +6,7 @@ describe 'autofs::mapfile used standalone' do
   context 'with simple configuration' do
     it 'applies' do
       pp = <<-EOS
+        class { 'autofs': }
         autofs::mapfile { '/etc/auto.data':
           mappings => [
             { 'key' => 'dataA', 'options' => 'ro', 'fs' => 'fs.net:/export/dataA' },
@@ -37,6 +38,7 @@ describe 'autofs::mapfile used standalone' do
   context 'with multi-resource configuration' do
     it 'applies' do
       pp = <<-EOS
+        class { 'autofs': }
         autofs::mapfile { '/etc/auto.data':
           mappings => [
             { 'key' => 'dataA', 'options' => 'ro', 'fs' => 'fs.net:/export/dataA' },
@@ -73,6 +75,7 @@ describe 'autofs::mapfile used standalone' do
   context 'with no mappings' do
     it 'applies' do
       pp = <<-EOS
+        class { 'autofs': }
         autofs::mapfile { '/etc/auto.data':
         }
       EOS
@@ -97,6 +100,7 @@ describe 'autofs::mapfile used standalone' do
   context 'with path parameter' do
     it 'applies' do
       pp = <<-EOS
+        class { 'autofs': }
         autofs::mapfile { 'a map file':
           path => '/etc/auto.data',
           mappings => [
@@ -128,6 +132,7 @@ describe 'autofs::mapfile used standalone' do
   context 'rmmap entire' do
     it 'applies' do
       pp = <<-MANIFEST
+        class { 'autofs': }
         autofs::mapfile { '/etc/auto.data':
           ensure  => 'absent',
         }

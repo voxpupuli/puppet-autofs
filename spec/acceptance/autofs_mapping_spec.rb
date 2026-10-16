@@ -6,6 +6,7 @@ describe 'autofs::mapping tests' do
   context 'basic mapping test' do
     it 'applies' do
       pp = <<-EOS
+        class { 'autofs': }
         autofs::mapfile { '/etc/auto.data':
         }
         autofs::mapping { 'dataA':
@@ -36,6 +37,7 @@ describe 'autofs::mapping tests' do
   context 'with order parameter' do
     it 'applies' do
       pp = <<-EOS
+        class { 'autofs': }
         autofs::mapfile { '/etc/auto.data':
           mappings => [
             { 'key' => 'dataB', 'options' => 'rw,noexec', 'fs' => 'fs.net:/export/dataB', 'order' => 20 },

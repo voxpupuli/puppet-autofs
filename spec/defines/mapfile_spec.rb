@@ -9,17 +9,21 @@ describe 'autofs::mapfile', type: :define do
 
       context 'with default parameters' do
         let(:title) { '/etc/auto.data' }
+        let(:pre_condition) { 'include autofs' }
 
         it do
           expect(subject).to compile.with_all_deps
           expect(subject).to contain_class('autofs')
           expect(subject).to contain_concat('/etc/auto.data')
             .with(ensure: 'present', replace: true, mode: '0644')
+          expect(subject).to contain_concat('/etc/auto.data')
+            .with(owner: 'root', mode: '0644')
         end
       end
 
       context 'with explicit path' do
         let(:title) { 'data' }
+        let(:pre_condition) { 'include autofs' }
         let(:params) do
           { path: '/etc/autofs/data' } # an unconventional path
         end
@@ -34,6 +38,7 @@ describe 'autofs::mapfile', type: :define do
 
       context 'without replacement' do
         let(:title) { '/etc/auto.data' }
+        let(:pre_condition) { 'include autofs' }
         let(:params) { { replace: false } }
 
         it do
@@ -44,20 +49,22 @@ describe 'autofs::mapfile', type: :define do
         end
       end
 
-      context 'with execute' do
+      context 'with custom owner, group, and mode' do
         let(:title) { '/etc/auto.data' }
-        let(:params) { { execute: true } }
+        let(:pre_condition) { 'include autofs' }
+        let(:params) { { owner: 'autofs', group: 'autofs', mode: '0755' } }
 
         it do
           expect(subject).to compile.with_all_deps
           expect(subject).to contain_class('autofs')
           expect(subject).to contain_concat('/etc/auto.data')
-            .with(ensure: 'present', mode: '0755')
+            .with(ensure: 'present', owner: 'autofs', group: 'autofs', mode: '0755')
         end
       end
 
       context 'without ensuring absence' do
         let(:title) { '/etc/auto.data' }
+        let(:pre_condition) { 'include autofs' }
         let(:params) { { ensure: 'absent' } }
 
         it do
@@ -70,6 +77,7 @@ describe 'autofs::mapfile', type: :define do
 
       context 'with mappings' do
         let(:title) { '/etc/auto.data' }
+        let(:pre_condition) { 'include autofs' }
         let(:params) do
           {
             mappings: [

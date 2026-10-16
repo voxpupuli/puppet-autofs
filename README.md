@@ -524,13 +524,18 @@ Whichever form is used, the resulting mapping in file `/etc/auto.home` is
 
 #### Executable map files
 
-By default, map files are marked as `0644`. If a map file must be executable,
-you can set the `execute` parameter to enforce `0755`.
+The owner, group, and mode defaults for map files correspond to class
+parameters (`autofs::map_file_mode`, `autofs::map_file_owner`, and
+`autofs::map_file_group`).
+
+If a map file must be executable, you can set the `mode` parameter
+to enforce `0755`.
+
 
 ```puppet
 autofs::mapfile { 'home':
-  path    => '/etc/auto.data',
-  execute => true
+  path => '/etc/auto.data',
+  mode => '0755'
 }
 ```
 
