@@ -188,6 +188,66 @@ describe 'autofs::mapping', type: :define do
             .with(target: '/mnt/auto.data', content: %("/scary/don't fear \\"quotes\\" and spaces"\t-rw\t"storage.host.net:/exports/data/don't fear \\"quotes\\" and spaces nor $do\\\\ars"\n))
         end
       end
+
+      context 'with multi-mount entries' do
+        let(:params) do
+          {
+            mapfile: '/mnt/auto.data',
+            key: 'data',
+            options: 'rw',
+            mounts: [
+              { 'mountpoint' => '/', 'fs' => 'nfs1:/d1' },
+              { 'mountpoint' => '/docs', 'options' => 'ro', 'fs' => 'nfs1:/d2' },
+            ],
+          }
+        end
+
+        it do
+          expect(subject).to compile
+          expect(subject).not_to contain_class('autofs')
+          expect(subject).to have_concat__fragment_resource_count(1)
+          expect(subject).to contain_concat__fragment('autofs::mapping/data')
+            .with(target: '/mnt/auto.data', content: "data	-rw	/ nfs1:/d1 /docs -ro nfs1:/d2\n")
+        end
+      end
+
+      context 'with an omitted base offset' do
+        let(:params) do
+          {
+            mapfile: '/mnt/auto.data',
+            key: 'data',
+            mounts: [
+              { 'fs' => 'nfs1:/d1' },
+              { 'mountpoint' => '/docs', 'fs' => 'nfs1:/d2' },
+            ],
+          }
+        end
+
+        it do
+          expect(subject).to compile
+          expect(subject).to contain_concat__fragment('autofs::mapping/data')
+            .with(target: '/mnt/auto.data', content: "data		nfs1:/d1 /docs nfs1:/d2\n")
+        end
+      end
+
+      context 'with both fs and mounts is an error' do
+        let(:params) do
+          {
+            mapfile: '/mnt/auto.data',
+            key: 'data',
+            fs: 'nfs1:/d1',
+            mounts: [{ 'mountpoint' => '/', 'fs' => 'nfs1:/d1' }],
+          }
+        end
+
+        it { expect(subject).to compile.and_raise_error(%r{specify either fs or mounts, not both}) }
+      end
+
+      context 'without fs or mounts is an error' do
+        let(:params) { { mapfile: '/mnt/auto.data', key: 'data' } }
+
+        it { expect(subject).to compile.and_raise_error(%r{specify either fs or mounts}) }
+      end
     end
   end
 end

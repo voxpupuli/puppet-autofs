@@ -17,6 +17,7 @@
   * [Requirements](#requirements)
   * [Incompatibilities](#incompatibilities)
 3. [Usage - Configuration options and additional functionality](#usage)
+   * [Multi-mount entries](#multi-mount-entries)
 4. [Limitations - OS compatibility, etc](#limitations)
 5. [Development - Guide for contributing to the module](#development)
 6. [Support - When you need help with this module](#support)
@@ -182,13 +183,19 @@ autofs::mounts:
 
 The autofs module supports the use of Autofs's `+dir:` option (Autofs 5.0.5
 or later) to record master map content in drop-in files in a specified
-directory instead of directly in the master map.  When a `mount`'s `use_dir`
-parameter is `true` (default is `false`), the corresponding master map entry
-is created as a separate file in the appropriate directory instead of being
-written directly into the master map.  The master map is still, however,
-ensured to contain an appropriate `+dir:` entry designating the chosen
-drop-in directory.  Internally, this uses the `autofs::add_master_entry` defined
-type to manage the master map entry.
+directory instead of directly in the master map.
+
+By default a `mount` is written *directly* into the master map: `use_dir`
+defaults to `false`.  Set `use_dir => true` to instead record the entry as a
+separate drop-in file (for example `/etc/auto.master.d/home.autofs`).  The
+`+dir:` line that enables the drop-in directory is managed only when the
+master map itself is managed -- that is, when `use_dir` is `true` *and* the
+`autofs` class parameter `manage_auto_master` is still `true` (the default).
+When `manage_auto_master` is `false` the module never writes to the master
+map, so it does not add the `+dir:` line; set `ensure_dir => true` to make the
+directory exist and let the owner of the master map enable the drop-in
+directory.  Internally, this uses the `autofs::add_master_entry` defined type
+to manage the master map entry.
 
 ##### example
 
@@ -590,69 +597,150 @@ autofs::mapfiles:
         fs: 'remote.com:/exports/dataB'
 ```
 
-That form requires all of a map file's mappings to live in one place.  To
-spread them across multiple Hiera files (e.g. one file per application),
-express each mapping as `autofs::mapping` data instead.  Note that Hiera
-data does not create defined type resources on its own, so a small wrapper
-class -- typically a profile -- looks the data up and creates the resources.
-A `autofs::mapfile` entry (or resource) is still required for each managed
-map file; `autofs::mapping` entries only attach fragments to it:
+That form places all of a map file's mappings in one Hiera location.  You
+can also split the mappings across multiple Hiera files and merge them; see
+[Hiera](https://docs.openvoxproject.org/openvox/latest/hiera_intro.html) for
+details.  A `autofs::mapfile` entry (or resource) is still required for each
+managed map file, and `autofs::mapping` entries only attach fragments to it.
+
+#### Multi-mount entries
+
+Sometimes a single Autofs key must mount **several filesystems at once**, each
+under its own subdirectory, instead of a single source. Autofs calls this a
+**multi-mount** entry, described under "**Multiple Mounts**" in
+[`autofs(5)`](https://man7.org/linux/man-pages/man5/autofs.5.html).
+
+A common case is an automount point that aggregates several backing shares
+beneath one key. For example, one key `/data` can mount a read-only shared
+directory and a separate read-write directory from a different server, all
+beneath `/data`. Each sub-mount can carry its own mount options, while options
+given at the entry level apply to every sub-mount that does not override them.
+
+You would reach for a multi-mount when one key maps to more than one
+filesystem, for instance:
+
+* aggregating several NFS exports beneath a single mount point;
+* giving different subdirectories different options (read-only versus
+  read-write);
+* mounting a tree that no single export can provide on its own.
+
+##### Why it is expressed as a map file entry, not an `autofs::mount`
+
+It is natural to think of a multi-mount as a kind of *mount*, but in Autofs the
+concept is split across **two files**, so the module expresses it with two
+resources:
+
+* **The automount point** lives in the master map (`/etc/auto.master`). The
+  `autofs::mount` resource manages only this: it says "when something looks up
+  `/data`, use the map file `/etc/auto.data`." It never touches the contents of
+  that map file.
+* **The multi-mount line itself** lives *inside* the map file
+  (`/etc/auto.data`). It is one key that lists several
+  `[mountpoint] [ -options ] source` triples.
+
+Because a complete multi-mount must exist in both the master map and the map
+file, no single resource can describe it. This is why the several filesystems
+are declared as an `autofs::mapping` (or as a `mappings` element of
+`autofs::mapfile`) rather than as an `autofs::mount`. The `autofs::mount`
+resource continues to declare the automount point; the `autofs::mapping`
+resource declares the multiple filesystems under that point. The two pieces
+belong together but live in two different files.
+
+##### Declaring a multi-mount
+
+The preferred form collects the map file and its mappings together via
+`autofs::mapfile`, and declares the automount point separately with
+`autofs::mount`:
 
 ```puppet
-class profile::autofs (
-  Hash[String, Hash] $mapfiles = {},
-  Hash[String, Hash] $mappings = {},
-) {
-  $mapfiles.each |$mapfile, $attrs| {
-    autofs::mapfile { $mapfile:
-      * => $attrs,
-    }
-  }
+autofs::mount { 'data':
+  mount       => '/data',
+  mapfile     => '/etc/auto.data',
+  options     => '--timeout=120',
+}
 
-  $mappings.each |$mapping, $attrs| {
-    autofs::mapping { $mapping:
-      * => $attrs,
-    }
-  }
+autofs::mapfile { '/etc/auto.data':
+  mappings => [
+    {
+      key     => 'data',
+      options => '--timeout=120',
+      mounts  => [
+        { 'mountpoint' => '/',            'fs' => 'nfs1.example.com:/exports/d1' },
+        { 'mountpoint' => '/docs', 'options' => 'ro', 'fs' => 'nfs2.example.com:/exports/d2' },
+      ],
+    },
+  ],
 }
 ```
 
-The following three Hiera data files, combined via the `lookup_options`
-`merge: deep` settings, produce exactly the `/mnt/data` content shown
-above.  The `mappings` keys (e.g. `/mnt/data_dataA`) are resource titles:
-they must be unique across all files, but their spelling is otherwise
-arbitrary.
+This produces the master map entry
 
-```yaml
-# Common data: lookup options, and the map file itself
-lookup_options:
-  profile::autofs::mapfiles:
-    merge: deep
-  profile::autofs::mappings:
-    merge: deep
-profile::autofs::mapfiles:
-  '/mnt/data': {}
+```sh
+/data /etc/auto.data --timeout=120
 ```
 
-```yaml
-# One application's data file
-profile::autofs::mappings:
-  '/mnt/data_dataA':
-    mapfile: '/mnt/data'
-    key: 'dataA'
-    options: 'ro'
-    fs: 'remote.com:/exports/dataA'
+and the map file `/etc/auto.data`
+
+```sh
+data --timeout=120 / nfs1.example.com:/exports/d1 /docs -ro nfs2.example.com:/exports/d2
 ```
 
+When Autofs looks up the `data` key it mounts the first source at the automount
+point `/data`, and the second at `/data/docs` (read-only). Note that `/data`
+carries only the entry-level `--timeout=120`, while `/data/docs` adds its own
+`ro` option.
+
+The equivalent Hiera data:
+
 ```yaml
-# A second application's data file
-profile::autofs::mappings:
-  '/mnt/data_dataB':
-    mapfile: '/mnt/data'
-    key: 'dataB'
-    options: 'rw,noexec'
-    fs: 'remote.com:/exports/dataB'
+autofs::mounts:
+  data:
+    mount:   '/data'
+    mapfile: '/etc/auto.data'
+    options: '--timeout=120'
+autofs::mapfiles:
+  '/etc/auto.data':
+    mappings:
+      - key: 'data'
+        options: '--timeout=120'
+        mounts:
+          - { 'mountpoint' => '/',  'fs' => 'nfs1.example.com:/exports/d1' }
+          - { 'mountpoint' => '/docs', 'options' => 'ro', 'fs' => 'nfs2.example.com:/exports/d2' }
 ```
+
+If you prefer to spread mappings across resources or Hiera files, declare the
+map file once and attach the multi-mount as a standalone `autofs::mapping`
+instead:
+
+```puppet
+autofs::mapfile { '/etc/auto.data': }
+
+autofs::mapping { '/etc/auto.data_data':
+  mapfile => '/etc/auto.data',
+  key     => 'data',
+  options => '--timeout=120',
+  mounts  => [
+    { 'mountpoint' => '/',            'fs' => 'nfs1.example.com:/exports/d1' },
+    { 'mountpoint' => '/docs', 'options' => 'ro', 'fs' => 'nfs2.example.com:/exports/d2' },
+  ],
+}
+```
+
+##### Notes on the `mounts` elements
+
+* Provide either `fs` or `mounts` for a mapping, never both. `fs` is for a
+  single-mount entry (it may still be an array of replicated/weighted sources);
+  `mounts` is for a multi-mount entry.
+* Each `mounts` element is one source with an optional `mountpoint` and
+  `options`:
+  * `mountpoint` is written to the map file **verbatim**, so it must begin with
+    `/` (for example `/docs`). To mount at the automount point itself, omit it
+    by setting `mountpoint` to `undef` -- the source is then emitted alone,
+    with no leading space.
+  * `options` is the per-mountpoint option list; the mapping's `options` apply
+    to every sub-mount unless overridden here.
+* A source containing spaces is quoted automatically, just as with
+  single-mount entries.
 
 #### Removing Entries
 
