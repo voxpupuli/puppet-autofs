@@ -16,11 +16,18 @@
 # @example Demonstrating specifying an array of options
 #   { 'key' => 'other', 'options' => [ 'ro', 'noexec' ], 'fs' => 'external.net:/the/exported/fs' }
 #
+# @example A multi-mount entry (autofs(5) "Multiple Mounts")
+#   { 'key' => 'data', 'options' => '--timeout=120', 'mounts' => [
+#       { 'mountpoint' => '/',        'fs' => 'nfs1:/d1' },
+#       { 'mountpoint' => '/docs', 'options' => 'ro', 'fs' => 'nfs1:/d2' },
+#     ] }
+#
 type Autofs::Fs_mapping = Struct[
   {
     key     => String[1],
     options => Optional[Autofs::Options],
     order   => Optional[Integer],
-    fs      => Variant[String[1], Array[String[1]]],
+    fs      => Optional[Variant[String[1], Array[String[1]]]],
+    mounts  => Optional[Autofs::Multimount],
   }
 ]
