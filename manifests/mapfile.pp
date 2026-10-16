@@ -61,7 +61,7 @@ define autofs::mapfile (
         mode           => $mapfile_mode,
         ensure_newline => true,
         replace        => $replace,
-        warn           => template('autofs/mapfile.banner.erb'),
+        warn           => epp('autofs/mapfile.banner.epp', { 'replace' => $replace }),
         notify         => $concat_notify,
         require        => Class['autofs::package'],
       }

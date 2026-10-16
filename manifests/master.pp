@@ -28,7 +28,7 @@ class autofs::master {
       mode           => $autofs::map_file_mode,
       ensure_newline => true,
       replace        => true,
-      warn           => template('autofs/mapfile.banner.erb'),
+      warn           => epp('autofs/mapfile.banner.epp', { 'replace' => true }),
       notify         => $concat_notify,
       require        => Class['autofs::package'],
     }
