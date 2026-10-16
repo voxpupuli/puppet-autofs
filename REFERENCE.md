@@ -376,11 +376,11 @@ Default value: `{}`
 
 ##### <a name="-autofs--mapfiles"></a>`mapfiles`
 
-Data type: `Optional[Hash[String, Hash]]`
+Data type: `Hash[String, Hash]`
 
 Mapfiles to generate
 
-Default value: `undef`
+Default value: `{}`
 
 ## Defined types
 

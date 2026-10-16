@@ -112,7 +112,7 @@ class autofs (
   Optional[String] $automountd_service_name = undef,
   Optional[String] $autounmountd_service_name = undef,
   Hash[String, Hash] $mounts = {},
-  Optional[Hash[String, Hash]] $mapfiles = undef,
+  Hash[String, Hash] $mapfiles = {},
 ) {
   contain 'autofs::package'
   unless $package_ensure == 'absent' {
@@ -127,9 +127,7 @@ class autofs (
     autofs::mount { $mount: * => $attributes }
   }
 
-  if $mapfiles =~ NotUndef {
-    $mapfiles.each |String $file, Hash $attributes| {
-      autofs::mapfile { $file: * => $attributes }
-    }
+  $mapfiles.each |String $file, Hash $attributes| {
+    autofs::mapfile { $file: * => $attributes }
   }
 }
