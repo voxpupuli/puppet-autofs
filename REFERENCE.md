@@ -906,6 +906,10 @@ master map must ensure the +dir: entry (or rely on a build of autofs that
 reads the drop-in directory implicitly), but the drop-in files themselves
 are still managed here.  This parameter must be true whenever
 autofs::manage_auto_master is false.
+Multiple mounts using the same drop-in directory share one +dir: master
+map entry and one directory File; the first-evaluated mount configures
+them, so mounts sharing a directory should agree on ensure, order, and
+ensure_dir.
 
 Default value: `false`
 
@@ -1106,7 +1110,7 @@ Struct[{
     options => Optional[Autofs::Options],
     order   => Optional[Integer],
     fs      => Optional[Variant[String[1], Array[String[1]]]],
-    mounts  => Optional[Autofs::Multimount],
+    mounts  => Optional[Array[Autofs::Multimount]],
   }]
 ```
 

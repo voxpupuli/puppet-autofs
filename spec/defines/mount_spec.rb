@@ -320,6 +320,179 @@ describe 'autofs::mount', type: :define do
         }
       end
 
+      # Regression: the +dir: line is one master-map entry shared by every
+      # mount using a drop-in directory.  Without the defined() guard in
+      # autofs::mount, each use_dir mount redeclared
+      # Autofs::Add_master_entry[$map_dir] and the catalog failed to compile.
+      context 'with two use_dir mounts sharing the drop-in directory' do
+        let(:pre_condition) do
+          <<-PUPPET
+            include autofs
+            autofs::mount { 'second':
+              mount   => '/second',
+              mapfile => '/etc/auto.second',
+              use_dir => true,
+            }
+          PUPPET
+        end
+        let(:title) { 'first' }
+        let(:params) do
+          {
+            mount: '/first',
+            mapfile: '/etc/auto.first',
+            use_dir: true,
+          }
+        end
+
+        it { is_expected.to compile.with_all_deps }
+        # One shared +dir: entry and fragment, plus one drop-in file per mount.
+        it { is_expected.to have_autofs__add_master_entry_resource_count(1) }
+
+        it {
+          is_expected.to contain_concat__fragment('autofs::add_master_entry /etc/auto.master.d')
+            .with_target(master_map_file)
+            .with_content(%r{\A\+dir:/etc/auto.master.d\s*\z})
+        }
+
+        it {
+          is_expected.to contain_file('/etc/auto.master.d/first.autofs')
+            .with_content(%r{\A/first /etc/auto.first\s*\z})
+            .that_requires('Autofs::Add_master_entry[/etc/auto.master.d]')
+        }
+
+        it {
+          is_expected.to contain_file('/etc/auto.master.d/second.autofs')
+            .with_content(%r{\A/second /etc/auto.second\s*\z})
+        }
+      end
+
+      # The shared +dir: entry is keyed per drop-in directory: mounts using
+      # different map_dir values each get their own +dir: line and manage
+      # their own directory, without collapsing into one shared entry.
+      context 'with use_dir mounts on two different drop-in directories' do
+        let(:pre_condition) do
+          <<-PUPPET
+            include autofs
+            autofs::mount { 'second':
+              mount   => '/second',
+              mapfile => '/etc/auto.second',
+              use_dir => true,
+              map_dir => '/etc/auto.master.d/extras',
+            }
+          PUPPET
+        end
+        let(:title) { 'first' }
+        let(:params) do
+          {
+            mount: '/first',
+            mapfile: '/etc/auto.first',
+            use_dir: true,
+            ensure_dir: true,
+          }
+        end
+
+        it { is_expected.to compile.with_all_deps }
+        # One shared +dir: entry per directory, not one per mount or one global.
+        it { is_expected.to have_autofs__add_master_entry_resource_count(2) }
+
+        it {
+          is_expected.to contain_concat__fragment('autofs::add_master_entry /etc/auto.master.d')
+            .with_target(master_map_file)
+            .with_content(%r{\A\+dir:/etc/auto.master.d\s*\z})
+        }
+
+        it {
+          is_expected.to contain_concat__fragment('autofs::add_master_entry /etc/auto.master.d/extras')
+            .with_target(master_map_file)
+            .with_content(%r{\A\+dir:/etc/auto.master.d/extras\s*\z})
+        }
+
+        it {
+          is_expected.to contain_file('/etc/auto.master.d/first.autofs')
+            .with_content(%r{\A/first /etc/auto.first\s*\z})
+            .that_requires('Autofs::Add_master_entry[/etc/auto.master.d]')
+        }
+
+        it {
+          is_expected.to contain_file('/etc/auto.master.d/extras/second.autofs')
+            .with_content(%r{\A/second /etc/auto.second\s*\z})
+            .that_requires('Autofs::Add_master_entry[/etc/auto.master.d/extras]')
+        }
+
+        # ensure_dir applies per mount to its own directory: the first mount
+        # ensures the default directory; the extras directory, requested by no
+        # mount, is left alone.
+        it { is_expected.to contain_file('/etc/auto.master.d').with_ensure('directory') }
+
+        it { is_expected.not_to contain_file('/etc/auto.master.d/extras') }
+      end
+
+      # The shared +dir: entry and directory are configured by the first
+      # evaluated mount for the directory (pre_condition resources evaluate
+      # before the subject resource); later mounts reuse them.  Mounts sharing
+      # a directory should therefore agree on ensure and ensure_dir.
+      context 'with ensure_dir set only on the later-evaluated mount' do
+        let(:pre_condition) do
+          <<-PUPPET
+            include autofs
+            autofs::mount { 'first':
+              mount   => '/first',
+              mapfile => '/etc/auto.first',
+              use_dir => true,
+            }
+          PUPPET
+        end
+        let(:title) { 'second' }
+        let(:params) do
+          {
+            mount: '/second',
+            mapfile: '/etc/auto.second',
+            use_dir: true,
+            ensure_dir: true,
+          }
+        end
+
+        it { is_expected.to compile.with_all_deps }
+        it { is_expected.not_to contain_file('/etc/auto.master.d') }
+
+        it {
+          is_expected.to contain_file('/etc/auto.master.d/second.autofs')
+            .with_content(%r{\A/second /etc/auto.second\s*\z})
+        }
+      end
+
+      context 'with ensure absent set only on the first-evaluated mount' do
+        let(:pre_condition) do
+          <<-PUPPET
+            include autofs
+            autofs::mount { 'first':
+              ensure  => 'absent',
+              mount   => '/first',
+              mapfile => '/etc/auto.first',
+              use_dir => true,
+            }
+          PUPPET
+        end
+        let(:title) { 'second' }
+        let(:params) do
+          {
+            mount: '/second',
+            mapfile: '/etc/auto.second',
+            use_dir: true,
+          }
+        end
+
+        it { is_expected.to compile.with_all_deps }
+        # The first mount configured the shared entry absent, so no +dir:
+        # fragment exists; the second mount's drop-in file is still managed.
+        it { is_expected.not_to contain_concat__fragment('autofs::add_master_entry /etc/auto.master.d') }
+
+        it {
+          is_expected.to contain_file('/etc/auto.master.d/second.autofs')
+            .with_content(%r{\A/second /etc/auto.second\s*\z})
+        }
+      end
+
       context 'with ensure set to absent' do
         let(:title) { '/data' }
         let(:params) do

@@ -135,6 +135,41 @@ describe 'autofs::mapfile', type: :define do
             .with(target: '/etc/auto.data', content: "data\t--timeout=120\tnfs1.example.com:/exports/d1 nfs2.example.com:/exports/d2\n")
         end
       end
+
+      context 'with a multi-mount (autofs(5) "Multiple Mounts") mapping' do
+        # Autofs multi-mount: a single key names several filesystems, each at
+        # its own relative mount point.  Expressed via a `mounts` array, the
+        # same shape autofs::mapping takes; an omitted mountpoint means the
+        # source mounts at the automount point itself.
+        let(:title) { '/etc/auto.data' }
+        let(:pre_condition) { 'include autofs' }
+        let(:params) do
+          {
+            mappings: [
+              {
+                key: 'data',
+                options: '--timeout=120',
+                mounts: [
+                  { 'fs' => 'nfs1.example.com:/exports/d1' },
+                  { 'mountpoint' => '/docs', 'options' => 'ro', 'fs' => 'nfs2.example.com:/exports/d2' },
+                ],
+              },
+            ],
+          }
+        end
+
+        it do
+          expect(subject).to compile.with_all_deps
+          expect(subject).to contain_class('autofs')
+          expect(subject).to have_autofs__mapping_resource_count(1)
+          expect(subject).to contain_autofs__mapping('/etc/auto.data:data')
+            .with(mapfile: '/etc/auto.data', key: 'data', options: '--timeout=120')
+          # key, options, then the multi-mount list: the first source mounts
+          # at the automount point, the second at /docs with its own options.
+          expect(subject).to contain_concat__fragment('autofs::mapping//etc/auto.data:data')
+            .with(target: '/etc/auto.data', content: "data\t--timeout=120\tnfs1.example.com:/exports/d1 /docs -ro nfs2.example.com:/exports/d2\n")
+        end
+      end
     end
   end
 end

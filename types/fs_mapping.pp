@@ -28,6 +28,6 @@ type Autofs::Fs_mapping = Struct[
     options => Optional[Autofs::Options],
     order   => Optional[Integer],
     fs      => Optional[Variant[String[1], Array[String[1]]]],
-    mounts  => Optional[Autofs::Multimount],
+    mounts  => Optional[Array[Autofs::Multimount]],
   }
 ]
