@@ -12,9 +12,15 @@
 #
 # @param path Absolute path of the directory to ensure.  (default: the title
 #   of this resource)
+# @param purge When true, files present in the directory that are not declared
+#     elsewhere in the catalog are removed.  Defaults to autofs::purge_map_dir.
+# @param recurse When true, purging recurses into unmanaged subdirectories.
+#     Defaults to autofs::purge_map_dir.
 #
 define autofs::mapdir (
   Stdlib::Absolutepath $path = $title,
+  Boolean $purge   = $autofs::purge_map_dir,
+  Boolean $recurse = $autofs::purge_map_dir,
 ) {
   ensure_resource('file', $path,
     {
@@ -22,8 +28,8 @@ define autofs::mapdir (
       owner   => $autofs::map_file_owner,
       group   => $autofs::map_file_group,
       mode    => $autofs::map_dir_mode,
-      purge   => $autofs::purge_map_dir,
-      recurse => $autofs::purge_map_dir,
+      purge   => $purge,
+      recurse => $recurse,
     }
   )
 }

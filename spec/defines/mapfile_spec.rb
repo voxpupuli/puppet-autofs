@@ -102,6 +102,39 @@ describe 'autofs::mapfile', type: :define do
             .with(mapfile: '/etc/auto.data', key: 'example3', options: %w[rw noexec], fs: 'data.com:/export/example3')
         end
       end
+
+      context 'with a replicated (multi-mount) mapping' do
+        # Autofs multi-mount: a single key names several filesystems.  In the
+        # current model this is expressed via an `fs` array, which is
+        # space-joined in the rendered map entry.
+        let(:title) { '/etc/auto.data' }
+        let(:pre_condition) { 'include autofs' }
+        let(:params) do
+          {
+            mappings: [
+              {
+                key: 'data',
+                options: '--timeout=120',
+                fs: [
+                  'nfs1.example.com:/exports/d1',
+                  'nfs2.example.com:/exports/d2',
+                ],
+              },
+            ],
+          }
+        end
+
+        it do
+          expect(subject).to compile.with_all_deps
+          expect(subject).to contain_class('autofs')
+          expect(subject).to have_autofs__mapping_resource_count(1)
+          expect(subject).to contain_autofs__mapping('/etc/auto.data:data')
+            .with(mapfile: '/etc/auto.data', key: 'data', options: '--timeout=120')
+          # key, options, then the space-separated replicated filesystems.
+          expect(subject).to contain_concat__fragment('autofs::mapping//etc/auto.data:data')
+            .with(target: '/etc/auto.data', content: "data\t--timeout=120\tnfs1.example.com:/exports/d1 nfs2.example.com:/exports/d2\n")
+        end
+      end
     end
   end
 end

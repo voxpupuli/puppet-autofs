@@ -109,6 +109,20 @@ autofs::mapfiles:
         fs: 'server.example.com:/path/to/home/shares'
 ```
 
+##### Declaring individual mappings and master-map entries via Hiera
+
+```puppet
+autofs {
+  mappings => {
+    dataA => { mapfile => '/mnt/data', key => 'dataA', options => 'ro', fs => 'remote.com:/exports/dataA' },
+  },
+  add_master_entries => {
+    '+dir:/etc/auto.master.d/myapp' => { ensure_dir => true },
+    nis_maps                       => { entry => '+auto.master' },
+  },
+}
+```
+
 #### Parameters
 
 The following parameters are available in the `autofs` class:
@@ -142,6 +156,8 @@ The following parameters are available in the `autofs` class:
 * [`autounmountd_service_name`](#-autofs--autounmountd_service_name)
 * [`mounts`](#-autofs--mounts)
 * [`mapfiles`](#-autofs--mapfiles)
+* [`mappings`](#-autofs--mappings)
+* [`add_master_entries`](#-autofs--add_master_entries)
 
 ##### <a name="-autofs--package_ensure"></a>`package_ensure`
 
@@ -268,7 +284,11 @@ Default value: `'yes'`
 
 Data type: `Boolean`
 
-Purge the $map_dir directory of unmanaged
+Default of the purge and recurse attributes that
+autofs::mapdir applies to the drop-in directory.  When true, files
+in that directory that are not declared elsewhere in the catalog are
+removed, mirroring it to the declared autofs::mount resources.  Each
+autofs::mapdir resource can override it per directory.
 
 Default value: `false`
 
@@ -381,6 +401,23 @@ Default value: `{}`
 Data type: `Hash[String, Hash]`
 
 Mapfiles to generate
+
+Default value: `{}`
+
+##### <a name="-autofs--mappings"></a>`mappings`
+
+Data type: `Hash[String, Hash]`
+
+Mappings to generate as autofs::mapping resources
+
+Default value: `{}`
+
+##### <a name="-autofs--add_master_entries"></a>`add_master_entries`
+
+Data type: `Hash[String, Hash]`
+
+Master-map entries to generate as
+autofs::add_master_entry resources
 
 Default value: `{}`
 
