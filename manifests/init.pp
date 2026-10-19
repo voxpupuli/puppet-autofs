@@ -44,6 +44,17 @@
 #           options: 'user,rw,soft,intr,rsize=32768,wsize=32768,tcp,nfsvers=3,noacl'
 #           fs: 'server.example.com:/path/to/home/shares'
 #
+# @example Declaring individual mappings and master-map entries via Hiera
+#    autofs {
+#      mappings => {
+#        dataA => { mapfile => '/mnt/data', key => 'dataA', options => 'ro', fs => 'remote.com:/exports/dataA' },
+#      },
+#      add_master_entries => {
+#        '+dir:/etc/auto.master.d/myapp' => { ensure_dir => true },
+#        nis_maps                       => { entry => '+auto.master' },
+#      },
+#    }
+#
 # @param package_ensure Determines the state of the package. Can be set to: installed, absent, lastest, or a specific version string.
 # @param package_name Determine the name of the package to install. Should be covered by hieradata.
 # @param service_enable Determines if the service should start with the system boot. true
@@ -67,7 +78,11 @@
 # @param manage_service_config Determines if the service configuration file (in /etc/default or /etc/sysconfig) should be managed
 # @param manage_ldap_auth_conf Determines if the /etc/autofs_ldap_auth.conf file should be managed
 # @param service_use_misc_device Sets the USE_MISC_DEVICE value in the service configuration file
-# @param purge_map_dir Purge the $map_dir directory of unmanaged
+# @param purge_map_dir Default of the purge and recurse attributes that
+#     autofs::mapdir applies to the drop-in directory.  When true, files
+#     in that directory that are not declared elsewhere in the catalog are
+#     removed, mirroring it to the declared autofs::mount resources.  Each
+#     autofs::mapdir resource can override it per directory.
 # @param service_ensure Determines state of the service. Can be set to: running or stopped.
 # @param ldap_auth_conf_path The path to the ldap_auth.conf file
 # @param ldap_auth_config The hash to use for the configuration settings in the ldap_auth.conf file
@@ -82,6 +97,9 @@
 # @param autounmountd_service_name Determine the name of the autounmountd service for cross platform compatibility
 # @param mounts the options with which to manage the autofs master map
 # @param mapfiles Mapfiles to generate
+# @param mappings Mappings to generate as autofs::mapping resources
+# @param add_master_entries Master-map entries to generate as
+#     autofs::add_master_entry resources
 #
 class autofs (
   String $package_ensure = 'installed',
@@ -113,6 +131,8 @@ class autofs (
   Optional[String] $autounmountd_service_name = undef,
   Hash[String, Hash] $mounts = {},
   Hash[String, Hash] $mapfiles = {},
+  Hash[String, Hash] $mappings = {},
+  Hash[String, Hash] $add_master_entries = {},
 ) {
   contain 'autofs::package'
   unless $package_ensure == 'absent' {
@@ -129,5 +149,13 @@ class autofs (
 
   $mapfiles.each |String $file, Hash $attributes| {
     autofs::mapfile { $file: * => $attributes }
+  }
+
+  $mappings.each |String $title, Hash $attrs| {
+    autofs::mapping { $title: * => $attrs }
+  }
+
+  $add_master_entries.each |String $title, Hash $attrs| {
+    autofs::add_master_entry { $title: * => $attrs }
   }
 }

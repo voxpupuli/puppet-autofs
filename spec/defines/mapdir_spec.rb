@@ -51,6 +51,27 @@ describe 'autofs::mapdir', type: :define do
         # raising a duplicate resource declaration.
         it { is_expected.to compile.with_all_deps }
       end
+
+      # purge_map_dir is the default value of purge and recurse.
+      context 'with purge_map_dir true at the class level' do
+        let(:pre_condition) { 'class { "autofs": purge_map_dir => true }' }
+
+        it { is_expected.to contain_file(title).with(purge: true, recurse: true) }
+      end
+
+      context 'with an explicit purge override' do
+        let(:pre_condition) { 'class { "autofs": purge_map_dir => true }' }
+        let(:params) { { purge: false } }
+
+        it { is_expected.to contain_file(title).with(purge: false, recurse: true) }
+      end
+
+      context 'with an explicit recurse override' do
+        let(:pre_condition) { 'class { "autofs": purge_map_dir => true }' }
+        let(:params) { { recurse: false } }
+
+        it { is_expected.to contain_file(title).with(purge: true, recurse: false) }
+      end
     end
   end
 end

@@ -8,6 +8,29 @@ describe 'autofs::mapping', type: :define do
       let(:facts) { os_facts }
       let(:title) { 'data' }
 
+      context 'with a wildcard default key' do
+        # README primary example: the special key '*' is the default
+        # (wildcard) key used when no explicit key matches.
+        let(:title) { 'home_default' }
+        let(:params) do
+          {
+            mapfile: '/etc/auto.home',
+            key: '*',
+            options: 'rw,soft,intr,rsize=32768,wsize=32768,tcp,nfsvers=3',
+            fs: 'server.example.com:/exports/home',
+          }
+        end
+
+        it do
+          expect(subject).to compile
+          expect(subject).not_to contain_class('autofs')
+          expect(subject).to have_concat_resource_count(0)
+          expect(subject).to have_concat__fragment_resource_count(1)
+          expect(subject).to contain_concat__fragment('autofs::mapping/home_default')
+            .with(target: '/etc/auto.home', content: "*\t-rw,soft,intr,rsize=32768,wsize=32768,tcp,nfsvers=3\tserver.example.com:/exports/home\n")
+        end
+      end
+
       context 'with no options' do
         let(:params) do
           {
