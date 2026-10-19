@@ -62,6 +62,10 @@
 #   reads the drop-in directory implicitly), but the drop-in files themselves
 #   are still managed here.  This parameter must be true whenever
 #   autofs::manage_auto_master is false.
+#   Multiple mounts using the same drop-in directory share one +dir: master
+#   map entry and one directory File; the first-evaluated mount configures
+#   them, so mounts sharing a directory should agree on ensure, order, and
+#   ensure_dir.
 # @param options Options to be specified for the autofs mount point within
 #   the master map.
 # @param order The relative order in which entries will appear in the master
@@ -109,13 +113,21 @@ define autofs::mount (
     # responsible for enabling the drop-in directory (see
     # autofs::manage_auto_master).
     if $autofs::manage_auto_master {
-      autofs::add_master_entry { $map_dir:
-        ensure     => $ensure,
-        entry      => "+dir:${map_dir}",
-        master     => $master,
-        ensure_dir => $ensure_dir,
-        order      => $order,
-        require    => Class['autofs::package'],
+      # All use_dir mounts share one drop-in directory, and the +dir: line is
+      # a single master-map entry.  Like autofs::mapdir collapses the
+      # directory itself, declare the entry once per directory: the first
+      # evaluated mount configures it (ensure, order, ensure_dir) and later
+      # mounts reuse it.  (ensure_resources/ensure_resource are native types
+      # only, so guard with defined().)
+      unless defined(Autofs::Add_master_entry[$map_dir]) {
+        autofs::add_master_entry { $map_dir:
+          ensure     => $ensure,
+          entry      => "+dir:${map_dir}",
+          master     => $master,
+          ensure_dir => $ensure_dir,
+          order      => $order,
+          require    => Class['autofs::package'],
+        }
       }
       $dropin_require = Autofs::Add_master_entry[$map_dir]
     } else {
