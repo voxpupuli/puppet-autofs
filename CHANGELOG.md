@@ -4,7 +4,52 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
-## [v9.0.0](https://github.com/voxpupuli/puppet-autofs/tree/v9.0.0) (2023-11-02)
+## [v10.0.0](https://github.com/voxpupuli/puppet-autofs/tree/v10.0.0) (2026-10-19)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-autofs/compare/v9.0.0...v10.0.0)
+
+**Breaking changes:**
+
+- autofs::mapfile uses explicit mode instead of `execute` [\#249](https://github.com/voxpupuli/puppet-autofs/pull/249) ([jcpunk](https://github.com/jcpunk))
+- Create a define for adding entries to auto.master to support just `+dir` [\#248](https://github.com/voxpupuli/puppet-autofs/pull/248) ([jcpunk](https://github.com/jcpunk))
+- Drop deprecated parameter `autofs::maps` and defined type `autofs::map` [\#244](https://github.com/voxpupuli/puppet-autofs/pull/244) ([jcpunk](https://github.com/jcpunk))
+- Drop puppet, update openvox minimum version to 8.19 [\#229](https://github.com/voxpupuli/puppet-autofs/pull/229) ([TheMeier](https://github.com/TheMeier))
+- Drop support for EOL Operating Systems \(CentOS 7, 8; Debian 10, 11; FreeBSD 12; Oracle Linux 7; RedHat 7; Scientific Linux; Ubuntu 18.04\) [\#220](https://github.com/voxpupuli/puppet-autofs/pull/220) ([smortex](https://github.com/smortex))
+
+**Implemented enhancements:**
+
+- enable support for mutli-mount entry. [\#124](https://github.com/voxpupuli/puppet-autofs/issues/124)
+- More in depth test coverage [\#255](https://github.com/voxpupuli/puppet-autofs/pull/255) ([jcpunk](https://github.com/jcpunk))
+- Improve test coverage and ergonomics [\#254](https://github.com/voxpupuli/puppet-autofs/pull/254) ([jcpunk](https://github.com/jcpunk))
+- Simplify mapfiles parameter as each is smart enough [\#253](https://github.com/voxpupuli/puppet-autofs/pull/253) ([jcpunk](https://github.com/jcpunk))
+- Allow concat 10.x and stdlib 10.x [\#251](https://github.com/voxpupuli/puppet-autofs/pull/251) ([jcpunk](https://github.com/jcpunk))
+- Add EL10 support [\#250](https://github.com/voxpupuli/puppet-autofs/pull/250) ([jcpunk](https://github.com/jcpunk))
+- Improve test coverage and segment out complex string manipulation [\#247](https://github.com/voxpupuli/puppet-autofs/pull/247) ([jcpunk](https://github.com/jcpunk))
+- Add support for multi-mount map files [\#246](https://github.com/voxpupuli/puppet-autofs/pull/246) ([jcpunk](https://github.com/jcpunk))
+- Make management of `auto.master` something you can disable [\#245](https://github.com/voxpupuli/puppet-autofs/pull/245) ([jcpunk](https://github.com/jcpunk))
+- Update requirements to allow OpenVox 9 [\#241](https://github.com/voxpupuli/puppet-autofs/pull/241) ([sebastianrakel](https://github.com/sebastianrakel))
+- Replace deprecated calls with `Facter::Core::Execution` [\#239](https://github.com/voxpupuli/puppet-autofs/pull/239) ([corporate-gadfly](https://github.com/corporate-gadfly))
+- Add support for FreeBSD 15 [\#236](https://github.com/voxpupuli/puppet-autofs/pull/236) ([smortex](https://github.com/smortex))
+- Add support for FreeBSD 14 [\#216](https://github.com/voxpupuli/puppet-autofs/pull/216) ([smortex](https://github.com/smortex))
+
+**Fixed bugs:**
+
+- Correct coment header on `/etc/auto_master` [\#252](https://github.com/voxpupuli/puppet-autofs/pull/252) ([traylenator](https://github.com/traylenator))
+- Fix extra escaping when a filesystem has spaces [\#232](https://github.com/voxpupuli/puppet-autofs/pull/232) ([smortex](https://github.com/smortex))
+
+**Closed issues:**
+
+- Trouble with CIFS mount with $ in the middle \(and worse with spaces\) [\#231](https://github.com/voxpupuli/puppet-autofs/issues/231)
+- Support adding +dir entries without extra mounts [\#224](https://github.com/voxpupuli/puppet-autofs/issues/224)
+- Examples using Heira [\#161](https://github.com/voxpupuli/puppet-autofs/issues/161)
+- to include NIS/LDAP map [\#142](https://github.com/voxpupuli/puppet-autofs/issues/142)
+
+**Merged pull requests:**
+
+- Update README [\#256](https://github.com/voxpupuli/puppet-autofs/pull/256) ([jcpunk](https://github.com/jcpunk))
+- README: document Hiera data for multiple mappings [\#242](https://github.com/voxpupuli/puppet-autofs/pull/242) ([jcpunk](https://github.com/jcpunk))
+
+## [v9.0.0](https://github.com/voxpupuli/puppet-autofs/tree/v9.0.0) (2023-11-03)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-autofs/compare/v8.0.0...v9.0.0)
 
