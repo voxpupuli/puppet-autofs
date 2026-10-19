@@ -36,12 +36,14 @@ map.
 
 * [`autofs::format_fs`](#autofs--format_fs): Format an Autofs::Fs value for use in a sun format map entry.
 * [`autofs::format_key`](#autofs--format_key): Format an Autofs::Key value for use in a sun format map entry.
+* [`autofs::format_multimount`](#autofs--format_multimount): Format the location portion of a multi-mount map entry.
 * [`autofs::format_options`](#autofs--format_options): Format an Autofs::Options value for use in a sun format map entry.
 
 ### Data types
 
 * [`Autofs::Fs_mapping`](#Autofs--Fs_mapping): A type representing a single filesystem mapping, relative to the context provided by an (unspecified) autofs map.  "Single" refers to a singl
 * [`Autofs::Mapentry`](#Autofs--Mapentry): This type matches a map specfication with map type and optional format, or the built-in -hosts map.
+* [`Autofs::Multimount`](#Autofs--Multimount): A single filesystem of a multi-mount map entry, as described under "Multiple Mounts" in autofs(5).  A multi-mount entry lists several filesys
 * [`Autofs::Options`](#Autofs--Options): A type representing an autofs options list, represented either as a single non-empty string or an array of such strings
 
 ## Classes
@@ -639,12 +641,27 @@ autofs::mapping{ '/etc/auto.data_data':
 }
 ```
 
+##### A multi-mount entry (autofs(5) "Multiple Mounts")
+
+```puppet
+# This renders the map line `data --timeout=120 / nfs1:/d1 /docs -ro nfs1:/d2`.
+autofs::mapping{ 'data':
+  mapfile => '/etc/auto.data',
+  options => '--timeout=120',
+  mounts  => [
+    { 'mountpoint' => '/',        'fs' => 'nfs1:/d1' },
+    { 'mountpoint' => '/docs', 'options' => 'ro', 'fs' => 'nfs1:/d2' },
+  ],
+}
+```
+
 #### Parameters
 
 The following parameters are available in the `autofs::mapping` defined type:
 
 * [`ensure`](#-autofs--mapping--ensure)
 * [`fs`](#-autofs--mapping--fs)
+* [`mounts`](#-autofs--mapping--mounts)
 * [`key`](#-autofs--mapping--key)
 * [`mapfile`](#-autofs--mapping--mapfile)
 * [`options`](#-autofs--mapping--options)
@@ -662,9 +679,27 @@ Default value: `'present'`
 
 ##### <a name="-autofs--mapping--fs"></a>`fs`
 
-Data type: `Variant[String[1], Array[String[1]]]`
+Data type: `Optional[Variant[String[1], Array[String[1]]]]`
 
-the remote filesystem to mount
+the remote filesystem to mount.  Used for a single-mount entry;
+may be a string or an array of replicated/weighted sources.  Provide
+either $fs or $mounts, never both.
+
+Default value: `undef`
+
+##### <a name="-autofs--mapping--mounts"></a>`mounts`
+
+Data type: `Array[Autofs::Multimount]`
+
+the filesystems to mount as a multi-mount entry, as described
+under "Multiple Mounts" in autofs(5).  Each element mounts one filesystem
+at its own relative mount point (per autofs(5): `[mountpoint] [ -options ]
+source`); the entry's default $options apply to all, and each element's
+per-mountpoint options are appended.  The first element's mountpoint may
+be omitted to mount it at the automount point.  Provide either $fs or
+$mounts, never both.
+
+Default value: `[]`
 
 ##### <a name="-autofs--mapping--key"></a>`key`
 
@@ -914,6 +949,50 @@ Data type: `String[1]`
 
 the key to format
 
+### <a name="autofs--format_multimount"></a>`autofs::format_multimount`
+
+Type: Puppet Language
+
+Renders an ordered list of mount specs as the space-separated sequence of
+tokens autofs expects after the entry's default options, as described under
+"Multiple Mounts" in autofs(5):
+
+  [mountpoint] [ -options ] source [mountpoint] [ -options ] source ...
+
+A mount's mountpoint is emitted verbatim (it begins with '/'); an omitted
+mountpoint produces no token, so the filesystem mounts at the automount
+point itself.  Per-mountpoint options (already hyphenated here) appear
+between the mountpoint and the source.
+
+The mount-spec type is named 'Autofs::Multimount' (see types/multimount.pp)
+rather than 'Autofs::Mount', because Puppet resolves that name to the
+built-in 'mount' resource type instead of a custom type.
+
+#### `autofs::format_multimount(Array[Autofs::Multimount] $mounts)`
+
+Renders an ordered list of mount specs as the space-separated sequence of
+tokens autofs expects after the entry's default options, as described under
+"Multiple Mounts" in autofs(5):
+
+  [mountpoint] [ -options ] source [mountpoint] [ -options ] source ...
+
+A mount's mountpoint is emitted verbatim (it begins with '/'); an omitted
+mountpoint produces no token, so the filesystem mounts at the automount
+point itself.  Per-mountpoint options (already hyphenated here) appear
+between the mountpoint and the source.
+
+The mount-spec type is named 'Autofs::Multimount' (see types/multimount.pp)
+rather than 'Autofs::Mount', because Puppet resolves that name to the
+built-in 'mount' resource type instead of a custom type.
+
+Returns: `String` the location portion of the map entry
+
+##### `mounts`
+
+Data type: `Array[Autofs::Multimount]`
+
+the ordered list of filesystems to mount under one key
+
 ### <a name="autofs--format_options"></a>`autofs::format_options`
 
 Type: Puppet Language
@@ -973,6 +1052,15 @@ all those alternatives via the 'fs' member.
 { 'key' => 'other', 'options' => [ 'ro', 'noexec' ], 'fs' => 'external.net:/the/exported/fs' }
 ```
 
+##### A multi-mount entry (autofs(5) "Multiple Mounts")
+
+```puppet
+{ 'key' => 'data', 'options' => '--timeout=120', 'mounts' => [
+    { 'mountpoint' => '/',        'fs' => 'nfs1:/d1' },
+    { 'mountpoint' => '/docs', 'options' => 'ro', 'fs' => 'nfs1:/d2' },
+  ] }
+```
+
 Alias of
 
 ```puppet
@@ -980,7 +1068,8 @@ Struct[{
     key     => String[1],
     options => Optional[Autofs::Options],
     order   => Optional[Integer],
-    fs      => Variant[String[1], Array[String[1]]],
+    fs      => Optional[Variant[String[1], Array[String[1]]]],
+    mounts  => Optional[Autofs::Multimount],
   }]
 ```
 
@@ -1022,6 +1111,46 @@ or the built-in -hosts map.
 ```
 
 Alias of `Pattern[/\A([a-z]+(,[a-z]+)?:\S+|-hosts)\z/]`
+
+### <a name="Autofs--Multimount"></a>`Autofs::Multimount`
+
+A single filesystem of a multi-mount map entry, as described under
+"Multiple Mounts" in autofs(5).  A multi-mount entry lists several
+filesystems under one map key; a single lookup mounts them all, each at its
+own relative mount point, the per-mountpoint options (if any) appended to the
+entry's default options.
+
+The type is named 'Autofs::Multimount' rather than 'Autofs::Mount' because
+Puppet resolves the name 'Autofs::Mount' to the built-in 'mount' resource
+type instead of a custom type, so the latter name cannot be declared.
+
+"Accept as-is": a specified mountpoint is written to the map verbatim, so it
+begins with '/' (for example '/docs' or, for the automount point itself,
+'/').  Omit it to mount the first filesystem at the automount point itself.
+
+#### Examples
+
+##### Mount at a subdirectory with its own options
+
+```puppet
+{ 'mountpoint' => '/docs', 'options' => 'ro', 'fs' => 'nfs1:/d2' }
+```
+
+##### Mount at the automount point (offset omitted)
+
+```puppet
+{ 'mountpoint' => undef, 'fs' => 'nfs1:/d1' }
+```
+
+Alias of
+
+```puppet
+Struct[{
+    mountpoint => Optional[String[1]],
+    options    => Optional[Autofs::Options],
+    fs         => String[1],
+  }]
+```
 
 ### <a name="Autofs--Options"></a>`Autofs::Options`
 
