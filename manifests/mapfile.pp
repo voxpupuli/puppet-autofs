@@ -24,8 +24,8 @@
 # resource for the master map, and only one resource per path may exist in the
 # catalog.  A mapfile whose path is that same file therefore contributes only
 # its mappings as concat fragments and reuses the existing Concat.  Parameters
-# that autofs::master cannot express (ensure, replace, and execute) raise an
-# error in that situation instead of being quietly ignored.  Prefer
+# that autofs::master does not honor (ensure, replace, owner, group, and mode)
+# are silently ignored in that situation.  Prefer
 # autofs::add_master_entry for master map entries.
 #
 define autofs::mapfile (
