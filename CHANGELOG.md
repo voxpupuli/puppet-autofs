@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v10.0.1](https://github.com/voxpupuli/puppet-autofs/tree/v10.0.1) (2026-10-20)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-autofs/compare/v10.0.0...v10.0.1)
+
+**Fixed bugs:**
+
+- Provide missing service notify for autofs::mount resources [\#258](https://github.com/voxpupuli/puppet-autofs/pull/258) ([jcpunk](https://github.com/jcpunk))
+
 ## [v10.0.0](https://github.com/voxpupuli/puppet-autofs/tree/v10.0.0) (2026-10-19)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-autofs/compare/v9.0.0...v10.0.0)
