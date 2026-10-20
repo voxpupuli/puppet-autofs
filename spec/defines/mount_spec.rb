@@ -22,6 +22,14 @@ describe 'autofs::mount', type: :define do
         %w[AIX FreeBSD Solaris].include?(facts['os']['family']) ? '/etc/auto_master' : '/etc/auto.master'
       end
 
+      def service_value
+        case facts['os']['family']
+        when 'AIX' then 'automountd'
+        when 'FreeBSD' then 'automount'
+        else 'autofs'
+        end
+      end
+
       context 'with default parameters' do
         let(:title) { 'auto.home' }
         let(:params) do
@@ -407,6 +415,13 @@ describe 'autofs::mount', type: :define do
             .with_content(%r{\A\+dir:/etc/auto.master.d/extras\s*\z})
         }
 
+        # The +dir: entry for the extra drop-in directory is a first-class
+        # autofs::add_master_entry resource, not only a concat fragment.
+        it {
+          is_expected.to contain_autofs__add_master_entry('/etc/auto.master.d/extras')
+            .with(entry: '+dir:/etc/auto.master.d/extras', master: master_map_file)
+        }
+
         it {
           is_expected.to contain_file('/etc/auto.master.d/first.autofs')
             .with_content(%r{\A/first /etc/auto.first\s*\z})
@@ -491,6 +506,45 @@ describe 'autofs::mount', type: :define do
           is_expected.to contain_file('/etc/auto.master.d/second.autofs')
             .with_content(%r{\A/second /etc/auto.second\s*\z})
         }
+      end
+
+      # The reload notification for a drop-in mount file is the same target
+      # autofs::mapfile/autofs::master use for Concat changes: reload_command
+      # (an Exec) when configured, otherwise the service.  This is what makes
+      # autofs pick up a newly added or changed mount, since the drop-in file
+      # is a plain File rather than a Concat fragment.
+      context 'with use_dir and reload notification' do
+        let(:title) { 'auto.home' }
+        let(:params) do
+          {
+            mount: '/home',
+            mapfile: '/etc/auto.home',
+            options: '--timeout=120',
+            use_dir: true,
+          }
+        end
+
+        it { is_expected.to compile.with_all_deps }
+
+        it {
+          # Default: a service refresh reloads automount when the drop-in
+          # file is added, changed, or removed.
+          expect(subject).to contain_file('/etc/auto.master.d/auto.home.autofs')
+            .with_notify("Service[#{service_value}]")
+        }
+
+        context 'with reload_command set' do
+          let(:pre_condition) do
+            'class { "autofs": reload_command => "/usr/sbin/automount --remount-all" }'
+          end
+
+          it {
+            # reload_command redirects the drop-in file's refresh to the
+            # refreshonly reload Exec instead of a full service restart.
+            expect(subject).to contain_file('/etc/auto.master.d/auto.home.autofs')
+              .with_notify('Exec[automount-reload]')
+          }
+        end
       end
 
       context 'with ensure set to absent' do
