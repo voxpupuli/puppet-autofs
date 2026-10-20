@@ -90,6 +90,20 @@ define autofs::mount (
 ) {
   include 'autofs'
 
+  # Drop-in mount files (use_dir => true) are plain File resources, not
+  # Concat fragments, so they carry no automatic reload notification.  Record
+  # changes by reloading automount, exactly as autofs::mapfile/autofs::master
+  # do: via reload_command (an Exec) when set, otherwise a service refresh.
+  unless $autofs::package_ensure == 'absent' {
+    if $autofs::reload_command {
+      $mount_notify = Exec['automount-reload']
+    } else {
+      $mount_notify = Service[$autofs::service_name]
+    }
+  } else {
+    $mount_notify = undef
+  }
+
   if !$autofs::manage_auto_master and !$use_dir {
     $msg = "autofs::mount[${title}]: autofs::manage_auto_master is false; set use_dir => true to record the entry in ${map_dir}"
     fail($msg)
@@ -144,13 +158,16 @@ define autofs::mount (
       }
     }
 
-    file { "${map_dir}/${name}.autofs":
-      ensure  => $ensure,
-      owner   => $autofs::map_file_owner,
-      group   => $autofs::map_file_group,
-      mode    => $autofs::map_file_mode,
-      content => "${entry_content}\n",
-      require => $dropin_require,
-    }
+    ensure_resource('file', "${map_dir}/${name}.autofs",
+      {
+        ensure  => $ensure,
+        owner   => $autofs::map_file_owner,
+        group   => $autofs::map_file_group,
+        mode    => $autofs::map_file_mode,
+        content => "${entry_content}\n",
+        require => $dropin_require,
+        notify  => $mount_notify,
+      }
+    )
   }
 }
