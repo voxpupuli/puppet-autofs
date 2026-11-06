@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require 'hiera'
 
 describe 'autofs', type: :class do
   let(:hiera_config) { 'spec/fixtures/hiera/hiera.yaml' }
