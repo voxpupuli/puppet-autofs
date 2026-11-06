@@ -1,8 +1,4 @@
 ---
-Gemfile:
-  optional:
-    ':test':
-      - gem: 'hiera'
 spec/spec_helper_acceptance.rb:
   managed: true
 .puppet-lint.rc:
